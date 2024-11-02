@@ -51,3 +51,15 @@ declare module '*.styl' {
 declare module '*.xlsx' {
   export default string;
 }
+
+declare module '*.png' {
+  export default string;
+}
+
+declare module '*.xlsx' {
+  export default string;
+}
+
+declare module '*.jpeg' {
+  export default string;
+}

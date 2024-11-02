@@ -1,14 +1,18 @@
 /* eslint-disable react/prop-types */
 import React from "react";
+import { getWindow } from "ssr-window";
 // import propTypes from "prop-types";
 // import classnames from "classnames";
 
-// import css from "./style.scss";
-// import css from "./style.less";
+import test from "./assets/test.png";
 
 export function IndexPage(props) {
   return (
-    <div>这是主页</div>
+    <div>
+      <div>这是主页</div>
+      <div>{JSON.stringify(getWindow().content)}</div>
+      <img width={1920} height={1080} src={test} alt="test.png" />
+    </div>
   )
 };
 

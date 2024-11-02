@@ -10,7 +10,7 @@ export class MainfastDetail {
   /**
    * 项目的基准目录
    * **/
-  public projectDirectory = path.join(path.dirname(__filename), "application");
+  public projectDirectory = path.join(path.dirname(__filename), "applications");
 
   /**
    * 定位 mainfast.json 文件的位置

@@ -3,6 +3,8 @@ import WebpackBar from "webpackbar";
 import { merge } from "webpack-merge";
 import { Configuration } from "webpack";
 import { injectable, inject } from "inversify";
+import CopyWebpackPlugin from "copy-webpack-plugin";
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import WebpackAssetsManifest from "webpack-assets-manifest";
 import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
 
@@ -61,8 +63,13 @@ export class ClientSiderConfigManager {
         new NodePolyfillPlugin(),
         new WebpackAssetsManifest(),
         new WebpackBar({ name: "编译客户端" }),
+        new CopyWebpackPlugin({
+          patterns: [{
+            from: path.resolve(process.cwd(), "./sources/resources/"),
+            to: path.resolve(process.cwd(), "./dist/applications")
+          }]
+        }),
         new ClientCompilerProgressPlugin(this.$CompilerProgressService)
-        // new webpack.DefinePlugin(define_object)
       ]
     };
   };
@@ -75,9 +82,15 @@ export class ClientSiderConfigManager {
     return merge<Configuration>(basicConfig, {
       mode: "development",
       output: {
-        path: path.resolve(process.cwd(), "./dist/application/"),
+        path: path.resolve(process.cwd(), "./dist/applications/"),
         filename: "main.js",
       },
+      plugins: [
+        new MiniCssExtractPlugin({
+          linkType: "text/css",
+          filename: "[name].css"
+        }),
+      ]
     });
   };
 
@@ -89,9 +102,15 @@ export class ClientSiderConfigManager {
     return merge<Configuration>(basicConfig, {
       mode: "production",
       output: {
-        path: path.resolve(process.cwd(), "./dist/application/"),
-        filename: "main.js",
+        path: path.resolve(process.cwd(), "./dist/applications/"),
+        filename: "main-[contenthash].js",
       },
+      plugins: [
+        new MiniCssExtractPlugin({
+          linkType: "text/css",
+          filename: "[name]-[contenthash].css"
+        }),
+      ]
     });
   };
 

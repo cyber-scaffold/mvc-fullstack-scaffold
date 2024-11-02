@@ -11,32 +11,30 @@ export class FileLoaderConfigManager {
   ) { };
 
   public async getClientSiderLoaderConfig() {
-    const hash = this.$ApplicationConfigManager.getRuntimeConfig();
     return [{
       test: /\.(ico|png|jpg|jpeg|gif|mp3|mp4|avi|svg|ttf|eot|otf|fon|ttc|woff|woff2)$/,
       use: [{
         loader: "file-loader",
         options: {
           emitFile: true,
-          outputPath: "files",
           publicPath: "/files/",
-          name: `[name]${hash ? ".[fullhash]" : ""}.[ext]`
+          outputPath: "/files/",
+          name: "[name]-[contenthash].[ext]"
         }
       }]
     }]
   };
 
   public async getServerSiderLoaderConfig() {
-    const hash = this.$ApplicationConfigManager.getRuntimeConfig();
     return [{
       test: /\.(ico|png|jpg|jpeg|gif|mp3|mp4|avi|svg|ttf|eot|otf|fon|ttc|woff|woff2)$/,
       use: [{
         loader: "file-loader",
         options: {
-          emitFile: true,
-          outputPath: "files",
+          emitFile: false,
           publicPath: "/files/",
-          name: `[name]${hash ? ".[fullhash]" : ""}.[ext]`
+          outputPath: "/files/",
+          name: "[name]-[contenthash].[ext]"
         }
       }]
     }]

@@ -21,7 +21,7 @@ export class IndexPageController {
     const renderContent = await this.$RenderHTMLContentService.getContentString({
       title: "主页",
       location: "/",
-      content: {}
+      content: { list: [] }
     });
     return renderContent;
   };
