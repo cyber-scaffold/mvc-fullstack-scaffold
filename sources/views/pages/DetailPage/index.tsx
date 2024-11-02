@@ -8,7 +8,13 @@ import React from "react";
 
 export function DetailPage(props) {
   return (
-    <div>这是详情页</div>
+    <div>
+      <div>这是详情页</div>
+      <form action="/search" method="post" encType="application/x-www-form-urlencoded">
+        <input type="text" name="keyword" defaultValue="test word" />
+        <input type="submit" defaultValue="submit" />
+      </form>
+    </div>
   )
 };
 

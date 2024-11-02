@@ -8,8 +8,11 @@ import { IOCContainer } from "@/sources/applications/IOCContainer";
 import { MainfastDetail } from "@/sources/applications/MainfastDetail";
 import { ApplicationConfigManager } from "@/sources/configs/ApplicationConfigManager";
 import { requestMiddleware } from "@/sources/interceptors/requestMiddleware";
+
 import { router as IndexPageController } from "@/sources/controllers/IndexPageController";
 import { router as DetailPageController } from "@/sources/controllers/DetailPageController";
+import { router as SearchController } from "@/sources/controllers/SearchController";
+
 
 @injectable()
 export class ExpressHttpServer {
@@ -49,11 +52,13 @@ export class ExpressHttpServer {
     /** 注册中间件 **/
     this.app.use(cookieParser());
     this.app.use(bodyParser.json());
+    this.app.use(bodyParser.urlencoded({ extended: true }));
     /** 注册请求级容器中间件 **/
     this.app.use(requestMiddleware);
     /** 注册控制器 **/
     this.app.use(IndexPageController);
     this.app.use(DetailPageController);
+    this.app.use(SearchController);
     /** 静态资源 **/
     this.app.use(express.static(this.$MainfastDetail.projectDirectory));
     /** 启动服务器监听端口 **/
