@@ -4,6 +4,8 @@ import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import { ApplicationConfigManager } from "@/frameworks/configs/ApplicationConfigManager";
 import { IOCContainer } from "@/frameworks/configs/IOCContainer";
 
+import { ServerSideCssModuleLoader } from "@/frameworks/utils/ServerSideCssModuleLoader";
+
 @injectable()
 export class SassLoaderConfigManager {
 
@@ -49,7 +51,7 @@ export class SassLoaderConfigManager {
   };
 
   public async getServerSiderLoaderConfig() {
-    return [{
+    return [ServerSideCssModuleLoader, {
       test: /\.(scss|sass)$/,
       use: [{
         loader: MiniCssExtractPlugin.loader,
