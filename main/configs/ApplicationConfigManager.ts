@@ -13,6 +13,30 @@ export class ApplicationConfigManager {
   private defaultConfig: any = {
     server: {
       port: 8190
+    },
+    redis: {
+      port: 6379,
+      host: "0.0.0.0",
+    },
+    mysql: {
+      port: 3306,
+      host: "0.0.0.0",
+      username: "root",
+      password: "gaea0571",
+      database: "gmecamp_config"
+    },
+    mongodb: {
+      host: "0.0.0.0",
+      port: 27017,
+      username: "root",
+      password: "gaea0571",
+      database: "test_data"
+    },
+    rabbitmq: {
+      host: "0.0.0.0",
+      port: 5672,
+      username: "root",
+      password: "gaea0571"
     }
   };
 

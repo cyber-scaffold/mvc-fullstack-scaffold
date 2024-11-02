@@ -4,6 +4,8 @@ import { createConnection, Connection } from "mongoose";
 import { ApplicationConfigManager } from "@/main/configs/ApplicationConfigManager";
 import { IOCContainer } from "@/main/commons/Application/IOCContainer";
 
+import { logger } from "@/main/utils/logger";
+
 @injectable()
 export class MongooseConnectManager {
 
@@ -20,16 +22,16 @@ export class MongooseConnectManager {
       const connectionURL = `mongodb://${username}:${password}@${host}:${port}/${dataDb}?authSource=admin`;
       const connection = await createConnection(connectionURL);
       this.connection = connection;
-      console.log("mongoose 连接成功!!!");
+      logger.info("Mongoose 连接成功!!!");
     } catch (error) {
-      console.log("mongoose 连接失败!!!", error);
+      logger.error("Mongoose 连接失败!!! %s", error);
     };
   };
 
   /** 销毁连接,用于单元测试 **/
   public async destroy() {
     await this.connection.destroy();
-    console.log("mongoose 连接已销毁!!!");
+    logger.info("Mongoose 连接已销毁!!!");
   };
 
   public async getDatabaseWithName(databaseName) {

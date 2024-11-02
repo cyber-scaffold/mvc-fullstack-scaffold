@@ -4,6 +4,8 @@ import { createPool, Pool, PoolConnection } from "mysql2/promise";
 import { ApplicationConfigManager } from "@/main/configs/ApplicationConfigManager";
 import { IOCContainer } from "@/main/commons/Application/IOCContainer";
 
+import { logger } from "@/main/utils/logger";
+
 @injectable()
 export class MySQLConnectManager {
 
@@ -26,7 +28,7 @@ export class MySQLConnectManager {
       connectionLimit: 0
     });
     this.connection = await this.pool.getConnection();
-    console.log("MySQL连接池初始化成功!");
+    logger.info("MySQL 连接池初始化成功!");
   };
 
   /** 获取MySQL主连接 **/

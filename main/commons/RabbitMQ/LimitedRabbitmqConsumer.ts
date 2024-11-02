@@ -1,4 +1,3 @@
-import { red, green } from "colors";
 import amqp, { Connection } from "amqplib";
 import { injectable, inject } from "inversify";
 
@@ -55,14 +54,14 @@ export class LimitedRabbitmqConsumer {
         protocol: "amqp",
         ...rabbitConfig
       });
-      logger.info(green("RabbitMQ-消费者-连接成功!"));
+      logger.info("RabbitMQ-消费者-连接成功!");
       /** 处理断线重连 **/
       this.connection.on("close", (error) => {
-        logger.error(red(`RabbitMQ连接已关闭,2s后准备重新连接 ${error}`));
+        logger.error("RabbitMQ连接已关闭,2s后准备重新连接 %s", error);
         return setTimeout(this.initialize, 2000);
       });
     } catch (error) {
-      logger.error(red(`RabbitMQ连接初始化发生错误,2s后准备重新连接 ${error}`));
+      logger.error("RabbitMQ连接初始化发生错误,2s后准备重新连接 %s", error);
       return setTimeout(this.initialize, 2000);
     };
   };
@@ -70,7 +69,7 @@ export class LimitedRabbitmqConsumer {
   /** 销毁连接,用于单元测试 **/
   public async destroy() {
     await this.connection.close();
-    console.log("RabbitMQ 已断开连接!!!");
+    logger.warn("RabbitMQ 已断开连接!!!");
   };
 
   /** 创建或加入一个频道 **/

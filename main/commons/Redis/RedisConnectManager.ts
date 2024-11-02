@@ -4,6 +4,8 @@ import { createClient, RedisClientType } from "redis";
 import { ApplicationConfigManager } from "@/main/configs/ApplicationConfigManager";
 import { IOCContainer } from "@/main/commons/Application/IOCContainer";
 
+import { logger } from "@/main/utils/logger";
+
 @injectable()
 export class RedisConnectManager {
 
@@ -23,13 +25,13 @@ export class RedisConnectManager {
       });
 
       this.connection.on("error", async (error) => {
-        console.log("Redis出现错误,2s后重新连接... ...", error);
+        logger.error("Redis 出现错误,2s后重新连接... ...", error);
         return setTimeout(this.initialize, 2000);
       });
 
       await this.connection.connect();
 
-      console.log("Redis连接成功!");
+      logger.info("Redis 连接成功!");
     } catch (error: any) {
       this.connection.removeAllListeners("error");
       throw error;
