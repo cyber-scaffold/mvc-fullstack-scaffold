@@ -51,39 +51,39 @@ export class SassLoaderConfigManager {
   };
 
   public async getServerSiderLoaderConfig() {
-    return [ServerSideCssModuleLoader, {
+    return [{
       test: /\.(scss|sass)$/,
-      use: [{
+      use: [ServerSideCssModuleLoader, {
         loader: MiniCssExtractPlugin.loader,
       }, {
-        loader: "css-loader",
-        options: {
-          modules: {
-            exportOnlyLocals: false,
-            mode: (resourcePath) => {
-              if (/\.(global)/.test(resourcePath)) {
-                return "global";
+          loader: "css-loader",
+          options: {
+            modules: {
+              exportOnlyLocals: false,
+              mode: (resourcePath) => {
+                if (/\.(global)/.test(resourcePath)) {
+                  return "global";
+                }
+                if (/(node_modules)/.test(resourcePath)) {
+                  return "global";
+                };
+                return "local";
               }
-              if (/(node_modules)/.test(resourcePath)) {
-                return "global";
-              };
-              return "local";
-            }
-          },
-          sourceMap: true
-        }
-      }, {
-        loader: "postcss-loader",
-        options: {
-          postcssOptions: {
-            config: true
-          },
-          sourceMap: true
-        }
-      }, {
-        loader: "sass-loader",
-        options: {}
-      }]
+            },
+            sourceMap: true
+          }
+        }, {
+          loader: "postcss-loader",
+          options: {
+            postcssOptions: {
+              config: true
+            },
+            sourceMap: true
+          }
+        }, {
+          loader: "sass-loader",
+          options: {}
+        }]
     }]
   };
 

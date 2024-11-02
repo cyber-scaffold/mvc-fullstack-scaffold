@@ -1,24 +1,27 @@
-import os from "os";
 import path from "path";
 import { merge } from "lodash";
 import { readFile } from "jsonfile";
 import pathExists from "path-exists";
 import { injectable } from "inversify";
 
-import { IOCContainer } from "@/sources/configs/IOCContainer";
+import { IOCContainer } from "@/sources/applications/IOCContainer";
 
 @injectable()
 export class ApplicationConfigManager {
 
   /** 应用层内置的默认配置 **/
-  private defaultConfig: any = {};
+  private defaultConfig: any = {
+    server: {
+      port: 8190
+    }
+  };
 
   /** $HOME目录下的配置 **/
   private custmerConfig: any = {};
 
   /** 声明在$HOME目录下的配置文件路径 **/
   get custmerConfigPath() {
-    return path.join(os.homedir(), "/.redis-broadcast-discover/", "./config.json");
+    return path.join(process.cwd(), "./config.json");
   };
 
   /** 初始化并加载配置到运行时 **/

@@ -1,7 +1,8 @@
-import express from "express";
+import { IOCContainer } from "@/sources/applications/IOCContainer";
+import { ExpressHttpServer } from "@/sources/applications/ExpressHttpServer";
 
-const app = express();
 
-const server = app.listen(8190, () => {
-  console.log("server", server.address());
+/** 获取应用启动类,然后执行启动 **/
+setImmediate(async () => {
+  await IOCContainer.get(ExpressHttpServer).bootstrap();
 });

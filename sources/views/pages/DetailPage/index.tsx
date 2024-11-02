@@ -6,19 +6,13 @@ import React from "react";
 // import css from "./style.scss";
 // import css from "./style.less";
 
-export function InfoPage(props) {
+export function DetailPage(props) {
   return (
-    <div>
-      {null}
-    </div>
+    <div>这是详情页</div>
   )
 };
 
 
-InfoPage.propTypes = {
-
-};
-
-InfoPage.defaultProps = {
+DetailPage.propTypes = {
 
 };

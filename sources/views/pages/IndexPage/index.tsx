@@ -6,18 +6,12 @@ import React from "react";
 // import css from "./style.scss";
 // import css from "./style.less";
 
-export function HomePage(props) {
+export function IndexPage(props) {
   return (
-    <div>
-      {null}
-    </div>
+    <div>这是主页</div>
   )
 };
 
-HomePage.propTypes = {
-
-};
-
-HomePage.defaultProps = {
+IndexPage.propTypes = {
 
 };

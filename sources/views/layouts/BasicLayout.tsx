@@ -7,18 +7,15 @@ import React from "react";
 // import css from "./style.less";
 
 export function BasicLayout(props) {
+  const { children } = props;
   return (
     <div>
-      {null}
+      {children}
     </div>
   )
 };
 
 
 BasicLayout.propTypes = {
-
-};
-
-BasicLayout.defaultProps = {
 
 };

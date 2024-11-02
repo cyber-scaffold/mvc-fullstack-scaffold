@@ -3,6 +3,7 @@ import WebpackBar from "webpackbar";
 import { merge } from "webpack-merge";
 import { Configuration } from "webpack";
 import { injectable, inject } from "inversify";
+import WebpackAssetsManifest from "webpack-assets-manifest";
 import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
 
 import { IOCContainer } from "@/frameworks/configs/IOCContainer";
@@ -58,6 +59,7 @@ export class ClientSiderConfigManager {
       },
       plugins: [
         new NodePolyfillPlugin(),
+        new WebpackAssetsManifest(),
         new WebpackBar({ name: "编译客户端" }),
         new ClientCompilerProgressPlugin(this.$CompilerProgressService)
         // new webpack.DefinePlugin(define_object)
@@ -73,7 +75,7 @@ export class ClientSiderConfigManager {
     return merge<Configuration>(basicConfig, {
       mode: "development",
       output: {
-        path: path.resolve(process.cwd(), "./dist/"),
+        path: path.resolve(process.cwd(), "./dist/application/"),
         filename: "main.js",
       },
     });
@@ -87,7 +89,7 @@ export class ClientSiderConfigManager {
     return merge<Configuration>(basicConfig, {
       mode: "production",
       output: {
-        path: path.resolve(process.cwd(), "./dist/"),
+        path: path.resolve(process.cwd(), "./dist/application/"),
         filename: "main.js",
       },
     });
