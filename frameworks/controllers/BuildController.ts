@@ -3,6 +3,7 @@ import spawn from "cross-spawn";
 import { injectable, inject } from "inversify";
 
 import { IOCContainer } from "@/frameworks/configs/IOCContainer";
+import { FrameworkConfigManager } from "@/frameworks/configs/FrameworkConfigManager";
 import { ClientSiderRenderService } from "@/frameworks/services/ClientSiderRenderService";
 import { ServerSiderRenderService } from "@/frameworks/services/ServerSiderRenderService";
 
@@ -13,6 +14,7 @@ import { ServerSiderRenderService } from "@/frameworks/services/ServerSiderRende
 export class BuildController {
 
   constructor(
+    @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager,
     @inject(ClientSiderRenderService) private readonly $ClientSiderRenderService: ClientSiderRenderService,
     @inject(ServerSiderRenderService) private readonly $ServerSiderRenderService: ServerSiderRenderService,
   ) { };

@@ -2,14 +2,14 @@ import { webpack } from "webpack";
 import { injectable, inject } from "inversify";
 
 import { IOCContainer } from "@/frameworks/configs/IOCContainer";
-import { ApplicationConfigManager } from "@/frameworks/configs/ApplicationConfigManager";
+import { FrameworkConfigManager } from "@/frameworks/configs/FrameworkConfigManager";
 import { ClientSiderConfigManager } from "@/frameworks/configs/ClientSiderConfigManager";
 
 @injectable()
 export class ClientSiderRenderService {
 
   constructor(
-    @inject(ApplicationConfigManager) private readonly $ApplicationConfigManager: ApplicationConfigManager,
+    @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager,
     @inject(ClientSiderConfigManager) private readonly $ClientSiderConfigManager: ClientSiderConfigManager
   ) { };
 

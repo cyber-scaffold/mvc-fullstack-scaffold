@@ -1,14 +1,14 @@
 import path from "path";
 import { injectable, inject } from "inversify";
 
-import { ApplicationConfigManager } from "@/frameworks/configs/ApplicationConfigManager";
+import { FrameworkConfigManager } from "@/frameworks/configs/FrameworkConfigManager";
 import { IOCContainer } from "@/frameworks/configs/IOCContainer";
 
 @injectable()
 export class BabelLoaderConfigManger {
 
   constructor(
-    @inject(ApplicationConfigManager) private readonly $ApplicationConfigManager: ApplicationConfigManager
+    @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager
   ) { };
 
   public async getClientSiderLoaderConfig() {

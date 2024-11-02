@@ -6,6 +6,7 @@ import { injectable, inject } from "inversify";
 import nodeExternals from "webpack-node-externals";
 
 import { IOCContainer } from "@/frameworks/configs/IOCContainer";
+import { FrameworkConfigManager } from "@/frameworks/configs/FrameworkConfigManager";
 import { TypeScriptLoaderConfigManger } from "@/frameworks/configs/TypeScriptLoaderConfigManger";
 import { BabelLoaderConfigManger } from "@/frameworks/configs/BabelLoaderConfigManger";
 import { FileLoaderConfigManager } from "@/frameworks/configs/FileLoaderConfigManager";
@@ -20,6 +21,7 @@ import { ServerCompilerProgressPlugin } from "@/frameworks/utils/ServerCompilerP
 export class ServerSiderConfigManager {
 
   constructor(
+    @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager,
     @inject(TypeScriptLoaderConfigManger) private readonly $TypeScriptLoaderConfigManger: TypeScriptLoaderConfigManger,
     @inject(BabelLoaderConfigManger) private readonly $BabelLoaderConfigManger: BabelLoaderConfigManger,
     @inject(FileLoaderConfigManager) private readonly $FileLoaderConfigManager: FileLoaderConfigManager,
@@ -65,7 +67,6 @@ export class ServerSiderConfigManager {
       plugins: [
         new WebpackBar({ name: "编译服务端" }),
         new ServerCompilerProgressPlugin(this.$CompilerProgressService)
-        // new webpack.DefinePlugin(define_object)
       ]
     };
   };
@@ -75,9 +76,10 @@ export class ServerSiderConfigManager {
  * **/
   public async getDevelopmentConfig() {
     const basicConfig: any = await this.getBasicConfig();
+    const { destnation } = this.$FrameworkConfigManager.getRuntimeConfig();
     return merge<Configuration>(basicConfig, {
       output: {
-        path: path.resolve(process.cwd(), "./dist/"),
+        path: destnation,
         filename: "server.js",
       },
     });
@@ -88,9 +90,10 @@ export class ServerSiderConfigManager {
    * **/
   public async getProductionConfig() {
     const basicConfig: any = await this.getBasicConfig();
+    const { destnation } = this.$FrameworkConfigManager.getRuntimeConfig();
     return merge<Configuration>(basicConfig, {
       output: {
-        path: path.resolve(process.cwd(), "./dist/"),
+        path: destnation,
         filename: "server.js",
       },
     });

@@ -9,6 +9,7 @@ import WebpackAssetsManifest from "webpack-assets-manifest";
 import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
 
 import { IOCContainer } from "@/frameworks/configs/IOCContainer";
+import { FrameworkConfigManager } from "@/frameworks/configs/FrameworkConfigManager";
 import { CssLoaderConfigManager } from "@/frameworks/configs/CssLoaderConfigManager";
 import { FileLoaderConfigManager } from "@/frameworks/configs/FileLoaderConfigManager";
 import { LessLoaderConfigManager } from "@/frameworks/configs/LessLoaderConfigManager";
@@ -23,6 +24,7 @@ import { ClientCompilerProgressPlugin } from "@/frameworks/utils/ClientCompilerP
 export class ClientSiderConfigManager {
 
   constructor(
+    @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager,
     @inject(TypeScriptLoaderConfigManger) private readonly $TypeScriptLoaderConfigManger: TypeScriptLoaderConfigManger,
     @inject(BabelLoaderConfigManger) private readonly $BabelLoaderConfigManger: BabelLoaderConfigManger,
     @inject(FileLoaderConfigManager) private readonly $FileLoaderConfigManager: FileLoaderConfigManager,
@@ -36,6 +38,7 @@ export class ClientSiderConfigManager {
    * 最基础的webpack编译配置
    * **/
   public async getBasicConfig() {
+    const { destnation } = this.$FrameworkConfigManager.getRuntimeConfig();
     return {
       entry: path.resolve(process.cwd(), "./sources/views/index.tsx"),
       devtool: "source-map",
@@ -66,7 +69,7 @@ export class ClientSiderConfigManager {
         new CopyWebpackPlugin({
           patterns: [{
             from: path.resolve(process.cwd(), "./sources/resources/"),
-            to: path.resolve(process.cwd(), "./dist/applications")
+            to: path.resolve(destnation, "./applications")
           }]
         }),
         new ClientCompilerProgressPlugin(this.$CompilerProgressService)
@@ -79,10 +82,11 @@ export class ClientSiderConfigManager {
    * **/
   public async getDevelopmentConfig() {
     const basicConfig: any = await this.getBasicConfig();
+    const { destnation } = this.$FrameworkConfigManager.getRuntimeConfig();
     return merge<Configuration>(basicConfig, {
       mode: "development",
       output: {
-        path: path.resolve(process.cwd(), "./dist/applications/"),
+        path: path.resolve(destnation, "./applications/"),
         filename: "main.js",
       },
       plugins: [
@@ -99,10 +103,11 @@ export class ClientSiderConfigManager {
    * **/
   public async getProductionConfig() {
     const basicConfig: any = await this.getBasicConfig();
+    const { destnation } = this.$FrameworkConfigManager.getRuntimeConfig();
     return merge<Configuration>(basicConfig, {
       mode: "production",
       output: {
-        path: path.resolve(process.cwd(), "./dist/applications/"),
+        path: path.resolve(destnation, "./applications/"),
         filename: "main-[contenthash].js",
       },
       plugins: [

@@ -1,7 +1,7 @@
 import { injectable, inject } from "inversify";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 
-import { ApplicationConfigManager } from "@/frameworks/configs/ApplicationConfigManager";
+import { FrameworkConfigManager } from "@/frameworks/configs/FrameworkConfigManager";
 import { IOCContainer } from "@/frameworks/configs/IOCContainer";
 
 
@@ -9,7 +9,7 @@ import { IOCContainer } from "@/frameworks/configs/IOCContainer";
 export class SassLoaderConfigManager {
 
   constructor(
-    @inject(ApplicationConfigManager) private readonly $ApplicationConfigManager: ApplicationConfigManager
+    @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager
   ) { };
 
   public async getClientSiderLoaderConfig() {

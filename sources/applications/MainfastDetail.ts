@@ -18,11 +18,22 @@ export class MainfastDetail {
   private mainfastFilePath = path.resolve(this.projectDirectory, "./assets-manifest.json");
 
   /**
+   * mainfast文件中的资源详情缓存
+   * **/
+  private mainfastContent: any;
+
+  /**
+   * 在服务启动的时候进行一次初始化进行资源寻址
+   * **/
+  public async initialize() {
+    this.mainfastContent = await readFile(this.mainfastFilePath);
+  };
+
+  /**
    * 获取编译完成后的资源信息
    * **/
-  public async getMainfastFileContent() {
-    const mainfastContent = await readFile(this.mainfastFilePath);
-    return mainfastContent;
+  public getMainfastFileContent() {
+    return this.mainfastContent;
   };
 
 };

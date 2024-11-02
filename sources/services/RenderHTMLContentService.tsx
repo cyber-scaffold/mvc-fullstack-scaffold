@@ -22,7 +22,7 @@ export class RenderHTMLContentService {
   ) { };
 
   public async getContentString({ title, location, content }: paramsType) {
-    const mainfast = await this.$MainfastDetail.getMainfastFileContent();
+    const mainfast = this.$MainfastDetail.getMainfastFileContent();
     const contentString = renderToString(
       <html lang="zh-CN">
         <head>

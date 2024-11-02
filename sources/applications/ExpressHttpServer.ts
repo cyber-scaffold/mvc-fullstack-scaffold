@@ -45,6 +45,7 @@ export class ExpressHttpServer {
 
   public async bootstrap() {
     await this.$ApplicationConfigManager.initialize();
+    await this.$MainfastDetail.initialize();
     /** 注册中间件 **/
     this.app.use(cookieParser());
     this.app.use(bodyParser.json());
