@@ -4,8 +4,8 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { injectable, inject } from "inversify";
 
-import { IOCContainer } from "@/main/applications/IOCContainer";
-import { MainfastDetail } from "@/main/applications/MainfastDetail";
+import { IOCContainer } from "@/main/commons/Application/IOCContainer";
+import { MainfastDetail } from "@/main/commons/Application/MainfastDetail";
 import { ApplicationConfigManager } from "@/main/configs/ApplicationConfigManager";
 import { requestMiddleware } from "@/main/interceptors/requestMiddleware";
 

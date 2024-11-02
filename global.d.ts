@@ -56,7 +56,7 @@ declare module '*.png' {
   export default string;
 }
 
-declare module '*.xlsx' {
+declare module '*.jpg' {
   export default string;
 }
 

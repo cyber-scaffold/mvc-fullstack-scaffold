@@ -4,14 +4,14 @@ import { getWindow } from "ssr-window";
 // import propTypes from "prop-types";
 // import classnames from "classnames";
 
-import test from "./assets/test.png";
+import hq2 from "./assets/hq2.jpg";
 
 export function IndexPage(props) {
   return (
     <div>
       <div>这是主页</div>
       <div>{JSON.stringify(getWindow().content)}</div>
-      <img width={1920} height={1080} src={test} alt="test.png" />
+      <img width={480} height={360} src={hq2} alt="test.png" />
     </div>
   )
 };

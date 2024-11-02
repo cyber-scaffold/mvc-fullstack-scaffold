@@ -4,7 +4,7 @@ import { readFile } from "jsonfile";
 import pathExists from "path-exists";
 import { injectable } from "inversify";
 
-import { IOCContainer } from "@/main/applications/IOCContainer";
+import { IOCContainer } from "@/main/commons/Application/IOCContainer";
 
 @injectable()
 export class ApplicationConfigManager {

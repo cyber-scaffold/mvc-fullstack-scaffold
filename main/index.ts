@@ -1,5 +1,5 @@
-import { IOCContainer } from "@/main/applications/IOCContainer";
-import { ExpressHttpServer } from "@/main/applications/ExpressHttpServer";
+import { IOCContainer } from "@/main/commons/Application/IOCContainer";
+import { ExpressHttpServer } from "@/main/commons/Application/ExpressHttpServer";
 
 declare global {
   interface Window {

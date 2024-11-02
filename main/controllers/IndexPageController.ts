@@ -1,7 +1,7 @@
 import { Router, Request } from "express";
 import { injectable, inject } from "inversify";
 
-import { IOCContainer } from "@/main/applications/IOCContainer";
+import { IOCContainer } from "@/main/commons/Application/IOCContainer";
 
 import { RenderHTMLContentService } from "@/main/services/RenderHTMLContentService";
 import { responseHtmlWrapper } from "@/main/utils/responseHtmlWrapper";

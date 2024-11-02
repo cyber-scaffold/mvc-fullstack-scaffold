@@ -4,8 +4,8 @@ import { injectable, inject } from "inversify";
 import { renderToString } from "react-dom/server";
 import { StaticRouter } from "react-router-dom/server";
 
-import { IOCContainer } from "@/main/applications/IOCContainer";
-import { MainfastDetail } from "@/main/applications/MainfastDetail";
+import { IOCContainer } from "@/main/commons/Application/IOCContainer";
+import { MainfastDetail } from "@/main/commons/Application/MainfastDetail";
 import { Application } from "@/main/views/Application";
 
 type paramsType = {
