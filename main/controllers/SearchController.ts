@@ -1,10 +1,10 @@
 import { Router, Request } from "express";
 import { injectable, inject } from "inversify";
 
-import { IOCContainer } from "@/sources/applications/IOCContainer";
+import { IOCContainer } from "@/main/applications/IOCContainer";
 
-import { RenderHTMLContentService } from "@/sources/services/RenderHTMLContentService";
-import { responseHtmlWrapper } from "@/sources/utils/responseHtmlWrapper";
+import { RenderHTMLContentService } from "@/main/services/RenderHTMLContentService";
+import { responseHtmlWrapper } from "@/main/utils/responseHtmlWrapper";
 
 export const router = Router().post("/search", responseHtmlWrapper(async (request: Request) => {
   return await IOCContainer.get(SearchController).execute(request);

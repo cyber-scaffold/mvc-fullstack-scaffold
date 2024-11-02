@@ -4,14 +4,14 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { injectable, inject } from "inversify";
 
-import { IOCContainer } from "@/sources/applications/IOCContainer";
-import { MainfastDetail } from "@/sources/applications/MainfastDetail";
-import { ApplicationConfigManager } from "@/sources/configs/ApplicationConfigManager";
-import { requestMiddleware } from "@/sources/interceptors/requestMiddleware";
+import { IOCContainer } from "@/main/applications/IOCContainer";
+import { MainfastDetail } from "@/main/applications/MainfastDetail";
+import { ApplicationConfigManager } from "@/main/configs/ApplicationConfigManager";
+import { requestMiddleware } from "@/main/interceptors/requestMiddleware";
 
-import { router as IndexPageController } from "@/sources/controllers/IndexPageController";
-import { router as DetailPageController } from "@/sources/controllers/DetailPageController";
-import { router as SearchController } from "@/sources/controllers/SearchController";
+import { router as IndexPageController } from "@/main/controllers/IndexPageController";
+import { router as DetailPageController } from "@/main/controllers/DetailPageController";
+import { router as SearchController } from "@/main/controllers/SearchController";
 
 
 @injectable()

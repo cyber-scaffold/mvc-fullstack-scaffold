@@ -1,10 +1,10 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 
-import { BasicLayout } from "@/sources/views/layouts/BasicLayout";
-import { IndexPage } from "@/sources/views/pages/IndexPage";
-import { DetailPage } from "@/sources/views/pages/DetailPage";
-import { SearchPage } from "@/sources/views/pages/SearchPage";
+import { BasicLayout } from "@/main/views/layouts/BasicLayout";
+import { IndexPage } from "@/main/views/pages/IndexPage";
+import { DetailPage } from "@/main/views/pages/DetailPage";
+import { SearchPage } from "@/main/views/pages/SearchPage";
 
 export function Application() {
   return (

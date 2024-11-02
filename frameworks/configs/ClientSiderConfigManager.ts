@@ -38,9 +38,9 @@ export class ClientSiderConfigManager {
    * 最基础的webpack编译配置
    * **/
   public async getBasicConfig() {
-    const { destnation } = this.$FrameworkConfigManager.getRuntimeConfig();
+    const { source, destnation } = this.$FrameworkConfigManager.getRuntimeConfig();
     return {
-      entry: path.resolve(process.cwd(), "./sources/views/index.tsx"),
+      entry: path.resolve(source, "./views/index.tsx"),
       devtool: "source-map",
       resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx"],
@@ -68,7 +68,7 @@ export class ClientSiderConfigManager {
         new WebpackBar({ name: "编译客户端" }),
         new CopyWebpackPlugin({
           patterns: [{
-            from: path.resolve(process.cwd(), "./sources/resources/"),
+            from: path.resolve(source, "./resources/"),
             to: path.resolve(destnation, "./applications")
           }]
         }),

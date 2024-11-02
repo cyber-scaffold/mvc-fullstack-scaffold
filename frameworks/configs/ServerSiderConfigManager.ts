@@ -35,9 +35,10 @@ export class ServerSiderConfigManager {
    * 最基础的webpack编译配置
    * **/
   public async getBasicConfig() {
+    const { source } = this.$FrameworkConfigManager.getRuntimeConfig();
     return {
       mode: "none",
-      entry: path.resolve(process.cwd(), "./sources/index.ts"),
+      entry: path.resolve(source, "./index.ts"),
       target: "node",
       devtool: "source-map",
       resolve: {

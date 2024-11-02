@@ -11,6 +11,7 @@ export class FrameworkConfigManager {
 
   /** 应用层内置的默认配置 **/
   private defaultConfig: any = {
+    source: path.resolve(process.cwd(), "./main/"),
     destnation: path.resolve(process.cwd(), "./dist/")
   };
 
