@@ -41,7 +41,6 @@ export class ClientSiderConfigManager {
     const { source, destnation } = this.$FrameworkConfigManager.getRuntimeConfig();
     return {
       entry: path.resolve(source, "./views/index.tsx"),
-      devtool: "source-map",
       resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx"],
         alias: {
@@ -85,6 +84,7 @@ export class ClientSiderConfigManager {
     const { destnation } = this.$FrameworkConfigManager.getRuntimeConfig();
     return merge<Configuration>(basicConfig, {
       mode: "development",
+      devtool: "source-map",
       output: {
         path: path.resolve(destnation, "./applications/"),
         filename: "main.js",
@@ -106,6 +106,7 @@ export class ClientSiderConfigManager {
     const { destnation } = this.$FrameworkConfigManager.getRuntimeConfig();
     return merge<Configuration>(basicConfig, {
       mode: "production",
+      devtool: false,
       output: {
         path: path.resolve(destnation, "./applications/"),
         filename: "main-[contenthash].js",
