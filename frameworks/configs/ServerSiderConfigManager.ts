@@ -40,7 +40,6 @@ export class ServerSiderConfigManager {
       mode: "none",
       entry: path.resolve(source, "./index.ts"),
       target: "node",
-      devtool: "source-map",
       resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx"],
         alias: {
@@ -79,6 +78,7 @@ export class ServerSiderConfigManager {
     const basicConfig: any = await this.getBasicConfig();
     const { destnation } = this.$FrameworkConfigManager.getRuntimeConfig();
     return merge<Configuration>(basicConfig, {
+      devtool: "source-map",
       output: {
         path: destnation,
         filename: "server.js",
@@ -93,6 +93,7 @@ export class ServerSiderConfigManager {
     const basicConfig: any = await this.getBasicConfig();
     const { destnation } = this.$FrameworkConfigManager.getRuntimeConfig();
     return merge<Configuration>(basicConfig, {
+      devtool: false,
       output: {
         path: destnation,
         filename: "server.js",
