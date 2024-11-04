@@ -1,10 +1,10 @@
 import path from "path";
 import WebpackBar from "webpackbar";
 import { merge } from "webpack-merge";
-import { Configuration } from "webpack";
 import { injectable, inject } from "inversify";
 import nodeExternals from "webpack-node-externals";
 import CopyWebpackPlugin from "copy-webpack-plugin";
+import { DefinePlugin, Configuration } from "webpack";
 
 import { IOCContainer } from "@/frameworks/commons/IOCContainer";
 import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
@@ -67,6 +67,10 @@ export class ServerSiderConfigManager {
         ].flat()
       },
       plugins: [
+        new DefinePlugin({
+          "process.isClient": JSON.stringify(false),
+          "process.isServer": JSON.stringify(true)
+        }),
         new WebpackBar({ name: "编译服务端" }),
         new CopyWebpackPlugin({
           patterns: [{

@@ -1,11 +1,11 @@
 import { Router, Request } from "express";
 import { injectable, inject } from "inversify";
 
-import { IOCContainer } from "@/main/commons/Application/IOCContainer";
+import { responseHtmlWrapper } from "@/frameworks/librarys/responseHtmlWrapper";
 
+import { IOCContainer } from "@/main/commons/Application/IOCContainer";
 import { RenderHTMLContentService } from "@/main/services/RenderHTMLContentService";
-import { responseHtmlWrapper } from "@/main/utils/responseHtmlWrapper";
-import IndexPage from "@/www/pages/IndexPage";
+import { IndexPage } from "@/www/pages/IndexPage";
 
 export const router = Router().get("/", responseHtmlWrapper(async (request: Request) => {
   return await IOCContainer.get(IndexPageController).execute(request);

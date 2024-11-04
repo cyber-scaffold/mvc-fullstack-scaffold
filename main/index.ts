@@ -2,6 +2,12 @@ import { IOCContainer } from "@/main/commons/Application/IOCContainer";
 import { ExpressHttpServer } from "@/main/commons/Application/ExpressHttpServer";
 
 declare global {
+  namespace NodeJS {
+    interface Process {
+      isClient: boolean,
+      isServer: boolean
+    }
+  }
   interface Window {
     seo: any,
     content: any,

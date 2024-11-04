@@ -1,11 +1,11 @@
 import { Router, Request } from "express";
 import { injectable, inject } from "inversify";
 
-import { IOCContainer } from "@/main/commons/Application/IOCContainer";
+import { responseHtmlWrapper } from "@/frameworks/librarys/responseHtmlWrapper";
 
+import { IOCContainer } from "@/main/commons/Application/IOCContainer";
 import { RenderHTMLContentService } from "@/main/services/RenderHTMLContentService";
-import { responseHtmlWrapper } from "@/main/utils/responseHtmlWrapper";
-import SearchPage from "@/www/pages/SearchPage";
+import { SearchPage } from "@/www/pages/SearchPage";
 
 export const router = Router().get("/search", responseHtmlWrapper(async (request: Request) => {
   return await IOCContainer.get(SearchController).execute(request);
@@ -26,7 +26,7 @@ export class SearchController {
       title: "搜索结果页",
       assets: "search",
       component: SearchPage,
-      content: {}
+      content: { list: Array(10).fill(1) }
     });
     return renderContent;
   };

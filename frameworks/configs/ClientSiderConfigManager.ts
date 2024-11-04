@@ -2,7 +2,7 @@ import path from "path";
 import { fromPairs } from "lodash";
 import WebpackBar from "webpackbar";
 import { merge } from "webpack-merge";
-import { Configuration } from "webpack";
+import { DefinePlugin, Configuration } from "webpack";
 import { injectable, inject, interfaces } from "inversify";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import WebpackAssetsManifest from "webpack-assets-manifest";
@@ -90,6 +90,10 @@ export class ClientSiderConfigManager {
         ].flat()
       },
       plugins: [
+        new DefinePlugin({
+          "process.isClient": JSON.stringify(true),
+          "process.isServer": JSON.stringify(false)
+        }),
         new NodePolyfillPlugin(),
         new WebpackAssetsManifest(),
         new WebpackBar({ name: "编译客户端" }),

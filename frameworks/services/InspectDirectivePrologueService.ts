@@ -76,28 +76,37 @@ export class InspectDirectivePrologueService {
       /** 获取源代码的AST **/
       const sourceCodeAST = babelParser(sourceCodeContent, { filename: everySourceFilePath });
       /** 分析AST中的序言指令 **/
-      const directivePrologue = await new Promise((resolve) => {
-        let condition = false;
+      const traverseResult: {
+        hasDirectiveValue: boolean, directiveValue: string, hasExportDefault: boolean
+      } = await new Promise((resolve) => {
+        let hasExportDefault = false;
+        let hasDirectiveValue = false;
+        let directiveValue = "";
         babelTraverse(sourceCodeAST, {
           Program(path) {
             const directives = path.node.directives;
             directives.forEach(directive => {
-              const directiveValue = directive.value.value;
-              if (!directiveValue.match("client-assets-filename")) {
+              const traverseDirectiveValue = directive.value.value;
+              if (!traverseDirectiveValue.match("client-assets-filename")) {
                 return false;
               };
-              condition = directiveValue
+              hasDirectiveValue = true;
+              directiveValue = traverseDirectiveValue;
             });
+          },
+          /** 这个判断可以保留,目前暂时用不到,但是判断文件是否含有export default是一个很好的方案 **/
+          ExportDefaultDeclaration(path) {
+            hasExportDefault = true;
           }
         });
-        resolve(condition);
+        resolve({ hasDirectiveValue, directiveValue, hasExportDefault });
       });
       /** 排除其他的序言 **/
-      if (!directivePrologue) {
+      if (!traverseResult.hasDirectiveValue) {
         return false;
       };
       /** client-assets-filename 序言不合法 **/
-      const directiveParserResult = InspectDirectivePrologueService.DirectivePrologueParser((directivePrologue as string));
+      const directiveParserResult = InspectDirectivePrologueService.DirectivePrologueParser(traverseResult.directiveValue);
       /** 返回详细的编译信息 **/
       return { ...directiveParserResult, source: everySourceFilePath };
     }));

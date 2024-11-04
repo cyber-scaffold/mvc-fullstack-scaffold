@@ -4,15 +4,19 @@
 import React from "react";
 import { getWindow } from "ssr-window";
 
-import css from "./style.module.less";
+import { renderToDocument } from "@/frameworks/librarys/renderToDocument";
+import { BasicLayout } from "@/www/layouts/BasicLayout";
+
 import hq2 from "./assets/hq2.jpg";
 
-export default function IndexPage(props) {
+export function IndexPage(props) {
   return (
-    <div className={css.container}>
+    <BasicLayout>
       <div>这是主页</div>
       <div>{JSON.stringify(getWindow().content)}</div>
       <img width={480} height={360} src={hq2} alt="test.png" />
-    </div>
+    </BasicLayout>
   )
 };
+
+renderToDocument(IndexPage);

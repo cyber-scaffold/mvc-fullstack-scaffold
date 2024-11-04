@@ -6,8 +6,7 @@ import { renderToString } from "react-dom/server";
 import { IOCContainer } from "@/main/commons/Application/IOCContainer";
 import { MainfastDetail } from "@/main/commons/Application/MainfastDetail";
 
-import { RenderContextProvider } from "@/www/components/RenderContext";
-import { BasicLayout } from "@/www/layouts/BasicLayout";
+import { RenderContextProvider } from "@/frameworks/librarys/RenderContext";
 
 type paramsType = {
   title: string,
@@ -34,7 +33,7 @@ export class RenderHTMLContentService {
           <meta charSet="UTF-8" />
           <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-          <link href="favicon.ico" rel="icon" type="image/x-icon" />
+          <link href="/statics/favicon.ico" rel="icon" type="image/x-icon" />
           <title>{title}</title>
           {mainfast[`${assets}.css`] ? (<link rel="stylesheet" href={`/${mainfast[`${assets}.css`]}`} />) : null}
           <script dangerouslySetInnerHTML={{ __html: `window.process=${JSON.stringify({ env: { NODE_ENV: process.env.NODE_ENV } })};` }}></script>
@@ -42,11 +41,11 @@ export class RenderHTMLContentService {
         </head>
         <body>
           <div id="root">
-            <RenderContextProvider content={{ content }}>
-              <BasicLayout>
-                {RenderComponent ? (<RenderComponent />) : null}
-              </BasicLayout>
-            </RenderContextProvider>
+            {RenderComponent ? (
+              <RenderContextProvider content={content}>
+                <RenderComponent />
+              </RenderContextProvider>
+            ) : null}
           </div>
           {mainfast[`${assets}.js`] ? (<script src={`/${mainfast[`${assets}.js`]}`}></script>) : null}
         </body>
