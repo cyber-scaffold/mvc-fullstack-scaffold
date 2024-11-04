@@ -1,8 +1,8 @@
 import path from "path";
 import { injectable, inject } from "inversify";
 
-import { FrameworkConfigManager } from "@/frameworks/configs/FrameworkConfigManager";
-import { IOCContainer } from "@/frameworks/configs/IOCContainer";
+import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
+import { IOCContainer } from "@/frameworks/commons/IOCContainer";
 
 @injectable()
 export class BabelLoaderConfigManger {

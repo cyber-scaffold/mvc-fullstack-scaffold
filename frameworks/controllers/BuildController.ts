@@ -1,9 +1,7 @@
-import path from "path";
-import spawn from "cross-spawn";
 import { injectable, inject } from "inversify";
 
-import { IOCContainer } from "@/frameworks/configs/IOCContainer";
-import { FrameworkConfigManager } from "@/frameworks/configs/FrameworkConfigManager";
+import { IOCContainer } from "@/frameworks/commons/IOCContainer";
+import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
 import { ClientSiderRenderService } from "@/frameworks/services/ClientSiderRenderService";
 import { ServerSiderRenderService } from "@/frameworks/services/ServerSiderRenderService";
 

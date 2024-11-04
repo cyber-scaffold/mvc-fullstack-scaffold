@@ -1,7 +1,7 @@
 import { EventEmitter } from "events";
 import { injectable, inject } from "inversify";
 
-import { IOCContainer } from "@/frameworks/configs/IOCContainer";
+import { IOCContainer } from "@/frameworks/commons/IOCContainer";
 
 export type AssetsStatusDetailType = {
   client: boolean,

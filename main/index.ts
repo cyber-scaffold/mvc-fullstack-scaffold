@@ -3,6 +3,7 @@ import { ExpressHttpServer } from "@/main/commons/Application/ExpressHttpServer"
 
 declare global {
   interface Window {
+    seo: any,
     content: any,
     process: any
   }

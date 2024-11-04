@@ -1,8 +1,9 @@
 #!/usr/bin/env node
-import { FrameworkConfigManager } from "@/frameworks/configs/FrameworkConfigManager";
-import { IOCContainer } from "@/frameworks/configs/IOCContainer";
+import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
+import { IOCContainer } from "@/frameworks/commons/IOCContainer";
 
 import { DevelopmentControllerProcess } from "@/frameworks/controllers/DevelopmentController";
+
 import { CompilerProgressService } from "@/frameworks/services/CompilerProgressService";
 import { CompilerActionService } from "@/frameworks/services/CompilerActionService";
 

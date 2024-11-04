@@ -4,9 +4,11 @@ import { merge } from "webpack-merge";
 import { Configuration } from "webpack";
 import { injectable, inject } from "inversify";
 import nodeExternals from "webpack-node-externals";
+import CopyWebpackPlugin from "copy-webpack-plugin";
 
-import { IOCContainer } from "@/frameworks/configs/IOCContainer";
-import { FrameworkConfigManager } from "@/frameworks/configs/FrameworkConfigManager";
+import { IOCContainer } from "@/frameworks/commons/IOCContainer";
+import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
+
 import { TypeScriptLoaderConfigManger } from "@/frameworks/configs/TypeScriptLoaderConfigManger";
 import { BabelLoaderConfigManger } from "@/frameworks/configs/BabelLoaderConfigManger";
 import { FileLoaderConfigManager } from "@/frameworks/configs/FileLoaderConfigManager";
@@ -35,7 +37,7 @@ export class ServerSiderConfigManager {
    * 最基础的webpack编译配置
    * **/
   public async getBasicConfig() {
-    const { source } = this.$FrameworkConfigManager.getRuntimeConfig();
+    const { resources, destnation, serverCompilerConfig: { source } } = this.$FrameworkConfigManager.getRuntimeConfig();
     return {
       mode: "none",
       entry: path.resolve(source, "./index.ts"),
@@ -66,6 +68,12 @@ export class ServerSiderConfigManager {
       },
       plugins: [
         new WebpackBar({ name: "编译服务端" }),
+        new CopyWebpackPlugin({
+          patterns: [{
+            from: resources.source,
+            to: path.resolve(destnation, "./www/")
+          }]
+        }),
         new ServerCompilerProgressPlugin(this.$CompilerProgressService)
       ]
     };

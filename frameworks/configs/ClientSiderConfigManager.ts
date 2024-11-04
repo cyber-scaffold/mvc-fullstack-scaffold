@@ -1,15 +1,16 @@
 import path from "path";
+import { fromPairs } from "lodash";
 import WebpackBar from "webpackbar";
 import { merge } from "webpack-merge";
 import { Configuration } from "webpack";
-import { injectable, inject } from "inversify";
-import CopyWebpackPlugin from "copy-webpack-plugin";
+import { injectable, inject, interfaces } from "inversify";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import WebpackAssetsManifest from "webpack-assets-manifest";
 import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
 
-import { IOCContainer } from "@/frameworks/configs/IOCContainer";
-import { FrameworkConfigManager } from "@/frameworks/configs/FrameworkConfigManager";
+import { IOCContainer } from "@/frameworks/commons/IOCContainer";
+import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
+
 import { CssLoaderConfigManager } from "@/frameworks/configs/CssLoaderConfigManager";
 import { FileLoaderConfigManager } from "@/frameworks/configs/FileLoaderConfigManager";
 import { LessLoaderConfigManager } from "@/frameworks/configs/LessLoaderConfigManager";
@@ -18,10 +19,24 @@ import { BabelLoaderConfigManger } from "@/frameworks/configs/BabelLoaderConfigM
 import { TypeScriptLoaderConfigManger } from "@/frameworks/configs/TypeScriptLoaderConfigManger";
 
 import { CompilerProgressService } from "@/frameworks/services/CompilerProgressService";
+import { WebpackCompilerFileType } from "@/frameworks/services/InspectDirectivePrologueService";
+
 import { ClientCompilerProgressPlugin } from "@/frameworks/utils/ClientCompilerProgressPlugin";
+
+export type ClientSiderConfigManagerProvider = () => ClientSiderConfigManager;
+
+export function ClientSiderConfigManagerFactory(context: interfaces.Context): ClientSiderConfigManagerProvider {
+  return function ClientSiderConfigManagerProvider(): ClientSiderConfigManager {
+    return context.container.get(ClientSiderConfigManager);
+  };
+};
 
 @injectable()
 export class ClientSiderConfigManager {
+
+  private compilerFileEntryList: {
+    [outputName: string]: string
+  } = {};
 
   constructor(
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager,
@@ -34,13 +49,26 @@ export class ClientSiderConfigManager {
     @inject(CompilerProgressService) private readonly $CompilerProgressService: CompilerProgressService
   ) { };
 
+  /** 注入文件的编译信息 **/
+  public setCompilerFileInfoList(compilerFileInfoList: WebpackCompilerFileType[]) {
+    const compilerFileInfoPairs = compilerFileInfoList.map((everyCompilerFileInfo: WebpackCompilerFileType) => {
+      const { entry, output } = everyCompilerFileInfo;
+      const outputFilename = path.basename(output);
+      return [outputFilename, entry];
+    });
+    this.compilerFileEntryList = fromPairs(compilerFileInfoPairs);
+  };
+
   /**
    * 最基础的webpack编译配置
    * **/
   public async getBasicConfig() {
-    const { source, destnation } = this.$FrameworkConfigManager.getRuntimeConfig();
+    const { destnation } = this.$FrameworkConfigManager.getRuntimeConfig();
     return {
-      entry: path.resolve(source, "./views/index.tsx"),
+      output: {
+        path: path.join(destnation, "./www/"),
+        filename: "[name].js"
+      },
       resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx"],
         alias: {
@@ -65,12 +93,6 @@ export class ClientSiderConfigManager {
         new NodePolyfillPlugin(),
         new WebpackAssetsManifest(),
         new WebpackBar({ name: "编译客户端" }),
-        new CopyWebpackPlugin({
-          patterns: [{
-            from: path.resolve(source, "./resources/"),
-            to: path.resolve(destnation, "./applications")
-          }]
-        }),
         new ClientCompilerProgressPlugin(this.$CompilerProgressService)
       ]
     };
@@ -81,14 +103,10 @@ export class ClientSiderConfigManager {
    * **/
   public async getDevelopmentConfig() {
     const basicConfig: any = await this.getBasicConfig();
-    const { destnation } = this.$FrameworkConfigManager.getRuntimeConfig();
     return merge<Configuration>(basicConfig, {
       mode: "development",
       devtool: "source-map",
-      output: {
-        path: path.resolve(destnation, "./applications/"),
-        filename: "main.js",
-      },
+      entry: this.compilerFileEntryList,
       plugins: [
         new MiniCssExtractPlugin({
           linkType: "text/css",
@@ -103,14 +121,10 @@ export class ClientSiderConfigManager {
    * **/
   public async getProductionConfig() {
     const basicConfig: any = await this.getBasicConfig();
-    const { destnation } = this.$FrameworkConfigManager.getRuntimeConfig();
     return merge<Configuration>(basicConfig, {
       mode: "production",
       devtool: false,
-      output: {
-        path: path.resolve(destnation, "./applications/"),
-        filename: "main-[contenthash].js",
-      },
+      entry: this.compilerFileEntryList,
       plugins: [
         new MiniCssExtractPlugin({
           linkType: "text/css",
@@ -122,4 +136,5 @@ export class ClientSiderConfigManager {
 
 };
 
-IOCContainer.bind(ClientSiderConfigManager).toSelf().inSingletonScope();
+IOCContainer.bind(ClientSiderConfigManager).toSelf().inTransientScope();
+IOCContainer.bind(ClientSiderConfigManagerFactory).toFactory(ClientSiderConfigManagerFactory);

@@ -1,18 +1,34 @@
+import os from "os";
+import md5 from "md5";
 import path from "path";
 import { merge } from "lodash";
 import { readFile } from "jsonfile";
 import pathExists from "path-exists";
 import { injectable } from "inversify";
 
-import { IOCContainer } from "@/frameworks/configs/IOCContainer";
+import { IOCContainer } from "@/frameworks/commons/IOCContainer";
 
 @injectable()
 export class FrameworkConfigManager {
 
   /** 应用层内置的默认配置 **/
   private defaultConfig: any = {
-    source: path.resolve(process.cwd(), "./main/"),
-    destnation: path.resolve(process.cwd(), "./dist/")
+    /** 用于存放编译时产生的临时文件 **/
+    compilerTempDir: path.resolve(os.tmpdir(), md5(__filename)),
+    /** 编译产物的目标地址 **/
+    destnation: path.resolve(process.cwd(), "./dist/"),
+    /** 静态资源相关的配置选项 **/
+    resources: {
+      source: path.resolve(process.cwd(), "./resources/")
+    },
+    /** 服务端的编译选项 **/
+    serverCompilerConfig: {
+      source: path.resolve(process.cwd(), "./main/"),
+    },
+    /** 客户端的编译选项 **/
+    clinetCompilerConfig: {
+      source: path.resolve(process.cwd(), "./www/"),
+    }
   };
 
   /** $HOME目录下的配置 **/

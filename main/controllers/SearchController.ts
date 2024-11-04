@@ -5,8 +5,9 @@ import { IOCContainer } from "@/main/commons/Application/IOCContainer";
 
 import { RenderHTMLContentService } from "@/main/services/RenderHTMLContentService";
 import { responseHtmlWrapper } from "@/main/utils/responseHtmlWrapper";
+import { SearchPage } from "@/www/pages/SearchPage";
 
-export const router = Router().post("/search", responseHtmlWrapper(async (request: Request) => {
+export const router = Router().get("/search", responseHtmlWrapper(async (request: Request) => {
   return await IOCContainer.get(SearchController).execute(request);
 }));
 
@@ -23,7 +24,8 @@ export class SearchController {
     console.log("request.body", request.body);
     const renderContent = await this.$RenderHTMLContentService.getContentString({
       title: "搜索结果页",
-      location: "/search",
+      assets: "search",
+      component: SearchPage,
       content: {}
     });
     return renderContent;

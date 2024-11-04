@@ -101,10 +101,10 @@ export class ExpressHttpServer {
     const { server } = this.$ApplicationConfigManager.getRuntimeConfig();
     this.server = this.app.listen(server.port, async () => {
       try {
-        await this.bootstrapMySQL();
-        await this.bootstrapMongoDB();
-        await this.bootstrapRedis();
-        await this.bootstrapRabbitMQ();
+        // await this.bootstrapMySQL();
+        // await this.bootstrapMongoDB();
+        // await this.bootstrapRedis();
+        // await this.bootstrapRabbitMQ();
         logger.info("Address %s", this.server.address());
       } catch (error) {
         logger.error(error);

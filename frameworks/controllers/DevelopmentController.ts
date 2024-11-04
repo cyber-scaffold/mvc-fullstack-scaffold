@@ -2,8 +2,8 @@ import path from "path";
 import spawn from "cross-spawn";
 import { injectable, inject } from "inversify";
 
-import { IOCContainer } from "@/frameworks/configs/IOCContainer";
-import { FrameworkConfigManager } from "@/frameworks/configs/FrameworkConfigManager";
+import { IOCContainer } from "@/frameworks/commons/IOCContainer";
+import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
 import { ClientSiderRenderService } from "@/frameworks/services/ClientSiderRenderService";
 import { ServerSiderRenderService } from "@/frameworks/services/ServerSiderRenderService";
 import { CompilerProgressService, AssetsStatusDetailType } from "@/frameworks/services/CompilerProgressService";
@@ -18,9 +18,9 @@ export class DevelopmentControllerProcess {
 
   constructor(
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager,
+    @inject(CompilerProgressService) private readonly $CompilerProgressService: CompilerProgressService,
     @inject(ClientSiderRenderService) private readonly $ClientSiderRenderService: ClientSiderRenderService,
     @inject(ServerSiderRenderService) private readonly $ServerSiderRenderService: ServerSiderRenderService,
-    @inject(CompilerProgressService) private readonly $CompilerProgressService: CompilerProgressService
   ) { };
 
   public async execute() {

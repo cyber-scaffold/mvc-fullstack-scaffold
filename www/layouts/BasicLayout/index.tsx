@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import React from "react";
-import { NavLink } from "react-router-dom";
 // import propTypes from "prop-types";
 // import classnames from "classnames";
 
@@ -12,10 +11,10 @@ export function BasicLayout(props) {
     <div className={css.container}>
       <ul>
         <li>
-          <NavLink to="/">home</NavLink>
+          <a href="/">home</a>
         </li>
         <li>
-          <NavLink to="/detail">detail</NavLink>
+          <a href="/detail">detail</a>
         </li>
       </ul>
       {children}

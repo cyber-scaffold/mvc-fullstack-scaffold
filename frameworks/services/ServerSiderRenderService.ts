@@ -1,8 +1,9 @@
 import { webpack } from "webpack";
 import { injectable, inject } from "inversify";
 
-import { IOCContainer } from "@/frameworks/configs/IOCContainer";
-import { FrameworkConfigManager } from "@/frameworks/configs/FrameworkConfigManager";
+import { IOCContainer } from "@/frameworks/commons/IOCContainer";
+import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
+
 import { ServerSiderConfigManager } from "@/frameworks/configs/ServerSiderConfigManager";
 
 @injectable()
