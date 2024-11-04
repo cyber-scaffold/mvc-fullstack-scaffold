@@ -72,12 +72,15 @@ export class ClientSiderRenderService {
     /** 获取生产环境下的编译配置 **/
     const clientSiderRenderConfig: any = await $ClientSiderConfigManager.getProductionConfig();
     const clientSiderCompiler = webpack(clientSiderRenderConfig);
-    clientSiderCompiler.run((error, stats) => {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log(stats.toString({ colors: true }));
-      };
+    await new Promise((resolve, reject) => {
+      clientSiderCompiler.run((error, stats) => {
+        if (error) {
+          reject(error);
+        } else {
+          console.log(stats.toString({ colors: true }));
+          resolve(true);
+        };
+      });
     });
   };
 

@@ -29,12 +29,15 @@ export class ServerSiderRenderService {
   public async startBuild() {
     const serverSiderRenderConfig: any = await this.$ServerSiderConfigManager.getProductionConfig();
     const serverSiderCompiler = webpack(serverSiderRenderConfig);
-    serverSiderCompiler.run((error, stats) => {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log(stats.toString({ colors: true }));
-      };
+    await new Promise((resolve, reject) => {
+      serverSiderCompiler.run((error, stats) => {
+        if (error) {
+          reject(error);
+        } else {
+          console.log(stats.toString({ colors: true }));
+          resolve(true);
+        };
+      });
     });
   };
 

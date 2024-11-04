@@ -85,6 +85,7 @@ export class ExpressHttpServer {
   public async bootstrap() {
     await this.$ApplicationConfigManager.initialize();
     await this.$MainfastDetail.initialize();
+    const { env } = await this.$MainfastDetail.getMainfastFileContent();
     /** 注册中间件 **/
     this.app.use(cookieParser());
     this.app.use(bodyParser.json());
@@ -96,7 +97,9 @@ export class ExpressHttpServer {
     this.app.use(DetailPageController);
     this.app.use(SearchController);
     /** 静态资源 **/
-    this.app.use(express.static(this.$MainfastDetail.projectDirectory));
+    this.app.use(express.static(this.$MainfastDetail.projectDirectory, {
+      maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)
+    }));
     /** 启动服务器监听端口 **/
     const { server } = this.$ApplicationConfigManager.getRuntimeConfig();
     this.server = this.app.listen(server.port, async () => {
