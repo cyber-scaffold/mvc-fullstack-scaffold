@@ -67,7 +67,7 @@ export class ClientSiderConfigManager {
     return {
       output: {
         path: path.join(destnation, "./www/"),
-        filename: "[name].js"
+        filename: "[name]-[contenthash].js"
       },
       resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx"],
@@ -95,7 +95,6 @@ export class ClientSiderConfigManager {
           "process.isServer": JSON.stringify(false)
         }),
         new NodePolyfillPlugin(),
-        new WebpackAssetsManifest(),
         new WebpackBar({ name: "编译客户端" }),
         new ClientCompilerProgressPlugin(this.$CompilerProgressService)
       ]
@@ -107,11 +106,16 @@ export class ClientSiderConfigManager {
    * **/
   public async getDevelopmentConfig() {
     const basicConfig: any = await this.getBasicConfig();
+    const WebpackAssetsManifestPlugin = new WebpackAssetsManifest();
+    WebpackAssetsManifestPlugin.hooks.apply.tap("AddENV", (manifest) => {
+      manifest.set("env", "development");
+    });
     return merge<Configuration>(basicConfig, {
       mode: "development",
       devtool: "source-map",
       entry: this.compilerFileEntryList,
       plugins: [
+        WebpackAssetsManifestPlugin,
         new MiniCssExtractPlugin({
           linkType: "text/css",
           filename: "[name].css"
@@ -125,11 +129,16 @@ export class ClientSiderConfigManager {
    * **/
   public async getProductionConfig() {
     const basicConfig: any = await this.getBasicConfig();
+    const WebpackAssetsManifestPlugin = new WebpackAssetsManifest();
+    WebpackAssetsManifestPlugin.hooks.apply.tap("AddENV", (manifest) => {
+      manifest.set("env", "other");
+    });
     return merge<Configuration>(basicConfig, {
       mode: "production",
       devtool: false,
       entry: this.compilerFileEntryList,
       plugins: [
+        WebpackAssetsManifestPlugin,
         new MiniCssExtractPlugin({
           linkType: "text/css",
           filename: "[name]-[contenthash].css"

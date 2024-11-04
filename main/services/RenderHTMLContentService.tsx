@@ -26,7 +26,7 @@ export class RenderHTMLContentService {
 
   public async getContentString({ title, assets, content, component }: paramsType) {
     const RenderComponent = component;
-    const mainfast = this.$MainfastDetail.getMainfastFileContent();
+    const mainfast = await this.$MainfastDetail.getMainfastFileContent();
     const contentString = renderToString(
       <html lang="zh-CN">
         <head>

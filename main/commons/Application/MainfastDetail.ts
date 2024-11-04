@@ -32,7 +32,13 @@ export class MainfastDetail {
   /**
    * 获取编译完成后的资源信息
    * **/
-  public getMainfastFileContent() {
+  public async getMainfastFileContent() {
+    /** 非开发模式下直接返回结果 **/
+    if (this.mainfastContent.env !== "development") {
+      return this.mainfastContent;
+    };
+    /** 开发模式下需要重新读取一次后返回 **/
+    await this.initialize();
     return this.mainfastContent;
   };
 

@@ -32,11 +32,13 @@ export class ClientSiderRenderService {
       this.processCompilerTask.close(() => { });
       this.processCompilerTask = null;
     };
-    /** 获取需要编译的客户端文件的清单 **/
+    /** 先获取客户端文件的编译清单 **/
+    await this.$InspectDirectivePrologueService.extractDirectivePrologueSourceFile();
     const compilerFileList = this.$InspectDirectivePrologueService.getCompilerFileList();
     /** 配置临时的webpack编译对象 **/
     const $ClientSiderConfigManager = this.$ClientSiderConfigManagerProvider();
     $ClientSiderConfigManager.setCompilerFileInfoList(compilerFileList);
+    /** 获取开发环境下的编译配置 **/
     const clientSiderRenderConfig: any = await $ClientSiderConfigManager.getDevelopmentConfig();
     /** 开启一个编译对象 **/
     this.processCompilerTask = webpack(clientSiderRenderConfig);
@@ -53,9 +55,7 @@ export class ClientSiderRenderService {
 
   public async startWatch() {
     const { clinetCompilerConfig } = this.$FrameworkConfigManager.getRuntimeConfig();
-    /** 先获取客户端文件的编译清单 **/
-    await this.$InspectDirectivePrologueService.extractDirectivePrologueSourceFile();
-    /** 根据编译清单来创建webpack编译对象 **/
+    /** 监控www文件夹的文件变化 **/
     const watchPath = path.resolve(process.cwd(), clinetCompilerConfig.source);
     const watcher = chokidar.watch(watchPath, { ignoreInitial: true, persistent: true });
     watcher.on("all", this.excuteCompilerTask.bind(this));
@@ -63,7 +63,13 @@ export class ClientSiderRenderService {
   };
 
   public async startBuild() {
+    /** 先获取客户端文件的编译清单 **/
+    await this.$InspectDirectivePrologueService.extractDirectivePrologueSourceFile();
+    const compilerFileList = this.$InspectDirectivePrologueService.getCompilerFileList();
+    /** 配置临时的webpack编译对象 **/
     const $ClientSiderConfigManager = this.$ClientSiderConfigManagerProvider();
+    $ClientSiderConfigManager.setCompilerFileInfoList(compilerFileList);
+    /** 获取生产环境下的编译配置 **/
     const clientSiderRenderConfig: any = await $ClientSiderConfigManager.getProductionConfig();
     const clientSiderCompiler = webpack(clientSiderRenderConfig);
     clientSiderCompiler.run((error, stats) => {
