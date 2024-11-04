@@ -4,6 +4,7 @@ import { IOCContainer } from "@/frameworks/commons/IOCContainer";
 import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
 import { ClientSiderRenderService } from "@/frameworks/services/ClientSiderRenderService";
 import { ServerSiderRenderService } from "@/frameworks/services/ServerSiderRenderService";
+import { GenerateSwaggerDocsService } from "@/frameworks/services/GenerateSwaggerDocsService";
 
 /**
  * @description 运行开发命令,可以基于cluster同时开启服务端和客户端渲染服务
@@ -15,11 +16,13 @@ export class BuildController {
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager,
     @inject(ClientSiderRenderService) private readonly $ClientSiderRenderService: ClientSiderRenderService,
     @inject(ServerSiderRenderService) private readonly $ServerSiderRenderService: ServerSiderRenderService,
+    @inject(GenerateSwaggerDocsService) private readonly $GenerateSwaggerDocsService: GenerateSwaggerDocsService
   ) { };
 
   public async execute() {
     await this.$ClientSiderRenderService.startBuild();
     await this.$ServerSiderRenderService.startBuild();
+    await this.$GenerateSwaggerDocsService.execute();
   };
 
 };
