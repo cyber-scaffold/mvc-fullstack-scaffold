@@ -2,9 +2,8 @@
 "client-assets-filename=detail";
 
 import React from "react";
-import { renderToDocument } from "@/www/utils/renderToDocument";
 
-export function DetailPage(props) {
+export default function DetailPage(props) {
   return (
     <div>
       <div>这是详情页</div>
@@ -17,8 +16,3 @@ export function DetailPage(props) {
   )
 };
 
-DetailPage.propTypes = {
-
-};
-
-// renderToDocument(DetailPage);

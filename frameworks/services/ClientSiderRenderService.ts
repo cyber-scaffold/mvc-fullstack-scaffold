@@ -23,23 +23,31 @@ export class ClientSiderRenderService {
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager
   ) { };
 
+  /**
+   * 每次文件发生改变的时候执行的回调函数
+   * **/
   private async excuteCompilerTask() {
+    /** 立即停止当前正在执行的编译任务 **/
     if (this.processCompilerTask) {
       this.processCompilerTask.close(() => { });
+      this.processCompilerTask = null;
     };
+    /** 获取需要编译的客户端文件的清单 **/
     const compilerFileList = this.$InspectDirectivePrologueService.getCompilerFileList();
+    /** 配置临时的webpack编译配置对象 **/
     const $ClientSiderConfigManager = this.$ClientSiderConfigManagerProvider();
     $ClientSiderConfigManager.setCompilerFileInfoList(compilerFileList);
     const clientSiderRenderConfig: any = await $ClientSiderConfigManager.getDevelopmentConfig();
-    const clientSiderCompiler = webpack(clientSiderRenderConfig);
-    this.processCompilerTask = clientSiderCompiler;
-    clientSiderCompiler.run((error, stats) => {
+    /** 开启一个编译对象 **/
+    this.processCompilerTask = webpack(clientSiderRenderConfig);
+    this.processCompilerTask.run((error, stats) => {
       if (error) {
         console.log(error);
       } else {
         console.log(stats.toString({ colors: true }));
       };
       this.processCompilerTask.close(() => { });
+      this.processCompilerTask = null;
     });
   };
 
@@ -48,11 +56,9 @@ export class ClientSiderRenderService {
     /** 先获取客户端文件的编译清单 **/
     await this.$InspectDirectivePrologueService.extractDirectivePrologueSourceFile();
     /** 根据编译清单来创建webpack编译对象 **/
-    const watcher = chokidar.watch(path.resolve(process.cwd(), clinetCompilerConfig.source), { ignoreInitial: true, persistent: true });
+    const watchPath = path.resolve(process.cwd(), clinetCompilerConfig.source);
+    const watcher = chokidar.watch(watchPath, { ignoreInitial: true, persistent: true });
     watcher.on("all", this.excuteCompilerTask.bind(this));
-    // watcher.on("unlink", this.excuteCompilerTask.bind(this));
-    // watcher.on("unlinkDir", this.excuteCompilerTask.bind(this));
-    // watcher.on("error", this.excuteCompilerTask.bind(this));
     await this.excuteCompilerTask();
   };
 

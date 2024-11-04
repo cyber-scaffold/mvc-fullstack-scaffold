@@ -2,19 +2,11 @@
 "client-assets-filename=search";
 
 import React from "react";
-import { renderToDocument } from "@/www/utils/renderToDocument";
 
-export function SearchPage(props) {
+export default function SearchPage(props) {
   return (
     <div>
       <div>这是搜索的结果页</div>
     </div>
   )
 };
-
-
-SearchPage.propTypes = {
-
-};
-
-// renderToDocument(SearchPage);

@@ -5,7 +5,7 @@ import { IOCContainer } from "@/main/commons/Application/IOCContainer";
 
 import { RenderHTMLContentService } from "@/main/services/RenderHTMLContentService";
 import { responseHtmlWrapper } from "@/main/utils/responseHtmlWrapper";
-import { DetailPage } from "@/www/pages/DetailPage";
+import DetailPage from "@/www/pages/DetailPage";
 
 export const router = Router().get("/detail", responseHtmlWrapper(async (request: Request) => {
   return await IOCContainer.get(DetailPageController).execute(request);

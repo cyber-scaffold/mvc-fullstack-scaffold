@@ -5,7 +5,7 @@ import { IOCContainer } from "@/main/commons/Application/IOCContainer";
 
 import { RenderHTMLContentService } from "@/main/services/RenderHTMLContentService";
 import { responseHtmlWrapper } from "@/main/utils/responseHtmlWrapper";
-import { SearchPage } from "@/www/pages/SearchPage";
+import SearchPage from "@/www/pages/SearchPage";
 
 export const router = Router().get("/search", responseHtmlWrapper(async (request: Request) => {
   return await IOCContainer.get(SearchController).execute(request);

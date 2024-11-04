@@ -3,12 +3,11 @@
 
 import React from "react";
 import { getWindow } from "ssr-window";
-import { renderToDocument } from "@/www/utils/renderToDocument";
 
 import css from "./style.module.less";
 import hq2 from "./assets/hq2.jpg";
 
-export function IndexPage(props) {
+export default function IndexPage(props) {
   return (
     <div className={css.container}>
       <div>这是主页</div>
@@ -17,9 +16,3 @@ export function IndexPage(props) {
     </div>
   )
 };
-
-IndexPage.propTypes = {
-
-};
-
-// renderToDocument(IndexPage);
