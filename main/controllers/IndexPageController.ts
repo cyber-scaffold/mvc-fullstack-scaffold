@@ -23,7 +23,7 @@ export class IndexPageController {
       title: "主页",
       assets: "home",
       component: IndexPage,
-      content: { list: [] }
+      content: { list: Array(40).fill(1) }
     });
     return renderContent;
   };

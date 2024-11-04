@@ -37,7 +37,7 @@ export class CompilerProgressService {
   };
 
   /**
-   * 编译完成后的回调处理栈
+   * 注册编译完成后的回调处理栈
    * **/
   public handleMakeComplate(callback) {
     this.event.on("MakeClientComplate", async () => {

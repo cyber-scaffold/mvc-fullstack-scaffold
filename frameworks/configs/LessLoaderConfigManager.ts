@@ -1,3 +1,4 @@
+import os from "os";
 import { injectable, inject } from "inversify";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 
@@ -50,6 +51,16 @@ export class LessLoaderConfigManager {
           implementation: require("less"),
           sourceMap: true
         }
+      }, {
+        loader: "thread-loader",
+        options: {
+          workers: os.cpus().length - 1,
+          workerParallelJobs: 50,
+          workerNodeArgs: ['--max-old-space-size=1024'],
+          poolRespawn: false,
+          poolTimeout: 2000,
+          poolParallelJobs: 50,
+        },
       }]
     }]
   };
@@ -93,6 +104,16 @@ export class LessLoaderConfigManager {
           implementation: require("less"),
           sourceMap: true
         }
+      }, {
+        loader: "thread-loader",
+        options: {
+          workers: os.cpus().length - 1,
+          workerParallelJobs: 50,
+          workerNodeArgs: ['--max-old-space-size=1024'],
+          poolRespawn: false,
+          poolTimeout: 2000,
+          poolParallelJobs: 50,
+        },
       }]
     }]
   };
