@@ -34,7 +34,7 @@ export class ClientSiderRenderService {
     };
     /** 获取需要编译的客户端文件的清单 **/
     const compilerFileList = this.$InspectDirectivePrologueService.getCompilerFileList();
-    /** 配置临时的webpack编译配置对象 **/
+    /** 配置临时的webpack编译对象 **/
     const $ClientSiderConfigManager = this.$ClientSiderConfigManagerProvider();
     $ClientSiderConfigManager.setCompilerFileInfoList(compilerFileList);
     const clientSiderRenderConfig: any = await $ClientSiderConfigManager.getDevelopmentConfig();
