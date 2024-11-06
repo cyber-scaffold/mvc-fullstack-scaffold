@@ -9,7 +9,7 @@ import { MainfastDetail } from "@/main/commons/Application/MainfastDetail";
 import { RenderContextProvider } from "@/frameworks/librarys/RenderContext";
 
 type paramsType = {
-  title: string,
+  title?: string,
   keywords?: string[],
   description?: string,
   assets: string,
