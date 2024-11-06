@@ -30,7 +30,6 @@ export class ClientSiderRenderService {
     /** 立即停止当前正在执行的编译任务 **/
     if (this.processCompilerTask) {
       this.processCompilerTask.close(() => { });
-      this.processCompilerTask = null;
     };
     /** 先获取客户端文件的编译清单 **/
     await this.$InspectDirectivePrologueService.extractDirectivePrologueSourceFile();
@@ -49,7 +48,6 @@ export class ClientSiderRenderService {
         console.log(stats.toString({ colors: true }));
       };
       this.processCompilerTask.close(() => { });
-      this.processCompilerTask = null;
     });
   };
 
