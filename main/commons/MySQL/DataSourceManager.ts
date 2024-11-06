@@ -17,7 +17,7 @@ export class DataSourceManager {
   ) { };
 
   /** 初始化 **/
-  public initialize() {
+  public async initialize() {
     const { mysql } = this.$ApplicationConfigManager.getRuntimeConfig();
     this.appDataSource = new DataSource({
       type: "mysql",
@@ -29,6 +29,7 @@ export class DataSourceManager {
       entities: [],
       synchronize: true
     });
+    await this.appDataSource.initialize();
     logger.info("AppDataSource 连接成功!");
   };
 
