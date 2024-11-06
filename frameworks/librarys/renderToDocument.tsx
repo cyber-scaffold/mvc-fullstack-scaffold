@@ -9,7 +9,7 @@ export function renderToDocument(RenderElement: React.Element) {
     return false;
   };
   createRoot(document.getElementById("root")).render(
-    <RenderContextProvider content={window.content}>
+    <RenderContextProvider seo={window.seo} content={window.content}>
       <RenderElement />
     </RenderContextProvider>
   );
