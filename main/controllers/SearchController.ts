@@ -7,10 +7,6 @@ import { IOCContainer } from "@/main/commons/Application/IOCContainer";
 import { RenderHTMLContentService } from "@/main/services/RenderHTMLContentService";
 import { SearchPage } from "@/www/pages/SearchPage";
 
-export const router = Router().get("/search", responseHtmlWrapper(async (request: Request) => {
-  return await IOCContainer.get(SearchController).execute(request);
-}));
-
 @injectable()
 export class SearchController {
 
@@ -18,6 +14,11 @@ export class SearchController {
     @inject(RenderHTMLContentService) private readonly $RenderHTMLContentService: RenderHTMLContentService
   ) { };
 
+  public getRouter() {
+    return Router().get("/search", responseHtmlWrapper(async (request: Request) => {
+      return await this.execute(request);
+    }));
+  };
 
   public async execute(request: Request): Promise<any> {
     console.log("request.query", request.query);

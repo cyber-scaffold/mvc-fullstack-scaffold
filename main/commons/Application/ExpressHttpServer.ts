@@ -21,9 +21,9 @@ import { LimitedRabbitmqConsumer } from "@/main/commons/RabbitMQ/LimitedRabbitmq
 import { ApplicationConfigManager } from "@/main/configs/ApplicationConfigManager";
 import { requestMiddleware } from "@/main/interceptors/requestMiddleware";
 
-import { router as IndexPageController } from "@/main/controllers/IndexPageController";
-import { router as DetailPageController } from "@/main/controllers/DetailPageController";
-import { router as SearchController } from "@/main/controllers/SearchController";
+import { DetailPageController } from "@/main/controllers/DetailPageController";
+import { IndexPageController } from "@/main/controllers/IndexPageController";
+import { SearchController } from "@/main/controllers/SearchController";
 
 import { logger } from "@/main/utils/logger";
 
@@ -43,6 +43,9 @@ export class ExpressHttpServer {
     @inject(RedisConnectManager) private readonly $RedisConnectManager: RedisConnectManager,
     @inject(QueryBuilderManager) private readonly $QueryBuilderManager: QueryBuilderManager,
     @inject(DataSourceManager) private readonly $DataSourceManager: DataSourceManager,
+    @inject(DetailPageController) private readonly $DetailPageController: DetailPageController,
+    @inject(IndexPageController) private readonly $IndexPageController: IndexPageController,
+    @inject(SearchController) private readonly $SearchController: SearchController,
     @inject(MainfastDetail) private readonly $MainfastDetail: MainfastDetail
   ) { }
 
@@ -93,9 +96,9 @@ export class ExpressHttpServer {
     /** 注册请求级容器中间件 **/
     this.app.use(requestMiddleware);
     /** 注册控制器 **/
-    this.app.use(IndexPageController);
-    this.app.use(DetailPageController);
-    this.app.use(SearchController);
+    this.app.use(this.$DetailPageController.getRouter());
+    this.app.use(this.$IndexPageController.getRouter());
+    this.app.use(this.$SearchController.getRouter());
     /** 静态资源 **/
     this.app.use(express.static(this.$MainfastDetail.projectDirectory, {
       maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)

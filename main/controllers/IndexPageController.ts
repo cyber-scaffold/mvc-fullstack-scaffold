@@ -7,9 +7,6 @@ import { IOCContainer } from "@/main/commons/Application/IOCContainer";
 import { RenderHTMLContentService } from "@/main/services/RenderHTMLContentService";
 import { IndexPage } from "@/www/pages/IndexPage";
 
-export const router = Router().get("/", responseHtmlWrapper(async (request: Request) => {
-  return await IOCContainer.get(IndexPageController).execute(request);
-}));
 
 @injectable()
 export class IndexPageController {
@@ -17,6 +14,12 @@ export class IndexPageController {
   constructor(
     @inject(RenderHTMLContentService) private readonly $RenderHTMLContentService: RenderHTMLContentService
   ) { };
+
+  public getRouter() {
+    return Router().get("/", responseHtmlWrapper(async (request: Request) => {
+      return await this.execute(request);
+    }));
+  };
 
   public async execute(request: Request): Promise<any> {
     const renderContent = await this.$RenderHTMLContentService.getContentString({
