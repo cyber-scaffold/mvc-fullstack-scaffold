@@ -15,6 +15,8 @@ import { CompilerProgressService, AssetsStatusDetailType } from "@/frameworks/se
 @injectable()
 export class DevelopmentControllerProcess {
 
+  private taskLock: boolean = false;
+
   private childProcess: spawn;
 
   constructor(
@@ -30,23 +32,37 @@ export class DevelopmentControllerProcess {
     await this.$ClientSiderRenderService.startWatch();
     await this.$ServerSiderRenderService.startWatch();
     this.$CompilerProgressService.handleMakeComplate(async (assetsStatusDetailType: AssetsStatusDetailType) => {
+      /** 判断竞争锁 **/
+      if (this.taskLock) {
+        return false;
+      };
       if (!assetsStatusDetailType.client) {
         return false;
       };
       if (!assetsStatusDetailType.server) {
         return false;
       };
+      /** 开启竞争锁 **/
+      this.taskLock = true;
       if (this.childProcess) {
         await new Promise((resolve) => {
-          this.childProcess.once("close", resolve);
+          const handleClose = () => {
+            resolve(true);
+            this.childProcess.removeAllListeners("close");
+          };
+          this.childProcess.on("close", handleClose);
           this.childProcess.kill("SIGKILL");
         });
+        this.childProcess = undefined;
+        await new Promise((resolve) => setTimeout(resolve, 100));
       };
       await this.$GenerateSwaggerDocsService.execute();
-      this.childProcess = spawn("node", [path.resolve(destnation, "./server.js")], {
+      this.childProcess = await spawn("node", [path.resolve(destnation, "./server.js")], {
         stdio: "inherit",
         stderr: "inherit"
       });
+      /** 释放竞争锁 **/
+      this.taskLock = false;
     });
   };
 

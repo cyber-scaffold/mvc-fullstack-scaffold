@@ -23,6 +23,10 @@ import { WebpackCompilerFileType } from "@/frameworks/services/InspectDirectiveP
 
 import { ClientCompilerProgressPlugin } from "@/frameworks/utils/ClientCompilerProgressPlugin";
 
+/**
+ * 因为视图层是多页面,而且文件随时都有可能改变,所以视图层的编译模块必须是瞬态的,方便每次都获取到最新的列表
+ * **/
+
 export type ClientSiderConfigManagerProvider = () => ClientSiderConfigManager;
 
 export function ClientSiderConfigManagerFactory(context: interfaces.Context): ClientSiderConfigManagerProvider {

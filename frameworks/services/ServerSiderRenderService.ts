@@ -21,7 +21,9 @@ export class ServerSiderRenderService {
       if (error) {
         console.log(error);
       } else {
-        console.log(stats.toString({ colors: true }));
+        // console.log(stats.toString({ colors: true }));
+        // console.log("服务端编译完成!!!");
+        return false;
       };
     });
   };

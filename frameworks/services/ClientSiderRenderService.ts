@@ -29,7 +29,10 @@ export class ClientSiderRenderService {
   private async excuteCompilerTask() {
     /** 立即停止当前正在执行的编译任务 **/
     if (this.processCompilerTask) {
-      this.processCompilerTask.close(() => { });
+      await new Promise((resolve, reject) => {
+        this.processCompilerTask.close((error) => error ? reject(error) : resolve(true));
+      });
+      this.processCompilerTask = undefined;
     };
     /** 先获取客户端文件的编译清单 **/
     await this.$InspectDirectivePrologueService.extractDirectivePrologueSourceFile();
@@ -42,13 +45,14 @@ export class ClientSiderRenderService {
     const clientSiderRenderConfig: any = await $ClientSiderConfigManager.getDevelopmentConfig();
     /** 开启一个编译对象 **/
     this.processCompilerTask = webpack(clientSiderRenderConfig);
-    this.processCompilerTask.run((error, stats) => {
+    this.processCompilerTask.run(async (error, stats) => {
       if (error) {
         console.log(error);
       } else {
-        console.log(stats.toString({ colors: true }));
+        // console.log(stats.toString({ colors: true }));
+        // console.log("客户端编译完成!!!");
+        return false;
       };
-      this.processCompilerTask.close(() => { });
     });
   };
 
@@ -76,7 +80,7 @@ export class ClientSiderRenderService {
         if (error) {
           reject(error);
         } else {
-          console.log(stats.toString({ colors: true }));
+          // console.log(stats.toString({ colors: true }));
           resolve(true);
         };
       });
