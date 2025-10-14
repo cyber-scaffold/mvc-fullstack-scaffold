@@ -53,7 +53,7 @@ export class ClientSiderRenderService {
 
   public async startWatch() {
     const { clinetCompilerConfig } = this.$FrameworkConfigManager.getRuntimeConfig();
-    /** 监控www文件夹的文件变化 **/
+    /** 监控视图层文件夹的文件变化 **/
     const watchPath = path.resolve(process.cwd(), clinetCompilerConfig.source);
     const watcher = chokidar.watch(watchPath, { ignoreInitial: true, persistent: true });
     watcher.on("all", this.excuteCompilerTask.bind(this));
