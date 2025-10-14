@@ -131,7 +131,7 @@ export class ClientSiderConfigManager {
     const basicConfig: any = await this.getBasicConfig();
     const WebpackAssetsManifestPlugin = new WebpackAssetsManifest();
     WebpackAssetsManifestPlugin.hooks.apply.tap("AddENV", (manifest) => {
-      manifest.set("env", "other");
+      manifest.set("env", "production");
     });
     return merge<Configuration>(basicConfig, {
       mode: "production",

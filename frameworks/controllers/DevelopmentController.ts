@@ -37,7 +37,10 @@ export class DevelopmentControllerProcess {
         return false;
       };
       if (this.childProcess) {
-        this.childProcess.kill();
+        await new Promise((resolve) => {
+          this.childProcess.once("close", resolve);
+          this.childProcess.kill("SIGKILL");
+        });
       };
       await this.$GenerateSwaggerDocsService.execute();
       this.childProcess = spawn("node", [path.resolve(destnation, "./server.js")], {
