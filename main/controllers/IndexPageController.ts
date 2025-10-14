@@ -5,7 +5,7 @@ import { responseHtmlWrapper } from "@/frameworks/librarys/responseHtmlWrapper";
 
 import { IOCContainer } from "@/main/commons/Application/IOCContainer";
 import { RenderHTMLContentService } from "@/main/services/RenderHTMLContentService";
-import { IndexPage } from "@/www/pages/IndexPage";
+import { IndexPage } from "@/main/views/pages/IndexPage";
 
 
 @injectable()
@@ -26,7 +26,7 @@ export class IndexPageController {
       title: "主页",
       assets: "home",
       component: IndexPage,
-      content: { list: Array(40).fill(1) }
+      content: { list: Array(10).fill(1).map((fill, index) => fill + index) }
     });
     return renderContent;
   };

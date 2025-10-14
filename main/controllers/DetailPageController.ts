@@ -5,7 +5,7 @@ import { responseHtmlWrapper } from "@/frameworks/librarys/responseHtmlWrapper";
 
 import { IOCContainer } from "@/main/commons/Application/IOCContainer";
 import { RenderHTMLContentService } from "@/main/services/RenderHTMLContentService";
-import { DetailPage } from "@/www/pages/DetailPage";
+import { DetailPage } from "@/main/views/pages/DetailPage";
 
 @injectable()
 export class DetailPageController {

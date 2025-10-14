@@ -5,7 +5,7 @@ import React from "react";
 import { getWindow } from "ssr-window";
 
 import { renderToDocument } from "@/frameworks/librarys/renderToDocument";
-import { BasicLayout } from "@/www/layouts/BasicLayout";
+import { BasicLayout } from "@/main/views/layouts/BasicLayout";
 
 import hq2 from "./assets/hq2.jpg";
 
@@ -13,7 +13,7 @@ export function IndexPage(props) {
   return (
     <BasicLayout>
       <div>这是主页</div>
-      <div>{JSON.stringify(getWindow().content)}</div>
+      <pre>{JSON.stringify(getWindow().content, null, 2)}</pre>
       <img width={480} height={360} src={hq2} alt="test.png" />
     </BasicLayout>
   )

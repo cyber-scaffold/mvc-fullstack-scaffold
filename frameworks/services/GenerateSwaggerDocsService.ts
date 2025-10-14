@@ -15,7 +15,7 @@ export class GenerateSwaggerDocsService {
 
   public async execute() {
     const { destnation, serverCompilerConfig } = this.$FrameworkConfigManager.getRuntimeConfig();
-    const destnationFilename = path.resolve(destnation, "./www/swagger.json");
+    const destnationFilename = path.resolve(destnation, "./frameworks/swagger.json");
     const swagger_api_docs = swaggerJSDocGenerater({
       definition: {
         openapi: "3.0.0",

@@ -4,7 +4,7 @@ import { injectable, inject } from "inversify";
 import { renderToString } from "react-dom/server";
 
 import { IOCContainer } from "@/main/commons/Application/IOCContainer";
-import { MainfastDetail } from "@/main/commons/Application/MainfastDetail";
+import { ViewsMainfastDetail } from "@/main/commons/Application/ViewsMainfastDetail";
 
 import { RenderContextProvider } from "@/frameworks/librarys/RenderContext";
 
@@ -28,12 +28,12 @@ export class RenderHTMLContentService {
   private defaultDescription = "";
 
   constructor(
-    @inject(MainfastDetail) private readonly $MainfastDetail: MainfastDetail
+    @inject(ViewsMainfastDetail) private readonly $ViewsMainfastDetail: ViewsMainfastDetail
   ) { };
 
   public async getContentString({ title = this.defaultTitle, description = this.defaultDescription, keywords = this.defaultKeywords, assets, content, component }: paramsType) {
     const RenderComponent = component;
-    const mainfast = await this.$MainfastDetail.getMainfastFileContent();
+    const mainfast = await this.$ViewsMainfastDetail.getMainfastFileContent();
     const SEOInfomation = { title, description };
     const contentString = renderToString(
       <html lang="zh-CN">

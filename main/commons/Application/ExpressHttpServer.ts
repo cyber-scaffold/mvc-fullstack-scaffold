@@ -5,7 +5,8 @@ import cookieParser from "cookie-parser";
 import { injectable, inject } from "inversify";
 
 import { IOCContainer } from "@/main/commons/Application/IOCContainer";
-import { MainfastDetail } from "@/main/commons/Application/MainfastDetail";
+import { FrameworkDetail } from "@/main/commons/Application/FrameworkDetail";
+import { ViewsMainfastDetail } from "@/main/commons/Application/ViewsMainfastDetail";
 
 import { RedisConnectManager } from "@/main/commons/Redis/RedisConnectManager";
 
@@ -46,7 +47,8 @@ export class ExpressHttpServer {
     @inject(DetailPageController) private readonly $DetailPageController: DetailPageController,
     @inject(IndexPageController) private readonly $IndexPageController: IndexPageController,
     @inject(SearchController) private readonly $SearchController: SearchController,
-    @inject(MainfastDetail) private readonly $MainfastDetail: MainfastDetail
+    @inject(FrameworkDetail) private readonly $FrameworkDetail: FrameworkDetail,
+    @inject(ViewsMainfastDetail) private readonly $ViewsMainfastDetail: ViewsMainfastDetail
   ) { }
 
   /** 初始化MongoDB **/
@@ -87,8 +89,8 @@ export class ExpressHttpServer {
 
   public async bootstrap() {
     await this.$ApplicationConfigManager.initialize();
-    await this.$MainfastDetail.initialize();
-    const { env } = await this.$MainfastDetail.getMainfastFileContent();
+    await this.$ViewsMainfastDetail.initialize();
+    const { env } = await this.$ViewsMainfastDetail.getMainfastFileContent();
     /** 注册中间件 **/
     this.app.use(cookieParser());
     this.app.use(bodyParser.json());
@@ -99,8 +101,12 @@ export class ExpressHttpServer {
     this.app.use(this.$DetailPageController.getRouter());
     this.app.use(this.$IndexPageController.getRouter());
     this.app.use(this.$SearchController.getRouter());
-    /** 静态资源 **/
-    this.app.use(express.static(this.$MainfastDetail.projectDirectory, {
+    /** 提供开发框架静态资源比如swagger文档 **/
+    this.app.use(express.static(this.$FrameworkDetail.frameworkDirectory, {
+      maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)
+    }));
+    /** 提供视图层静态资源 **/
+    this.app.use(express.static(this.$ViewsMainfastDetail.projectDirectory, {
       maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)
     }));
     /** 启动服务器监听端口 **/

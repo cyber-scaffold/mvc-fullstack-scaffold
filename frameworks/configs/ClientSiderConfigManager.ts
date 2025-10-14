@@ -66,7 +66,7 @@ export class ClientSiderConfigManager {
     const { destnation } = this.$FrameworkConfigManager.getRuntimeConfig();
     return {
       output: {
-        path: path.join(destnation, "./www/"),
+        path: path.join(destnation, "./views/"),
         filename: "[name]-[contenthash].js"
       },
       resolve: {

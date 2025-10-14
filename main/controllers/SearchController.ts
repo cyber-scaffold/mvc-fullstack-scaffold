@@ -5,7 +5,7 @@ import { responseHtmlWrapper } from "@/frameworks/librarys/responseHtmlWrapper";
 
 import { IOCContainer } from "@/main/commons/Application/IOCContainer";
 import { RenderHTMLContentService } from "@/main/services/RenderHTMLContentService";
-import { SearchPage } from "@/www/pages/SearchPage";
+import { SearchPage } from "@/main/views/pages/SearchPage";
 
 @injectable()
 export class SearchController {

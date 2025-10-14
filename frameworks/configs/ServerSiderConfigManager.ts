@@ -74,7 +74,7 @@ export class ServerSiderConfigManager {
         new CopyWebpackPlugin({
           patterns: [{
             from: resources.source,
-            to: path.resolve(destnation, "./www/")
+            to: path.resolve(destnation, "./frameworks/")
           }]
         }),
         new ServerCompilerProgressPlugin(this.$CompilerProgressService)

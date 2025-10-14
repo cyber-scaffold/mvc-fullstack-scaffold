@@ -19,7 +19,7 @@ export class FrameworkConfigManager {
     destnation: path.resolve(process.cwd(), "./dist/"),
     /** 静态资源相关的配置选项 **/
     resources: {
-      source: path.resolve(process.cwd(), "./resources/")
+      source: path.resolve(process.cwd(), "./frameworks/resources/")
     },
     /** 服务端的编译选项 **/
     serverCompilerConfig: {
@@ -27,7 +27,7 @@ export class FrameworkConfigManager {
     },
     /** 客户端的编译选项 **/
     clinetCompilerConfig: {
-      source: path.resolve(process.cwd(), "./www/"),
+      source: path.resolve(process.cwd(), "./main/views/"),
     }
   };
 

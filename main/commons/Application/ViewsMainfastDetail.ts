@@ -5,12 +5,12 @@ import { injectable } from "inversify";
 import { IOCContainer } from "@/main/commons/Application/IOCContainer";
 
 @injectable()
-export class MainfastDetail {
+export class ViewsMainfastDetail {
 
   /**
-   * 项目的基准目录
+   * 视图层的基准目录
    * **/
-  public projectDirectory = path.join(path.dirname(__filename), "www");
+  public projectDirectory = path.join(path.dirname(__filename), "views");
 
   /**
    * 定位 mainfast.json 文件的位置
@@ -44,4 +44,4 @@ export class MainfastDetail {
 
 };
 
-IOCContainer.bind(MainfastDetail).toSelf().inSingletonScope();
+IOCContainer.bind(ViewsMainfastDetail).toSelf().inSingletonScope();

@@ -1,5 +1,5 @@
 {
-  "name": "chimera-project-demo",
+  "name": "mvc-fullstack-scaffold",
   "version": "1.0.0",
   "description": "基于mvc和视图层序言和标记智能化渲染的nodejs全栈编译器",
   "main": "index.js",
