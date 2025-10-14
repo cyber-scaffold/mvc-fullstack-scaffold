@@ -49,7 +49,7 @@ export class ClientSiderRenderService {
       if (error) {
         console.log(error);
       } else {
-        // console.log(stats.toString({ colors: true }));
+        console.log(stats.toString({ colors: true }));
         // console.log("客户端编译完成!!!");
         return false;
       };

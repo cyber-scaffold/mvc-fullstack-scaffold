@@ -1,67 +1,65 @@
-
-
-declare module '*.module.css' {
+declare module "*.module.css" {
   const classes: { [key: string]: string };
   export default classes;
 }
 
-declare module '*.css' {
+declare module "*.css" {
   const classes: { [key: string]: string };
   export default classes;
 }
 
-declare module '*.module.scss' {
+declare module "*.module.scss" {
   const classes: { [key: string]: string };
   export default classes;
 }
 
-declare module '*.scss' {
+declare module "*.scss" {
   const classes: { [key: string]: string };
   export default classes;
 }
 
-declare module '*.module.sass' {
+declare module "*.module.sass" {
   const classes: { [key: string]: string };
   export default classes;
 }
 
-declare module '*.sass' {
+declare module "*.sass" {
   const classes: { [key: string]: string };
   export default classes;
 }
 
-declare module '*.module.less' {
+declare module "*.module.less" {
   const classes: { [key: string]: string };
   export default classes;
 }
 
-declare module '*.less' {
+declare module "*.less" {
   const classes: { [key: string]: string };
   export default classes;
 }
 
-declare module '*.module.styl' {
+declare module "*.module.styl" {
   const classes: { [key: string]: string };
   export default classes;
 }
 
-declare module '*.styl' {
+declare module "*.styl" {
   const classes: { [key: string]: string };
   export default classes;
 }
 
-declare module '*.xlsx' {
+declare module "*.xlsx" {
   export default string;
 }
 
-declare module '*.png' {
+declare module "*.png" {
   export default string;
 }
 
-declare module '*.jpg' {
+declare module "*.jpg" {
   export default string;
 }
 
-declare module '*.jpeg' {
+declare module "*.jpeg" {
   export default string;
 }
