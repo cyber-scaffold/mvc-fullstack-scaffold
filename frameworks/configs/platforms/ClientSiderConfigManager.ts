@@ -11,15 +11,15 @@ import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
 import { IOCContainer } from "@/frameworks/commons/IOCContainer";
 import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
 
-import { CssLoaderConfigManager } from "@/frameworks/configs/CssLoaderConfigManager";
-import { FileLoaderConfigManager } from "@/frameworks/configs/FileLoaderConfigManager";
-import { LessLoaderConfigManager } from "@/frameworks/configs/LessLoaderConfigManager";
-import { SassLoaderConfigManager } from "@/frameworks/configs/SassLoaderConfigManager";
-import { BabelLoaderConfigManger } from "@/frameworks/configs/BabelLoaderConfigManger";
-import { TypeScriptLoaderConfigManger } from "@/frameworks/configs/TypeScriptLoaderConfigManger";
+import { CssLoaderConfigManager } from "@/frameworks/configs/loaders/CssLoaderConfigManager";
+import { FileLoaderConfigManager } from "@/frameworks/configs/loaders/FileLoaderConfigManager";
+import { LessLoaderConfigManager } from "@/frameworks/configs/loaders/LessLoaderConfigManager";
+import { SassLoaderConfigManager } from "@/frameworks/configs/loaders/SassLoaderConfigManager";
+import { BabelLoaderConfigManger } from "@/frameworks/configs/loaders/BabelLoaderConfigManger";
+import { TypeScriptLoaderConfigManger } from "@/frameworks/configs/loaders/TypeScriptLoaderConfigManger";
 
-import { CompilerProgressService } from "@/frameworks/services/CompilerProgressService";
-import { WebpackCompilerFileType } from "@/frameworks/services/InspectDirectivePrologueService";
+import { CompilerProgressService } from "@/frameworks/services/progress/CompilerProgressService";
+import { WebpackCompilerFileType } from "@/frameworks/services/preprocess/InspectDirectivePrologueService";
 
 import { ClientCompilerProgressPlugin } from "@/frameworks/utils/ClientCompilerProgressPlugin";
 

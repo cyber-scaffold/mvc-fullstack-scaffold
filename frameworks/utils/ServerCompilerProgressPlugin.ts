@@ -1,4 +1,4 @@
-import { CompilerProgressService } from "@/frameworks/services/CompilerProgressService";
+import { CompilerProgressService } from "@/frameworks/services/progress/CompilerProgressService";
 
 export class ServerCompilerProgressPlugin {
 

@@ -60,7 +60,7 @@ export class CssLoaderConfigManager {
     return [{
       test: /\.(css)$/,
       use: [{
-        loader: require.resolve("../utils/ServerSideCssModuleLoader.js"),
+        loader: require.resolve("../../utils/ServerSideCssModuleLoader.js"),
       }, {
         loader: "css-loader",
         options: {

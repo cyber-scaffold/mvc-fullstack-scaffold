@@ -6,8 +6,8 @@ import { injectable, inject } from "inversify";
 import { IOCContainer } from "@/frameworks/commons/IOCContainer";
 import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
 
-import { ClientSiderConfigManagerFactory, ClientSiderConfigManagerProvider } from "@/frameworks/configs/ClientSiderConfigManager";
-import { InspectDirectivePrologueService, WebpackCompilerFileType } from "@/frameworks/services/InspectDirectivePrologueService";
+import { ClientSiderConfigManagerFactory, ClientSiderConfigManagerProvider } from "@/frameworks/configs/platforms/ClientSiderConfigManager";
+import { InspectDirectivePrologueService, WebpackCompilerFileType } from "@/frameworks/services/preprocess/InspectDirectivePrologueService";
 
 @injectable()
 export class ClientSiderRenderService {

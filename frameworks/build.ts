@@ -4,8 +4,8 @@ import { IOCContainer } from "@/frameworks/commons/IOCContainer";
 
 import { BuildController } from "@/frameworks/controllers/BuildController";
 
-import { CompilerProgressService } from "@/frameworks/services/CompilerProgressService";
-import { CompilerActionService } from "@/frameworks/services/CompilerActionService";
+import { CompilerProgressService } from "@/frameworks/services/progress/CompilerProgressService";
+import { CompilerActionService } from "@/frameworks/services/preprocess/CompilerActionService";
 
 setImmediate(async () => {
   try {

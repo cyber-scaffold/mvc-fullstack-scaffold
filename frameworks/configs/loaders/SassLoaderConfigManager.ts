@@ -5,8 +5,9 @@ import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
 import { IOCContainer } from "@/frameworks/commons/IOCContainer";
 
+
 @injectable()
-export class LessLoaderConfigManager {
+export class SassLoaderConfigManager {
 
   constructor(
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager
@@ -14,7 +15,7 @@ export class LessLoaderConfigManager {
 
   public async getClientSiderLoaderConfig() {
     return [{
-      test: /\.less$/,
+      test: /\.(scss|sass)$/,
       use: [{
         loader: MiniCssExtractPlugin.loader,
       }, {
@@ -23,13 +24,13 @@ export class LessLoaderConfigManager {
           modules: {
             exportOnlyLocals: false,
             mode: (resourcePath) => {
-              if (/\.(module)/.test(resourcePath)) {
-                return "local";
+              if (/\.(global)/.test(resourcePath)) {
+                return "global";
               }
               if (/(node_modules)/.test(resourcePath)) {
                 return "global";
               };
-              return "global";
+              return "local";
             }
           },
           sourceMap: true
@@ -43,46 +44,40 @@ export class LessLoaderConfigManager {
           sourceMap: true
         }
       }, {
-        loader: "less-loader",
-        options: {
-          lessOptions: {
-            javascriptEnabled: true,
-          },
-          implementation: require("less"),
-          sourceMap: true
-        }
-      }, {
-        loader: "thread-loader",
-        options: {
-          workers: os.cpus().length - 1,
-          workerParallelJobs: 50,
-          workerNodeArgs: ['--max-old-space-size=1024'],
-          poolRespawn: false,
-          poolTimeout: 2000,
-          poolParallelJobs: 50,
-        },
+        loader: "sass-loader",
+        options: {}
       }]
+    }, {
+      loader: "thread-loader",
+      options: {
+        workers: os.cpus().length - 1,
+        workerParallelJobs: 50,
+        workerNodeArgs: ['--max-old-space-size=1024'],
+        poolRespawn: false,
+        poolTimeout: 2000,
+        poolParallelJobs: 50,
+      },
     }]
   };
 
   public async getServerSiderLoaderConfig() {
     return [{
-      test: /\.less$/,
+      test: /\.(scss|sass)$/,
       use: [{
-        loader: require.resolve("../utils/ServerSideCssModuleLoader.js")
+        loader: require.resolve("../../utils/ServerSideCssModuleLoader.js")
       }, {
         loader: "css-loader",
         options: {
           modules: {
             exportOnlyLocals: true,
             mode: (resourcePath) => {
-              if (/\.(module)/.test(resourcePath)) {
-                return "local";
+              if (/\.(global)/.test(resourcePath)) {
+                return "global";
               }
               if (/(node_modules)/.test(resourcePath)) {
                 return "global";
               };
-              return "global";
+              return "local";
             }
           },
           sourceMap: true
@@ -96,14 +91,8 @@ export class LessLoaderConfigManager {
           sourceMap: true
         }
       }, {
-        loader: "less-loader",
-        options: {
-          lessOptions: {
-            javascriptEnabled: true,
-          },
-          implementation: require("less"),
-          sourceMap: true
-        }
+        loader: "sass-loader",
+        options: {}
       }, {
         loader: "thread-loader",
         options: {
@@ -120,4 +109,4 @@ export class LessLoaderConfigManager {
 
 };
 
-IOCContainer.bind(LessLoaderConfigManager).toSelf().inSingletonScope();
+IOCContainer.bind(SassLoaderConfigManager).toSelf().inSingletonScope();

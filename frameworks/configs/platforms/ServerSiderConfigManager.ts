@@ -9,14 +9,14 @@ import { DefinePlugin, Configuration } from "webpack";
 import { IOCContainer } from "@/frameworks/commons/IOCContainer";
 import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
 
-import { TypeScriptLoaderConfigManger } from "@/frameworks/configs/TypeScriptLoaderConfigManger";
-import { BabelLoaderConfigManger } from "@/frameworks/configs/BabelLoaderConfigManger";
-import { FileLoaderConfigManager } from "@/frameworks/configs/FileLoaderConfigManager";
-import { LessLoaderConfigManager } from "@/frameworks/configs/LessLoaderConfigManager";
-import { SassLoaderConfigManager } from "@/frameworks/configs/SassLoaderConfigManager";
-import { CssLoaderConfigManager } from "@/frameworks/configs/CssLoaderConfigManager";
+import { TypeScriptLoaderConfigManger } from "@/frameworks/configs/loaders/TypeScriptLoaderConfigManger";
+import { BabelLoaderConfigManger } from "@/frameworks/configs/loaders/BabelLoaderConfigManger";
+import { FileLoaderConfigManager } from "@/frameworks/configs/loaders/FileLoaderConfigManager";
+import { LessLoaderConfigManager } from "@/frameworks/configs/loaders/LessLoaderConfigManager";
+import { SassLoaderConfigManager } from "@/frameworks/configs/loaders/SassLoaderConfigManager";
+import { CssLoaderConfigManager } from "@/frameworks/configs/loaders/CssLoaderConfigManager";
 
-import { CompilerProgressService } from "@/frameworks/services/CompilerProgressService";
+import { CompilerProgressService } from "@/frameworks/services/progress/CompilerProgressService";
 import { ServerCompilerProgressPlugin } from "@/frameworks/utils/ServerCompilerProgressPlugin";
 
 @injectable()
