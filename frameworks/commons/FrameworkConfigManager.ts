@@ -1,5 +1,3 @@
-import os from "os";
-import md5 from "md5";
 import path from "path";
 import { merge } from "lodash";
 import { readFile } from "jsonfile";
@@ -13,10 +11,10 @@ export class FrameworkConfigManager {
 
   /** 应用层内置的默认配置 **/
   private defaultConfig: any = {
-    /** 用于存放编译时产生的临时文件 **/
-    compilerTempDir: path.resolve(os.tmpdir(), md5(__filename)),
     /** 编译产物的目标地址 **/
     destnation: path.resolve(process.cwd(), "./dist/"),
+    /** 临时水合化脚本的生成目录 **/
+    tempHydrationDirectory: path.resolve(process.cwd(), "./dist/.hydration/"),
     /** 静态资源相关的配置选项 **/
     resources: {
       source: path.resolve(process.cwd(), "./frameworks/resources/")

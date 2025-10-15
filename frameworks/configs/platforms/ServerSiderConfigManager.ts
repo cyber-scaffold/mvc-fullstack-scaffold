@@ -16,6 +16,7 @@ import { LessLoaderConfigManager } from "@/frameworks/configs/loaders/LessLoader
 import { SassLoaderConfigManager } from "@/frameworks/configs/loaders/SassLoaderConfigManager";
 import { CssLoaderConfigManager } from "@/frameworks/configs/loaders/CssLoaderConfigManager";
 
+import { WapperClientToHydrationService } from "@/frameworks/services/preprocess/WapperClientToHydrationService";
 import { CompilerProgressService } from "@/frameworks/services/progress/CompilerProgressService";
 
 import { ServerCompilerProgressPlugin } from "@/frameworks/utils/ServerCompilerProgressPlugin";
@@ -32,6 +33,7 @@ export class ServerSiderConfigManager {
     @inject(LessLoaderConfigManager) private readonly $LessLoaderConfigManager: LessLoaderConfigManager,
     @inject(SassLoaderConfigManager) private readonly $SassLoaderConfigManager: SassLoaderConfigManager,
     @inject(CssLoaderConfigManager) private readonly $CssLoaderConfigManager: CssLoaderConfigManager,
+    @inject(WapperClientToHydrationService) private readonly $WapperClientToHydrationService: WapperClientToHydrationService,
     @inject(CompilerProgressService) private readonly $CompilerProgressService: CompilerProgressService
   ) { };
 
@@ -79,7 +81,7 @@ export class ServerSiderConfigManager {
             to: path.resolve(destnation, "./frameworks/")
           }]
         }),
-        new TrackRequirementPlugin(),
+        new TrackRequirementPlugin(this.$WapperClientToHydrationService),
         new ServerCompilerProgressPlugin(this.$CompilerProgressService)
       ]
     };

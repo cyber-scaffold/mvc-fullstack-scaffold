@@ -50,18 +50,30 @@ export class CompilerProgressService {
     });
   };
 
+  /**
+   * 客户端开始编译的事件
+   * **/
   public startClientMake() {
     this.event.emit("StartMakeClient");
   };
 
+  /**
+   * 客户端完成编译的事件
+   * **/
   public complateClientMake() {
     this.event.emit("MakeClientComplate");
   };
 
+  /**
+   * 服务端开始编译的事件
+   * **/
   public startServerMake() {
     this.event.emit("StartMakeServer");
   };
 
+  /**
+   * 服务端完成编译的事件
+   * **/
   public complateServerMake() {
     this.event.emit("MakeServerComplate");
   };
