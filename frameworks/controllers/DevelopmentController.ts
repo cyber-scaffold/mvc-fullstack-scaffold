@@ -7,7 +7,7 @@ import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigMana
 import { ClientSiderCompileService } from "@/frameworks/services/compile/ClientSiderCompileService";
 import { ServerSiderCompileService } from "@/frameworks/services/compile/ServerSiderCompileService";
 import { GenerateSwaggerDocsService } from "@/frameworks/services/preprocess/GenerateSwaggerDocsService";
-import { CompilerProgressService, AssetsStatusDetailType } from "@/frameworks/services/progress/CompilerProgressService";
+import { EventManager, AssetsStatusDetailType } from "@/frameworks/commons/EventManager";
 
 /**
  * @description 运行开发命令,可以基于cluster同时开启服务端和客户端渲染服务
@@ -20,8 +20,8 @@ export class DevelopmentControllerProcess {
   private childProcess: spawn;
 
   constructor(
+    @inject(EventManager) private readonly $EventManager: EventManager,
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager,
-    @inject(CompilerProgressService) private readonly $CompilerProgressService: CompilerProgressService,
     @inject(ClientSiderCompileService) private readonly $ClientSiderCompileService: ClientSiderCompileService,
     @inject(ServerSiderCompileService) private readonly $ServerSiderCompileService: ServerSiderCompileService,
     @inject(GenerateSwaggerDocsService) private readonly $GenerateSwaggerDocsService: GenerateSwaggerDocsService
@@ -31,7 +31,7 @@ export class DevelopmentControllerProcess {
     const { destnation } = this.$FrameworkConfigManager.getRuntimeConfig();
     await this.$ClientSiderCompileService.startWatch();
     await this.$ServerSiderCompileService.startWatch();
-    this.$CompilerProgressService.handleMakeComplate(async (assetsStatusDetailType: AssetsStatusDetailType) => {
+    this.$EventManager.registryMakeComplateCallback(async (assetsStatusDetailType: AssetsStatusDetailType) => {
       /** 判断竞争锁 **/
       if (this.taskLock) {
         return false;

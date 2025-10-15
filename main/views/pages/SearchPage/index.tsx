@@ -3,7 +3,7 @@
 
 import React from "react";
 
-// import { renderToDocument } from "@/frameworks/librarys/renderToDocument";
+import { renderToDocument } from "@/frameworks/librarys/renderToDocument";
 import { useRenderContext } from "@/frameworks/librarys/RenderContext";
 import { BasicLayout } from "@/main/views/layouts/BasicLayout";
 
@@ -23,4 +23,4 @@ export function SearchPage(props) {
   )
 };
 
-// renderToDocument(SearchPage);
+renderToDocument(SearchPage);

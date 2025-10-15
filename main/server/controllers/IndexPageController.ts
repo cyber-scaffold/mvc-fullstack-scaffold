@@ -24,7 +24,10 @@ export class IndexPageController {
   public async execute(request: Request): Promise<any> {
     const renderContent = await this.$RenderHTMLContentService.getContentString({
       title: "主页",
-      assets: "home",
+      assets: {
+        stylesheet: "/pages/IndexPage/index.css",
+        javascript: "/pages/IndexPage/index.js"
+      },
       component: IndexPage,
       content: { list: Array(10).fill(1).map((fill, index) => fill + index) }
     });

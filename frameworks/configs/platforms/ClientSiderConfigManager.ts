@@ -9,6 +9,7 @@ import WebpackAssetsManifest from "webpack-assets-manifest";
 import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
 
 import { IOCContainer } from "@/frameworks/commons/IOCContainer";
+import { EventManager } from "@/frameworks/commons/EventManager";
 import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
 
 import { CssLoaderConfigManager } from "@/frameworks/configs/loaders/CssLoaderConfigManager";
@@ -18,8 +19,8 @@ import { SassLoaderConfigManager } from "@/frameworks/configs/loaders/SassLoader
 import { BabelLoaderConfigManger } from "@/frameworks/configs/loaders/BabelLoaderConfigManger";
 import { TypeScriptLoaderConfigManger } from "@/frameworks/configs/loaders/TypeScriptLoaderConfigManger";
 
-import { CompilerProgressService } from "@/frameworks/services/progress/CompilerProgressService";
-import { WebpackCompilerFileType } from "@/frameworks/services/preprocess/InspectDirectivePrologueService";
+
+// import { WebpackCompilerFileType } from "@/frameworks/services/preprocess/InspectDirectivePrologueService";
 
 import { ClientCompilerProgressPlugin } from "@/frameworks/utils/ClientCompilerProgressPlugin";
 
@@ -50,17 +51,18 @@ export class ClientSiderConfigManager {
     @inject(LessLoaderConfigManager) private readonly $LessLoaderConfigManager: LessLoaderConfigManager,
     @inject(SassLoaderConfigManager) private readonly $SassLoaderConfigManager: SassLoaderConfigManager,
     @inject(CssLoaderConfigManager) private readonly $CssLoaderConfigManager: CssLoaderConfigManager,
-    @inject(CompilerProgressService) private readonly $CompilerProgressService: CompilerProgressService
+    @inject(EventManager) private readonly $EventManager: EventManager
   ) { };
 
   /** 注入文件的编译信息 **/
-  public setCompilerFileInfoList(compilerFileInfoList: WebpackCompilerFileType[]) {
-    const compilerFileInfoPairs = compilerFileInfoList.map((everyCompilerFileInfo: WebpackCompilerFileType) => {
-      const { entry, output } = everyCompilerFileInfo;
-      const outputFilename = path.basename(output);
-      return [outputFilename, entry];
-    });
-    this.compilerFileEntryList = fromPairs(compilerFileInfoPairs);
+  public setCompilerFileInfoList(compilerFileInfoList) {
+    // const compilerFileInfoPairs = compilerFileInfoList.map((everyCompilerFileInfo: WebpackCompilerFileType) => {
+    //   const { entry, output } = everyCompilerFileInfo;
+    //   const outputFilename = path.basename(output);
+    //   return [outputFilename, entry];
+    // });
+    // this.compilerFileEntryList = fromPairs(compilerFileInfoPairs);
+    this.compilerFileEntryList = compilerFileInfoList;
   };
 
   /**
@@ -71,7 +73,7 @@ export class ClientSiderConfigManager {
     return {
       output: {
         path: path.join(destnation, "./views/"),
-        filename: "[name]-[contenthash].js"
+        filename: "[name].js"
       },
       resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx"],
@@ -100,7 +102,7 @@ export class ClientSiderConfigManager {
         }),
         new NodePolyfillPlugin(),
         new WebpackBar({ name: "编译客户端" }),
-        new ClientCompilerProgressPlugin(this.$CompilerProgressService)
+        new ClientCompilerProgressPlugin(this.$EventManager)
       ]
     };
   };
@@ -145,7 +147,7 @@ export class ClientSiderConfigManager {
         WebpackAssetsManifestPlugin,
         new MiniCssExtractPlugin({
           linkType: "text/css",
-          filename: "[name]-[contenthash].css"
+          filename: "[name].css"
         }),
       ]
     });

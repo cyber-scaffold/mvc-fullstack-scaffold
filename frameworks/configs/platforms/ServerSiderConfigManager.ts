@@ -7,6 +7,7 @@ import CopyWebpackPlugin from "copy-webpack-plugin";
 import { DefinePlugin, Configuration } from "webpack";
 
 import { IOCContainer } from "@/frameworks/commons/IOCContainer";
+import { EventManager } from "@/frameworks/commons/EventManager";
 import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
 
 import { TypeScriptLoaderConfigManger } from "@/frameworks/configs/loaders/TypeScriptLoaderConfigManger";
@@ -17,7 +18,6 @@ import { SassLoaderConfigManager } from "@/frameworks/configs/loaders/SassLoader
 import { CssLoaderConfigManager } from "@/frameworks/configs/loaders/CssLoaderConfigManager";
 
 import { WapperClientToHydrationService } from "@/frameworks/services/preprocess/WapperClientToHydrationService";
-import { CompilerProgressService } from "@/frameworks/services/progress/CompilerProgressService";
 
 import { ServerCompilerProgressPlugin } from "@/frameworks/utils/ServerCompilerProgressPlugin";
 import { TrackRequirementPlugin } from "@/frameworks/utils/TrackRequirementPlugin";
@@ -34,7 +34,7 @@ export class ServerSiderConfigManager {
     @inject(SassLoaderConfigManager) private readonly $SassLoaderConfigManager: SassLoaderConfigManager,
     @inject(CssLoaderConfigManager) private readonly $CssLoaderConfigManager: CssLoaderConfigManager,
     @inject(WapperClientToHydrationService) private readonly $WapperClientToHydrationService: WapperClientToHydrationService,
-    @inject(CompilerProgressService) private readonly $CompilerProgressService: CompilerProgressService
+    @inject(EventManager) private readonly $EventManager: EventManager
   ) { };
 
   /**
@@ -82,7 +82,7 @@ export class ServerSiderConfigManager {
           }]
         }),
         new TrackRequirementPlugin(this.$WapperClientToHydrationService),
-        new ServerCompilerProgressPlugin(this.$CompilerProgressService)
+        new ServerCompilerProgressPlugin(this.$EventManager)
       ]
     };
   };

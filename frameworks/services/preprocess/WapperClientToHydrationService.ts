@@ -4,8 +4,11 @@ import { fromPairs } from "lodash";
 import { injectable, inject } from "inversify";
 
 import { IOCContainer } from "@/frameworks/commons/IOCContainer";
+import { EventManager } from "@/frameworks/commons/EventManager";
 import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
 import type { ModuleDependency, ModuleDependencyTuple } from "@/frameworks/utils/TrackRequirementPlugin";
+
+export type CompileHandleCallback = (sourceCodeRelativePathList: string[]) => Promise<void>
 
 /**
  * 该模块用于处理服务端使用到的视图层组件
@@ -17,6 +20,7 @@ import type { ModuleDependency, ModuleDependencyTuple } from "@/frameworks/utils
 export class WapperClientToHydrationService {
 
   constructor(
+    @inject(EventManager) private readonly $EventManager: EventManager,
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager
   ) { };
 
@@ -33,7 +37,7 @@ export class WapperClientToHydrationService {
 
       return (moduleDependencie.map((everyModuleDependencyName: string) => {
         /** 基于模块的绝对路径来判断是否属于视图层模块 **/
-        if (everyModuleDependencyName.match(clinetCompilerConfig.source) && everyModuleDependencyName.match(/\.{ts|tsx|js|jsx}/)) {
+        if (everyModuleDependencyName.match(clinetCompilerConfig.source) && everyModuleDependencyName.match(/\.(ts|tsx|js|jsx)/)) {
           return everyModuleDependencyName;
         };
       }).filter(Boolean) as string[]);
@@ -48,14 +52,15 @@ export class WapperClientToHydrationService {
   public async wapperClientHydration(sourceCodeAbsolutePathList: string[]) {
     const { tempHydrationDirectory, clinetCompilerConfig } = await this.$FrameworkConfigManager.getRuntimeConfig();
     const sourceCodeRelativePathList = fromPairs(sourceCodeAbsolutePathList.map((everySourceCodeAbsolutePath: string) => {
-      const everySourceCodeRelativePath = everySourceCodeAbsolutePath.replace(clinetCompilerConfig.source, "");
+      const everySourceCodeRelativePath = everySourceCodeAbsolutePath.replace(clinetCompilerConfig.source, "").replace(/\.(ts|tsx|js|jsx)$/ig, "");
       return [everySourceCodeRelativePath, everySourceCodeAbsolutePath];
     }));
-    console.log("临时水合化脚本的生成目录", tempHydrationDirectory);
-    console.log("需要进行水合化处理的页面", sourceCodeRelativePathList);
+    this.$EventManager.emitReceiveRequirementClientModuleListEvent(sourceCodeRelativePathList);
+    // console.log("临时水合化脚本的生成目录", tempHydrationDirectory);
+    // console.log("需要进行水合化处理的页面", sourceCodeRelativePathList);
   };
 
 };
 
 
-IOCContainer.bind(WapperClientToHydrationService).toSelf().inRequestScope();
+IOCContainer.bind(WapperClientToHydrationService).toSelf().inSingletonScope();

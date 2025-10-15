@@ -25,7 +25,10 @@ export class SearchController {
     console.log("request.body", request.body);
     const renderContent = await this.$RenderHTMLContentService.getContentString({
       title: "搜索结果页",
-      assets: "search",
+      assets: {
+        stylesheet: "/pages/SearchPage/index.css",
+        javascript: "/pages/SearchPage/index.js"
+      },
       component: SearchPage,
       content: { list: Array(10).fill(1) }
     });

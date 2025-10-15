@@ -3,7 +3,7 @@
 
 import React from "react";
 
-// import { renderToDocument } from "@/frameworks/librarys/renderToDocument";
+import { renderToDocument } from "@/frameworks/librarys/renderToDocument";
 import { BasicLayout } from "@/main/views/layouts/BasicLayout";
 
 export function DetailPage(props) {
@@ -19,4 +19,4 @@ export function DetailPage(props) {
   )
 };
 
-// renderToDocument(DetailPage);
+renderToDocument(DetailPage);

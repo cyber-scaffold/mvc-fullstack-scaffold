@@ -23,7 +23,10 @@ export class DetailPageController {
   public async execute(request: Request): Promise<any> {
     const renderContent = await this.$RenderHTMLContentService.getContentString({
       title: "详情页",
-      assets: "detail",
+      assets: {
+        stylesheet: "/pages/DetailPage/index.css",
+        javascript: "/pages/DetailPage/index.js"
+      },
       component: DetailPage,
       content: {}
     });

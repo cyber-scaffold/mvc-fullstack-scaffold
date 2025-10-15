@@ -4,7 +4,7 @@
 import React from "react";
 import { getWindow } from "ssr-window";
 
-// import { renderToDocument } from "@/frameworks/librarys/renderToDocument";
+import { renderToDocument } from "@/frameworks/librarys/renderToDocument";
 import { BasicLayout } from "./layouts/BasicLayout";
 
 import hq2 from "./assets/hq2.jpg";
@@ -19,4 +19,4 @@ export function IndexPage(props) {
   )
 };
 
-// renderToDocument(IndexPage);
+renderToDocument(IndexPage);
