@@ -4,8 +4,8 @@ import { injectable, inject } from "inversify";
 
 import { IOCContainer } from "@/frameworks/commons/IOCContainer";
 import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
-import { ClientSiderRenderService } from "@/frameworks/services/compile/ClientSiderRenderService";
-import { ServerSiderRenderService } from "@/frameworks/services/compile/ServerSiderRenderService";
+import { ClientSiderCompileService } from "@/frameworks/services/compile/ClientSiderCompileService";
+import { ServerSiderCompileService } from "@/frameworks/services/compile/ServerSiderCompileService";
 import { GenerateSwaggerDocsService } from "@/frameworks/services/preprocess/GenerateSwaggerDocsService";
 import { CompilerProgressService, AssetsStatusDetailType } from "@/frameworks/services/progress/CompilerProgressService";
 
@@ -22,15 +22,15 @@ export class DevelopmentControllerProcess {
   constructor(
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager,
     @inject(CompilerProgressService) private readonly $CompilerProgressService: CompilerProgressService,
-    @inject(ClientSiderRenderService) private readonly $ClientSiderRenderService: ClientSiderRenderService,
-    @inject(ServerSiderRenderService) private readonly $ServerSiderRenderService: ServerSiderRenderService,
+    @inject(ClientSiderCompileService) private readonly $ClientSiderCompileService: ClientSiderCompileService,
+    @inject(ServerSiderCompileService) private readonly $ServerSiderCompileService: ServerSiderCompileService,
     @inject(GenerateSwaggerDocsService) private readonly $GenerateSwaggerDocsService: GenerateSwaggerDocsService
   ) { };
 
   public async execute() {
     const { destnation } = this.$FrameworkConfigManager.getRuntimeConfig();
-    await this.$ClientSiderRenderService.startWatch();
-    await this.$ServerSiderRenderService.startWatch();
+    await this.$ClientSiderCompileService.startWatch();
+    await this.$ServerSiderCompileService.startWatch();
     this.$CompilerProgressService.handleMakeComplate(async (assetsStatusDetailType: AssetsStatusDetailType) => {
       /** 判断竞争锁 **/
       if (this.taskLock) {

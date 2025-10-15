@@ -7,7 +7,7 @@ import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigMana
 import { ServerSiderConfigManager } from "@/frameworks/configs/platforms/ServerSiderConfigManager";
 
 @injectable()
-export class ServerSiderRenderService {
+export class ServerSiderCompileService {
 
   constructor(
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager,
@@ -45,4 +45,4 @@ export class ServerSiderRenderService {
 
 };
 
-IOCContainer.bind(ServerSiderRenderService).toSelf().inSingletonScope();
+IOCContainer.bind(ServerSiderCompileService).toSelf().inSingletonScope();

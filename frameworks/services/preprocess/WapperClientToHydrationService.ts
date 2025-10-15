@@ -1,7 +1,6 @@
-import fs, { readSync } from "fs";
 import path from "path";
 import { promisify } from "util";
-import type { StatsModule } from "webpack";
+import { fromPairs } from "lodash";
 import { injectable, inject } from "inversify";
 
 import { IOCContainer } from "@/frameworks/commons/IOCContainer";
@@ -46,13 +45,14 @@ export class WapperClientToHydrationService {
    * 服务端编译之后需要进行水合化编译的客户端组件
    * 把需要进行水合化编译的客户端组件包装成临时文件
    * **/
-  public async wapperClientHydration(usedClientModules: string[]) {
-    const { tempHydrationDirectory } = await this.$FrameworkConfigManager.getRuntimeConfig();
-    // usedClientModules.map(() => {
-
-    // });
+  public async wapperClientHydration(sourceCodeAbsolutePathList: string[]) {
+    const { tempHydrationDirectory, clinetCompilerConfig } = await this.$FrameworkConfigManager.getRuntimeConfig();
+    const sourceCodeRelativePathList = fromPairs(sourceCodeAbsolutePathList.map((everySourceCodeAbsolutePath: string) => {
+      const everySourceCodeRelativePath = everySourceCodeAbsolutePath.replace(clinetCompilerConfig.source, "");
+      return [everySourceCodeRelativePath, everySourceCodeAbsolutePath];
+    }));
     console.log("临时水合化脚本的生成目录", tempHydrationDirectory);
-    console.log("需要进行水合化处理的页面", usedClientModules);
+    console.log("需要进行水合化处理的页面", sourceCodeRelativePathList);
   };
 
 };

@@ -10,7 +10,7 @@ import { ClientSiderConfigManagerFactory, ClientSiderConfigManagerProvider } fro
 import { InspectDirectivePrologueService, WebpackCompilerFileType } from "@/frameworks/services/preprocess/InspectDirectivePrologueService";
 
 @injectable()
-export class ClientSiderRenderService {
+export class ClientSiderCompileService {
 
   /**
    * 正在进行的编译任务列表
@@ -89,4 +89,4 @@ export class ClientSiderRenderService {
 
 };
 
-IOCContainer.bind(ClientSiderRenderService).toSelf().inSingletonScope();
+IOCContainer.bind(ClientSiderCompileService).toSelf().inSingletonScope();
