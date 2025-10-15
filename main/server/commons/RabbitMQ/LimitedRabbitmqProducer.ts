@@ -1,9 +1,9 @@
 import amqp, { Connection } from "amqplib";
 import { injectable, inject } from "inversify";
 
-import { ApplicationConfigManager } from "@/main/configs/ApplicationConfigManager";
-import { IOCContainer } from "@/main/commons/Application/IOCContainer";
-import { logger } from "@/main/utils/logger";
+import { ApplicationConfigManager } from "@/main/server/configs/ApplicationConfigManager";
+import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
+import { logger } from "@/main/server/utils/logger";
 
 export interface IPublishOption {
   exchangeName: string;

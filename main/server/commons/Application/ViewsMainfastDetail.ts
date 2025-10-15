@@ -2,7 +2,7 @@ import path from "path";
 import { readFile } from "jsonfile";
 import { injectable } from "inversify";
 
-import { IOCContainer } from "@/main/commons/Application/IOCContainer";
+import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
 
 @injectable()
 export class ViewsMainfastDetail {

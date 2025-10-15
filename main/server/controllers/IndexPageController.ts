@@ -3,8 +3,8 @@ import { injectable, inject } from "inversify";
 
 import { responseHtmlWrapper } from "@/frameworks/librarys/responseHtmlWrapper";
 
-import { IOCContainer } from "@/main/commons/Application/IOCContainer";
-import { RenderHTMLContentService } from "@/main/services/RenderHTMLContentService";
+import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
+import { RenderHTMLContentService } from "@/main/server/services/RenderHTMLContentService";
 import { IndexPage } from "@/main/views/pages/IndexPage";
 
 

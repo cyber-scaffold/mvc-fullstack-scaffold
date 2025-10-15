@@ -4,29 +4,29 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { injectable, inject } from "inversify";
 
-import { IOCContainer } from "@/main/commons/Application/IOCContainer";
-import { FrameworkDetail } from "@/main/commons/Application/FrameworkDetail";
-import { ViewsMainfastDetail } from "@/main/commons/Application/ViewsMainfastDetail";
+import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
+import { FrameworkDetail } from "@/main/server/commons/Application/FrameworkDetail";
+import { ViewsMainfastDetail } from "@/main/server/commons/Application/ViewsMainfastDetail";
 
-import { RedisConnectManager } from "@/main/commons/Redis/RedisConnectManager";
+import { RedisConnectManager } from "@/main/server/commons/Redis/RedisConnectManager";
 
-import { DataSourceManager } from "@/main/commons/MySQL/DataSourceManager";
-import { QueryBuilderManager } from "@/main/commons/MySQL/QueryBuilderManager";
-import { MySQLConnectManager } from "@/main/commons/MySQL/MySQLConnectManager";
+import { DataSourceManager } from "@/main/server/commons/MySQL/DataSourceManager";
+import { QueryBuilderManager } from "@/main/server/commons/MySQL/QueryBuilderManager";
+import { MySQLConnectManager } from "@/main/server/commons/MySQL/MySQLConnectManager";
 
-import { MongooseConnectManager } from "@/main/commons/MongoDB/MongooseConnectManager";
+import { MongooseConnectManager } from "@/main/server/commons/MongoDB/MongooseConnectManager";
 
-import { LimitedRabbitmqProducer } from "@/main/commons/RabbitMQ/LimitedRabbitmqProducer";
-import { LimitedRabbitmqConsumer } from "@/main/commons/RabbitMQ/LimitedRabbitmqConsumer";
+import { LimitedRabbitmqProducer } from "@/main/server/commons/RabbitMQ/LimitedRabbitmqProducer";
+import { LimitedRabbitmqConsumer } from "@/main/server/commons/RabbitMQ/LimitedRabbitmqConsumer";
 
-import { ApplicationConfigManager } from "@/main/configs/ApplicationConfigManager";
-import { requestMiddleware } from "@/main/interceptors/requestMiddleware";
+import { ApplicationConfigManager } from "@/main/server/configs/ApplicationConfigManager";
+import { requestMiddleware } from "@/main/server/interceptors/requestMiddleware";
 
-import { DetailPageController } from "@/main/controllers/DetailPageController";
-import { IndexPageController } from "@/main/controllers/IndexPageController";
-import { SearchController } from "@/main/controllers/SearchController";
+import { DetailPageController } from "@/main/server/controllers/DetailPageController";
+import { IndexPageController } from "@/main/server/controllers/IndexPageController";
+import { SearchController } from "@/main/server/controllers/SearchController";
 
-import { logger } from "@/main/utils/logger";
+import { logger } from "@/main/server/utils/logger";
 
 @injectable()
 export class ExpressHttpServer {

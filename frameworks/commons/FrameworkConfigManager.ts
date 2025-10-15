@@ -23,7 +23,7 @@ export class FrameworkConfigManager {
     },
     /** 服务端的编译选项 **/
     serverCompilerConfig: {
-      source: path.resolve(process.cwd(), "./main/"),
+      source: path.resolve(process.cwd(), "./main/server/"),
     },
     /** 客户端的编译选项 **/
     clinetCompilerConfig: {

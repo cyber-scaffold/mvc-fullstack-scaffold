@@ -1,7 +1,7 @@
 import path from "path";
 import { injectable, inject } from "inversify";
 
-import { IOCContainer } from "@/main/commons/Application/IOCContainer";
+import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
 
 @injectable()
 export class FrameworkDetail {

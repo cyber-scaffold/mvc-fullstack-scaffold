@@ -3,8 +3,8 @@ import pretty from "pretty";
 import { injectable, inject } from "inversify";
 import { renderToString } from "react-dom/server";
 
-import { IOCContainer } from "@/main/commons/Application/IOCContainer";
-import { ViewsMainfastDetail } from "@/main/commons/Application/ViewsMainfastDetail";
+import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
+import { ViewsMainfastDetail } from "@/main/server/commons/Application/ViewsMainfastDetail";
 
 import { RenderContextProvider } from "@/frameworks/librarys/RenderContext";
 

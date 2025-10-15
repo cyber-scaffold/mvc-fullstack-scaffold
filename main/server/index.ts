@@ -1,5 +1,5 @@
-import { IOCContainer } from "@/main/commons/Application/IOCContainer";
-import { ExpressHttpServer } from "@/main/commons/Application/ExpressHttpServer";
+import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
+import { ExpressHttpServer } from "@/main/server/commons/Application/ExpressHttpServer";
 
 declare global {
   namespace NodeJS {

@@ -1,10 +1,10 @@
 import knex, { Knex } from "knex";
 import { injectable, inject } from "inversify";
 
-import { ApplicationConfigManager } from "@/main/configs/ApplicationConfigManager";
-import { IOCContainer } from "@/main/commons/Application/IOCContainer";
+import { ApplicationConfigManager } from "@/main/server/configs/ApplicationConfigManager";
+import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
 
-import { logger } from "@/main/utils/logger";
+import { logger } from "@/main/server/utils/logger";
 
 @injectable()
 export class QueryBuilderManager {

@@ -17,7 +17,9 @@ import { SassLoaderConfigManager } from "@/frameworks/configs/loaders/SassLoader
 import { CssLoaderConfigManager } from "@/frameworks/configs/loaders/CssLoaderConfigManager";
 
 import { CompilerProgressService } from "@/frameworks/services/progress/CompilerProgressService";
+
 import { ServerCompilerProgressPlugin } from "@/frameworks/utils/ServerCompilerProgressPlugin";
+import { TrackRequirementPlugin } from "@/frameworks/utils/TrackRequirementPlugin";
 
 @injectable()
 export class ServerSiderConfigManager {
@@ -77,6 +79,7 @@ export class ServerSiderConfigManager {
             to: path.resolve(destnation, "./frameworks/")
           }]
         }),
+        new TrackRequirementPlugin(),
         new ServerCompilerProgressPlugin(this.$CompilerProgressService)
       ]
     };
