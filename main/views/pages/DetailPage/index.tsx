@@ -1,6 +1,3 @@
-/** 基于JavaScript序言指令将该文件输出为指定的客户端渲染文件 **/
-// "client-assets-filename=detail";
-
 import React from "react";
 
 import { renderToDocument } from "@/frameworks/librarys/renderToDocument";

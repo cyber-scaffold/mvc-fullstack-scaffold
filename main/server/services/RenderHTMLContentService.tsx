@@ -12,7 +12,7 @@ type paramsType = {
   title?: string,
   keywords?: string[],
   description?: string,
-  assets: {
+  assets?: {
     stylesheet?: string
     javascript?: string
   },
@@ -48,7 +48,7 @@ export class RenderHTMLContentService {
           <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
           <link href="/statics/favicon.ico" rel="icon" type="image/x-icon" />
-          {assets.stylesheet ? (<link rel="stylesheet" href={assets.stylesheet} />) : null}
+          {assets && assets.stylesheet ? (<link rel="stylesheet" href={mainfast[assets.stylesheet]} />) : null}
           <script dangerouslySetInnerHTML={{ __html: `window.process=${JSON.stringify({ env: { NODE_ENV: process.env.NODE_ENV } })};` }}></script>
           <script dangerouslySetInnerHTML={{ __html: `window.seo=${JSON.stringify(SEOInfomation, null, "")};` }}></script>
           <script dangerouslySetInnerHTML={{ __html: `window.content=${JSON.stringify(content, null, "")};` }}></script>
@@ -61,7 +61,7 @@ export class RenderHTMLContentService {
               </RenderContextProvider>
             ) : null}
           </div>
-          {assets.javascript ? (<script src={assets.javascript}></script>) : null}
+          {assets && assets.javascript ? (<script src={mainfast[assets.javascript]}></script>) : null}
         </body>
       </html>
     );

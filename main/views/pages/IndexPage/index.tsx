@@ -1,11 +1,8 @@
-/** 基于JavaScript序言指令将该文件输出为指定的客户端渲染文件 **/
-// "client-assets-filename=home";
-
 import React from "react";
 import { getWindow } from "ssr-window";
 
 import { renderToDocument } from "@/frameworks/librarys/renderToDocument";
-import { BasicLayout } from "./layouts/BasicLayout";
+import { BasicLayout } from "@/main/views/layouts/BasicLayout";
 
 import hq2 from "./assets/hq2.jpg";
 

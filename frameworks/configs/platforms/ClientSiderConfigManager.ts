@@ -73,7 +73,7 @@ export class ClientSiderConfigManager {
     return {
       output: {
         path: path.join(destnation, "./views/"),
-        filename: "[name].js"
+        filename: "[name]-[contenthash].js"
       },
       resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx"],
@@ -124,7 +124,7 @@ export class ClientSiderConfigManager {
         WebpackAssetsManifestPlugin,
         new MiniCssExtractPlugin({
           linkType: "text/css",
-          filename: "[name].css"
+          filename: "[name]-[contenthash].css"
         }),
       ]
     });
@@ -147,7 +147,7 @@ export class ClientSiderConfigManager {
         WebpackAssetsManifestPlugin,
         new MiniCssExtractPlugin({
           linkType: "text/css",
-          filename: "[name].css"
+          filename: "[name]-[contenthash].css"
         }),
       ]
     });

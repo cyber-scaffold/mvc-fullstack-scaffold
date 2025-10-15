@@ -25,6 +25,7 @@ import { requestMiddleware } from "@/main/server/interceptors/requestMiddleware"
 import { DetailPageController } from "@/main/server/controllers/DetailPageController";
 import { IndexPageController } from "@/main/server/controllers/IndexPageController";
 import { SearchController } from "@/main/server/controllers/SearchController";
+import { UserPageController } from "@/main/server/controllers/UserPageController";
 
 import { logger } from "@/main/server/utils/logger";
 
@@ -47,6 +48,7 @@ export class ExpressHttpServer {
     @inject(DetailPageController) private readonly $DetailPageController: DetailPageController,
     @inject(IndexPageController) private readonly $IndexPageController: IndexPageController,
     @inject(SearchController) private readonly $SearchController: SearchController,
+    @inject(UserPageController) private readonly $UserPageController: UserPageController,
     @inject(FrameworkDetail) private readonly $FrameworkDetail: FrameworkDetail,
     @inject(ViewsMainfastDetail) private readonly $ViewsMainfastDetail: ViewsMainfastDetail
   ) { }
@@ -101,6 +103,7 @@ export class ExpressHttpServer {
     this.app.use(this.$DetailPageController.getRouter());
     this.app.use(this.$IndexPageController.getRouter());
     this.app.use(this.$SearchController.getRouter());
+    this.app.use(this.$UserPageController.getRouter());
     /** 提供开发框架静态资源比如swagger文档 **/
     this.app.use(express.static(this.$FrameworkDetail.frameworkDirectory, {
       maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)

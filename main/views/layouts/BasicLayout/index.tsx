@@ -16,6 +16,9 @@ export function BasicLayout(props) {
         <li>
           <a href="/detail">detail</a>
         </li>
+        <li>
+          <a href="/user">user</a>
+        </li>
       </ul>
       {children}
     </div>
