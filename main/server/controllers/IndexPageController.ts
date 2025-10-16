@@ -5,7 +5,7 @@ import { responseHtmlWrapper } from "@/frameworks/librarys/responseHtmlWrapper";
 
 import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
 import { RenderHTMLContentService } from "@/main/server/services/RenderHTMLContentService";
-import { IndexPage } from "@/main/views/pages/IndexPage";
+// import { IndexPage } from "@/main/views/pages/IndexPage";
 
 
 @injectable()
@@ -22,16 +22,16 @@ export class IndexPageController {
   };
 
   public async execute(request: Request): Promise<any> {
-    const renderContent = await this.$RenderHTMLContentService.getContentString({
-      title: "主页",
-      assets: {
-        stylesheet: "/pages/IndexPage/index.css",
-        javascript: "/pages/IndexPage/index.js"
-      },
-      component: IndexPage,
-      content: { list: Array(10).fill(1).map((fill, index) => fill + index) }
-    });
-    return renderContent;
+    // const renderContent = await this.$RenderHTMLContentService.getContentString({
+    //   title: "主页",
+    //   assets: {
+    //     stylesheet: "/pages/IndexPage/index.css",
+    //     javascript: "/pages/IndexPage/index.js"
+    //   },
+    //   component: IndexPage,
+    //   content: { list: Array(10).fill(1).map((fill, index) => fill + index) }
+    // });
+    // return renderContent;
   };
 
 };

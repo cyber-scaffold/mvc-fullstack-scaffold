@@ -17,7 +17,6 @@ import { LessLoaderConfigManager } from "@/library/configs/loaders/LessLoaderCon
 import { SassLoaderConfigManager } from "@/library/configs/loaders/SassLoaderConfigManager";
 import { CssLoaderConfigManager } from "@/library/configs/loaders/CssLoaderConfigManager";
 
-
 import { ServerCompilerProgressPlugin } from "@/library/utils/ServerCompilerProgressPlugin";
 
 @injectable()
@@ -117,4 +116,4 @@ export class ServerSiderConfigManager {
 
 };
 
-IOCContainer.bind(ServerSiderConfigManager).toSelf().inSingletonScope();
+IOCContainer.bind(ServerSiderConfigManager).toSelf().inRequestScope();

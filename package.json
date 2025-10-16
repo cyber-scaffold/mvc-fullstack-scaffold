@@ -4,7 +4,7 @@
   "description": "基于mvc和视图层序言和标记智能化渲染的nodejs全栈编译器",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node -r tsconfig-paths/register ./frameworks/development.ts",
+    "dev": "ts-node -r tsconfig-paths/register ./main/server/index.ts",
     "build": "ts-node -r tsconfig-paths/register ./frameworks/build.ts"
   },
   "keywords": [],

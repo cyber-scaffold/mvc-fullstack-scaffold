@@ -1,8 +1,8 @@
 import path from "path";
 import WebpackBar from "webpackbar";
 import { merge } from "webpack-merge";
+import { injectable, inject } from "inversify";
 import { DefinePlugin, Configuration } from "webpack";
-import { injectable, inject, interfaces } from "inversify";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import WebpackAssetsManifest from "webpack-assets-manifest";
 import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
@@ -18,29 +18,12 @@ import { SassLoaderConfigManager } from "@/library/configs/loaders/SassLoaderCon
 import { BabelLoaderConfigManger } from "@/library/configs/loaders/BabelLoaderConfigManger";
 import { TypeScriptLoaderConfigManger } from "@/library/configs/loaders/TypeScriptLoaderConfigManger";
 
-
-// import { WebpackCompilerFileType } from "@/library/services/preprocess/InspectDirectivePrologueService";
-
 import { ClientCompilerProgressPlugin } from "@/library/utils/ClientCompilerProgressPlugin";
-
-/**
- * 因为视图层是多页面,而且文件随时都有可能改变,所以视图层的编译模块必须是瞬态的,方便每次都获取到最新的列表
- * **/
-
-export type ClientSiderConfigManagerProvider = () => ClientSiderConfigManager;
-
-export function ClientSiderConfigManagerFactory(context: interfaces.Context): ClientSiderConfigManagerProvider {
-  return function ClientSiderConfigManagerProvider(): ClientSiderConfigManager {
-    return context.container.get(ClientSiderConfigManager);
-  };
-};
 
 @injectable()
 export class ClientSiderConfigManager {
 
-  private compilerFileEntryList: {
-    [outputName: string]: string
-  } = {};
+  private compilerFileEntryList: { [outputName: string]: string } = {};
 
   constructor(
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager,
@@ -55,12 +38,6 @@ export class ClientSiderConfigManager {
 
   /** 注入文件的编译信息 **/
   public setCompilerFileInfoList(compilerFileInfoList) {
-    // const compilerFileInfoPairs = compilerFileInfoList.map((everyCompilerFileInfo: WebpackCompilerFileType) => {
-    //   const { entry, output } = everyCompilerFileInfo;
-    //   const outputFilename = path.basename(output);
-    //   return [outputFilename, entry];
-    // });
-    // this.compilerFileEntryList = fromPairs(compilerFileInfoPairs);
     this.compilerFileEntryList = compilerFileInfoList;
   };
 
@@ -154,5 +131,4 @@ export class ClientSiderConfigManager {
 
 };
 
-IOCContainer.bind(ClientSiderConfigManager).toSelf().inTransientScope();
-IOCContainer.bind(ClientSiderConfigManagerFactory).toFactory(ClientSiderConfigManagerFactory);
+IOCContainer.bind(ClientSiderConfigManager).toSelf().inRequestScope();
