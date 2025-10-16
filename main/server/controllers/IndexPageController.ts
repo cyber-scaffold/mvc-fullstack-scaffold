@@ -1,3 +1,4 @@
+import path from "path";
 import { Router, Request } from "express";
 import { injectable, inject } from "inversify";
 
@@ -6,7 +7,15 @@ import { responseHtmlWrapper } from "@/frameworks/librarys/responseHtmlWrapper";
 import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
 import { RenderHTMLContentService } from "@/main/server/services/RenderHTMLContentService";
 // import { IndexPage } from "@/main/views/pages/IndexPage";
+import { compileDehydratedRenderMethod, compileHydrationResource } from "@/library";
 
+const dehydratedRenderMethod = compileDehydratedRenderMethod({
+  source: path.resolve(process.cwd(), "./main/views/pages/IndexPage/index.tsx")
+});
+
+const hydrationResource = compileHydrationResource({
+  source: path.resolve(process.cwd(), "./main/views/pages/IndexPage/index.tsx")
+});
 
 @injectable()
 export class IndexPageController {

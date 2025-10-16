@@ -1,3 +1,4 @@
+import path from "path";
 import { Router, Request } from "express";
 import { injectable, inject } from "inversify";
 
@@ -6,10 +7,15 @@ import { responseHtmlWrapper } from "@/frameworks/librarys/responseHtmlWrapper";
 import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
 import { RenderHTMLContentService } from "@/main/server/services/RenderHTMLContentService";
 // import { DetailPage } from "@/main/views/pages/DetailPage";
-// import {compileDehydratedRenderMethod,compileHydrationResource} from "@/frameworks/"
+import { compileDehydratedRenderMethod, compileHydrationResource } from "@/library";
 
-// const dehydratedRenderMethod=compileDehydratedRenderMethod("@/views/DetailPage/index.tsx");
-// const hydrationResource=compileHydrationResource("@/views/DetailPage/index.tsx");
+const dehydratedRenderMethod = compileDehydratedRenderMethod({
+  source: path.resolve(process.cwd(), "./main/views/pages/DetailPage/index.tsx")
+});
+
+const hydrationResource = compileHydrationResource({
+  source: path.resolve(process.cwd(), "./main/views/pages/DetailPage/index.tsx")
+});
 
 @injectable()
 export class DetailPageController {

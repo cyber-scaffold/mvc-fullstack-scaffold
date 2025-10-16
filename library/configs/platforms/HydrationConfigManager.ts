@@ -18,12 +18,8 @@ import { SassLoaderConfigManager } from "@/library/configs/loaders/SassLoaderCon
 import { BabelLoaderConfigManger } from "@/library/configs/loaders/BabelLoaderConfigManger";
 import { TypeScriptLoaderConfigManger } from "@/library/configs/loaders/TypeScriptLoaderConfigManger";
 
-import { ClientCompilerProgressPlugin } from "@/library/utils/ClientCompilerProgressPlugin";
-
 @injectable()
-export class ClientSiderConfigManager {
-
-  private compilerFileEntryList: { [outputName: string]: string } = {};
+export class HydrationConfigManager {
 
   constructor(
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager,
@@ -36,20 +32,15 @@ export class ClientSiderConfigManager {
     @inject(EventManager) private readonly $EventManager: EventManager
   ) { };
 
-  /** 注入文件的编译信息 **/
-  public setCompilerFileInfoList(compilerFileInfoList) {
-    this.compilerFileEntryList = compilerFileInfoList;
-  };
-
   /**
    * 最基础的webpack编译配置
    * **/
   public async getBasicConfig() {
-    const { destnation } = this.$FrameworkConfigManager.getRuntimeConfig();
+    const { hydrationResourceDirectoryPath } = this.$FrameworkConfigManager.getRuntimeConfig();
     return {
       output: {
-        path: path.join(destnation, "./views/"),
-        filename: "[name]-[contenthash].js"
+        path: hydrationResourceDirectoryPath,
+        filename: "index-hydration-[contenthash].js"
       },
       resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx"],
@@ -77,8 +68,7 @@ export class ClientSiderConfigManager {
           "process.isServer": JSON.stringify(false)
         }),
         new NodePolyfillPlugin(),
-        new WebpackBar({ name: "编译客户端" }),
-        new ClientCompilerProgressPlugin(this.$EventManager)
+        new WebpackBar({ name: "编译水合化渲染资源" }),
       ]
     };
   };
@@ -86,21 +76,21 @@ export class ClientSiderConfigManager {
   /**
    * 开发模式下的webpack配置
    * **/
-  public async getDevelopmentConfig() {
+  public async getDevelopmentConfig(sourceCodeFilePath: string) {
     const basicConfig: any = await this.getBasicConfig();
-    const WebpackAssetsManifestPlugin = new WebpackAssetsManifest();
-    WebpackAssetsManifestPlugin.hooks.apply.tap("AddENV", (manifest) => {
-      manifest.set("env", "development");
-    });
+    // const WebpackAssetsManifestPlugin = new WebpackAssetsManifest();
+    // WebpackAssetsManifestPlugin.hooks.apply.tap("AddENV", (manifest) => {
+    //   manifest.set("env", "development");
+    // });
     return merge<Configuration>(basicConfig, {
       mode: "development",
       devtool: "source-map",
-      entry: this.compilerFileEntryList,
+      entry: sourceCodeFilePath,
       plugins: [
-        WebpackAssetsManifestPlugin,
+        // WebpackAssetsManifestPlugin,
         new MiniCssExtractPlugin({
           linkType: "text/css",
-          filename: "[name]-[contenthash].css"
+          filename: "index-hydration-[contenthash].css"
         }),
       ]
     });
@@ -109,21 +99,21 @@ export class ClientSiderConfigManager {
   /**
    * 生产模式下的webpack配置
    * **/
-  public async getProductionConfig() {
+  public async getProductionConfig(sourceCodeFilePath: string) {
     const basicConfig: any = await this.getBasicConfig();
-    const WebpackAssetsManifestPlugin = new WebpackAssetsManifest();
-    WebpackAssetsManifestPlugin.hooks.apply.tap("AddENV", (manifest) => {
-      manifest.set("env", "production");
-    });
+    // const WebpackAssetsManifestPlugin = new WebpackAssetsManifest();
+    // WebpackAssetsManifestPlugin.hooks.apply.tap("AddENV", (manifest) => {
+    //   manifest.set("env", "production");
+    // });
     return merge<Configuration>(basicConfig, {
       mode: "production",
       devtool: false,
-      entry: this.compilerFileEntryList,
+      entry: sourceCodeFilePath,
       plugins: [
-        WebpackAssetsManifestPlugin,
+        // WebpackAssetsManifestPlugin,
         new MiniCssExtractPlugin({
           linkType: "text/css",
-          filename: "[name]-[contenthash].css"
+          filename: "index-hydration-[contenthash].css"
         }),
       ]
     });
@@ -131,4 +121,4 @@ export class ClientSiderConfigManager {
 
 };
 
-IOCContainer.bind(ClientSiderConfigManager).toSelf().inRequestScope();
+IOCContainer.bind(HydrationConfigManager).toSelf().inRequestScope();
