@@ -5,7 +5,11 @@ import { responseHtmlWrapper } from "@/frameworks/librarys/responseHtmlWrapper";
 
 import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
 import { RenderHTMLContentService } from "@/main/server/services/RenderHTMLContentService";
-import { DetailPage } from "@/main/views/pages/DetailPage";
+// import { DetailPage } from "@/main/views/pages/DetailPage";
+// import {compileDehydratedRenderMethod,compileHydrationResource} from "@/frameworks/"
+
+// const dehydratedRenderMethod=compileDehydratedRenderMethod("@/views/DetailPage/index.tsx");
+// const hydrationResource=compileHydrationResource("@/views/DetailPage/index.tsx");
 
 @injectable()
 export class DetailPageController {
@@ -21,16 +25,16 @@ export class DetailPageController {
   };
 
   public async execute(request: Request): Promise<any> {
-    const renderContent = await this.$RenderHTMLContentService.getContentString({
-      title: "详情页",
-      assets: {
-        stylesheet: "/pages/DetailPage/index.css",
-        javascript: "/pages/DetailPage/index.js"
-      },
-      component: DetailPage,
-      content: {}
-    });
-    return renderContent;
+    // const renderContent = await this.$RenderHTMLContentService.getContentString({
+    //   title: "详情页",
+    //   assets: {
+    //     stylesheet: "/pages/DetailPage/index.css",
+    //     javascript: "/pages/DetailPage/index.js"
+    //   },
+    //   component: DetailPage,
+    //   content: {}
+    // });
+    // return renderContent;
   };
 
 };
