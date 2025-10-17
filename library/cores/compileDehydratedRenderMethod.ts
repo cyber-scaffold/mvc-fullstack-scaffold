@@ -13,5 +13,5 @@ export async function compileDehydratedRenderMethod(params: DehydratedRenderMeth
   await $DehydrationResourceManagement.relationSourceCode(params.source);
   await $DehydrationResourceManagement.smartDecide();
   const compileAssetsInfo = await $DehydrationResourceManagement.getResourceList();
-  return compileAssetsInfo;
+  return compileAssetsInfo.assets;
 };

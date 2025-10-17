@@ -6,7 +6,7 @@ import { BasicLayout } from "@/main/views/layouts/BasicLayout";
 
 import hq2 from "./assets/hq2.jpg";
 
-export function IndexPage(props) {
+export default function IndexPage(props) {
   return (
     <BasicLayout>
       <div>这是主页</div>

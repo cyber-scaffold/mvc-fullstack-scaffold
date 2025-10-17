@@ -84,6 +84,9 @@ export class DehydrationConfigManager {
       output: {
         path: dehydrationResourceDirectoryPath,
         filename: "index.dehydration-[contenthash].js",
+        library: {
+          type: "commonjs2"
+        }
       },
     });
   };
@@ -100,6 +103,9 @@ export class DehydrationConfigManager {
       output: {
         path: dehydrationResourceDirectoryPath,
         filename: "index.dehydration-[contenthash].js",
+        library: {
+          type: "commonjs2"
+        }
       },
     });
   };

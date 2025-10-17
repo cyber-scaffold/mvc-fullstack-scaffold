@@ -6,7 +6,7 @@ import { responseHtmlWrapper } from "@/frameworks/librarys/responseHtmlWrapper";
 
 import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
 import { RenderHTMLContentService } from "@/main/server/services/RenderHTMLContentService";
-import { compileDehydratedRenderMethod, compileHydrationResource } from "@/library";
+import { compileDehydratedRenderMethod, compileHydrationResource, renderDehydratedResourceWithSandbox } from "@/library";
 
 @injectable()
 export class DetailPageController {
@@ -16,13 +16,13 @@ export class DetailPageController {
   ) { };
 
   public async getRenderResource() {
-    const dehydratedRenderMethod = compileDehydratedRenderMethod({
+    const dehydratedRenderMethodTask = compileDehydratedRenderMethod({
       source: path.resolve(process.cwd(), "./main/views/pages/DetailPage/index.tsx")
     });
-    const hydrationResource = compileHydrationResource({
+    const hydrationResourceTask = compileHydrationResource({
       source: path.resolve(process.cwd(), "./main/views/pages/DetailPage/index.tsx")
     });
-    await Promise.all([dehydratedRenderMethod, hydrationResource]);
+    const [dehydratedRenderMethod, hydrationResource] = await Promise.all([dehydratedRenderMethodTask, hydrationResourceTask]);
     return { dehydrated: dehydratedRenderMethod, hydration: hydrationResource };
   };
 
@@ -33,6 +33,9 @@ export class DetailPageController {
   };
 
   public async execute(request: Request): Promise<any> {
+    const { dehydrated }: any = await this.getRenderResource();
+    const dehydratedViewContent = await renderDehydratedResourceWithSandbox(dehydrated.javascript[0]);
+    return dehydratedViewContent;
     // const renderContent = await this.$RenderHTMLContentService.getContentString({
     //   title: "详情页",
     //   assets: {

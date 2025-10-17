@@ -13,5 +13,5 @@ export async function compileHydrationResource(params: HydrationResourceParamsTy
   await $HydrationResourceManagement.relationSourceCode(params.source);
   await $HydrationResourceManagement.smartDecide();
   const compileAssetsInfo = await $HydrationResourceManagement.getResourceList();
-  return compileAssetsInfo;
+  return compileAssetsInfo.assets;
 };

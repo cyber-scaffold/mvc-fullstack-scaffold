@@ -5,7 +5,7 @@ import { useRenderContext } from "@/frameworks/librarys/RenderContext";
 import { BasicLayout } from "@/main/views/layouts/BasicLayout";
 
 
-export function SearchPage(props) {
+export default function SearchPage(props) {
   const { content } = useRenderContext();
   return (
     <BasicLayout>

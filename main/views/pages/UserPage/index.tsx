@@ -3,7 +3,7 @@ import React from "react";
 import { renderToDocument } from "@/frameworks/librarys/renderToDocument";
 import { BasicLayout } from "@/main/views/layouts/BasicLayout";
 
-export function UserPage(props) {
+export default function UserPage(props) {
   return (
     <BasicLayout>
       <div>这是用户中心</div>
