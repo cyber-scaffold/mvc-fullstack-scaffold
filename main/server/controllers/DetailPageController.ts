@@ -9,14 +9,6 @@ import { RenderHTMLContentService } from "@/main/server/services/RenderHTMLConte
 // import { DetailPage } from "@/main/views/pages/DetailPage";
 import { compileDehydratedRenderMethod, compileHydrationResource } from "@/library";
 
-const dehydratedRenderMethod = compileDehydratedRenderMethod({
-  source: path.resolve(process.cwd(), "./main/views/pages/DetailPage/index.tsx")
-});
-
-const hydrationResource = compileHydrationResource({
-  source: path.resolve(process.cwd(), "./main/views/pages/DetailPage/index.tsx")
-});
-
 @injectable()
 export class DetailPageController {
 
@@ -25,6 +17,14 @@ export class DetailPageController {
   ) { };
 
   public getRouter() {
+    const dehydratedRenderMethod = compileDehydratedRenderMethod({
+      source: path.resolve(process.cwd(), "./main/views/pages/DetailPage/index.tsx")
+    });
+
+    const hydrationResource = compileHydrationResource({
+      source: path.resolve(process.cwd(), "./main/views/pages/DetailPage/index.tsx")
+    });
+
     return Router().get("/detail", responseHtmlWrapper(async (request: Request) => {
       return await this.execute(request);
     }));

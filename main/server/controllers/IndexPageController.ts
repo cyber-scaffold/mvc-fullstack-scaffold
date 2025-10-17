@@ -9,13 +9,6 @@ import { RenderHTMLContentService } from "@/main/server/services/RenderHTMLConte
 // import { IndexPage } from "@/main/views/pages/IndexPage";
 import { compileDehydratedRenderMethod, compileHydrationResource } from "@/library";
 
-const dehydratedRenderMethod = compileDehydratedRenderMethod({
-  source: path.resolve(process.cwd(), "./main/views/pages/IndexPage/index.tsx")
-});
-
-const hydrationResource = compileHydrationResource({
-  source: path.resolve(process.cwd(), "./main/views/pages/IndexPage/index.tsx")
-});
 
 @injectable()
 export class IndexPageController {
@@ -25,6 +18,13 @@ export class IndexPageController {
   ) { };
 
   public getRouter() {
+    const dehydratedRenderMethod = compileDehydratedRenderMethod({
+      source: path.resolve(process.cwd(), "./main/views/pages/IndexPage/index.tsx")
+    });
+
+    const hydrationResource = compileHydrationResource({
+      source: path.resolve(process.cwd(), "./main/views/pages/IndexPage/index.tsx")
+    });
     return Router().get("/", responseHtmlWrapper(async (request: Request) => {
       return await this.execute(request);
     }));

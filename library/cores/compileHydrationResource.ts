@@ -1,5 +1,6 @@
 import { IOCContainer } from "@/library/commons/IOCContainer";
 import { HydrationCompileService } from "@/library/services/compile/HydrationCompileService";
+import { HydrationResourceManagement } from "@/library/services/mechanism/HydrationResourceManagement";
 
 export type HydrationResourceParamsType = {
   source: string
@@ -9,7 +10,9 @@ export type HydrationResourceParamsType = {
  * 获取客户端注水渲染相关资源的函数
  * **/
 export async function compileHydrationResource(params: HydrationResourceParamsType) {
-  const $HydrationCompileService = IOCContainer.get(HydrationCompileService);
-  const assetsFileList = await $HydrationCompileService.startBuild(params.source);
-  console.log("注水渲染资源清单", assetsFileList);
+  const $HydrationResourceManagement = IOCContainer.get(HydrationResourceManagement);
+  await $HydrationResourceManagement.relationSourceCode(params.source);
+  await $HydrationResourceManagement.smartDecide();
+  const compileAssetsInfo = await $HydrationResourceManagement.getResourceList();
+  return compileAssetsInfo;
 };

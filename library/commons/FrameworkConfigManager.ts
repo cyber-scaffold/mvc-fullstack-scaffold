@@ -11,6 +11,8 @@ export class FrameworkConfigManager {
 
   /** 应用层内置的默认配置 **/
   private defaultConfig: any = {
+    /** 编译资产的输出目录 **/
+    assetsDirectoryPath: path.resolve(process.cwd(), "./dist/"),
     /** 临时水合化脚本的生成目录 **/
     tempHydrationDirectoryPath: path.resolve(process.cwd(), "./dist/.hydration/"),
     /** 脱水化渲染资源的输出位置(服务端ssr渲染函数) **/
