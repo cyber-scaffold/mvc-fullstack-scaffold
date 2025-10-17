@@ -15,7 +15,7 @@ export class DetailPageController {
     @inject(RenderHTMLContentService) private readonly $RenderHTMLContentService: RenderHTMLContentService
   ) { };
 
-  private async getRenderResource() {
+  public async getRenderResource() {
     const dehydratedRenderMethod = compileDehydratedRenderMethod({
       source: path.resolve(process.cwd(), "./main/views/pages/DetailPage/index.tsx")
     });
@@ -26,8 +26,7 @@ export class DetailPageController {
     return { dehydrated: dehydratedRenderMethod, hydration: hydrationResource };
   };
 
-  public async getRouter() {
-    await this.getRenderResource();
+  public getRouter() {
     return Router().get("/detail", responseHtmlWrapper(async (request: Request) => {
       return await this.execute(request);
     }));

@@ -15,7 +15,7 @@ export class UserPageController {
     @inject(RenderHTMLContentService) private readonly $RenderHTMLContentService: RenderHTMLContentService
   ) { };
 
-  private async getRenderResource() {
+  public async getRenderResource() {
     const dehydratedRenderMethod = compileDehydratedRenderMethod({
       source: path.resolve(process.cwd(), "./main/views/pages/UserPage/index.tsx")
     });
@@ -26,8 +26,7 @@ export class UserPageController {
     return { dehydrated: dehydratedRenderMethod, hydration: hydrationResource };
   };
 
-  public async getRouter() {
-    await this.getRenderResource();
+  public getRouter() {
     return Router().get("/user", responseHtmlWrapper(async (request: Request) => {
       return await this.execute(request);
     }));

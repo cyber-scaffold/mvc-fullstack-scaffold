@@ -15,7 +15,7 @@ export class SearchController {
     @inject(RenderHTMLContentService) private readonly $RenderHTMLContentService: RenderHTMLContentService
   ) { };
 
-  private async getRenderResource() {
+  public async getRenderResource() {
     const dehydratedRenderMethod = compileDehydratedRenderMethod({
       source: path.resolve(process.cwd(), "./main/views/pages/SearchPage/index.tsx")
     });
@@ -26,8 +26,7 @@ export class SearchController {
     return { dehydrated: dehydratedRenderMethod, hydration: hydrationResource };
   };
 
-  public async getRouter() {
-    await this.getRenderResource();
+  public getRouter() {
     return Router().get("/search", responseHtmlWrapper(async (request: Request) => {
       return await this.execute(request);
     }));
