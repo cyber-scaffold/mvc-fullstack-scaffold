@@ -9,7 +9,9 @@ import { FrameworkConfigManager } from "@/library/commons/FrameworkConfigManager
 @injectable()
 export class CompileDatabaseManager {
 
-  private compileDatabase: Low<{}>;
+  private hydrationCompileDatabase: Low<{}>;
+
+  private dehydrationCompileDatabase: Low<{}>;
 
   constructor(
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager
@@ -18,15 +20,21 @@ export class CompileDatabaseManager {
   public async initialize() {
     try {
       const { assetsDirectoryPath } = await this.$FrameworkConfigManager.getRuntimeConfig();
-      this.compileDatabase = await JSONFilePreset(path.resolve(assetsDirectoryPath, "./compile.json"), {});
-      await this.compileDatabase.write();
+      this.hydrationCompileDatabase = await JSONFilePreset(path.resolve(assetsDirectoryPath, "./hydration-compile.json"), {});
+      await this.hydrationCompileDatabase.write();
+      this.dehydrationCompileDatabase = await JSONFilePreset(path.resolve(assetsDirectoryPath, "./dehydration-compile.json"), {});
+      await this.dehydrationCompileDatabase.write();
     } catch (error) {
       throw error;
     };
   };
 
-  public getCompileDatabase(): Low<{}> {
-    return this.compileDatabase;
+  public getHydrationCompileDatabase(): Low<{}> {
+    return this.hydrationCompileDatabase;
+  };
+
+  public getDehydrationCompileDatabase(): Low<{}> {
+    return this.dehydrationCompileDatabase;
   };
 
 };

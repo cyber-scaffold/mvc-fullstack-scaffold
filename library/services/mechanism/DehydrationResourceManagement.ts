@@ -1,11 +1,14 @@
+import { get } from "dot-prop";
+import pathExists from "path-exists";
 import { injectable, inject } from "inversify";
 
 import { IOCContainer } from "@/library/commons/IOCContainer";
-
 import { CompileDatabaseManager } from "@/library/commons/CompileDatabaseManager";
+
 import { DehydrationCompileService } from "@/library/services/compile/DehydrationCompileService";
 
 import { ResourceManagementInterface } from "@/library/services/mechanism/ResourceManagementInterface";
+import { getContentHash } from "@/library/utils/getContentHash";
 
 /**
  * 脱水资源的资源管理器
@@ -17,13 +20,17 @@ export class DehydrationResourceManagement implements ResourceManagementInterfac
   private sourceCodeFilePath: string;
 
   constructor(
-    @inject(DehydrationCompileService) private readonly $DehydrationCompileService: DehydrationCompileService
+    @inject(DehydrationCompileService) private readonly $DehydrationCompileService: DehydrationCompileService,
+    @inject(CompileDatabaseManager) private readonly $CompileDatabaseManager: CompileDatabaseManager
   ) { }
 
   /**
    * 关联源代码同时做个资源检测,如果不存在的话需要提示
    * **/
   public async relationSourceCode(sourceCodeFilePath: string) {
+    if (!await pathExists(sourceCodeFilePath)) {
+      throw new Error(`源代码文件${sourceCodeFilePath}不存在`);
+    };
     this.sourceCodeFilePath = sourceCodeFilePath;
   };
 
@@ -31,15 +38,32 @@ export class DehydrationResourceManagement implements ResourceManagementInterfac
    * 判断源代码是否有编译记录,没有编译记录并且允许编译的情况下就会自动触发编译
    * **/
   public async smartDecide() {
-
+    /** 计算源代码的contenthash **/
+    const sourceCodeContentHash = await getContentHash(this.sourceCodeFilePath);
+    /** 获取缓存的编译信息 **/
+    const cachedResourceInfo = await this.getResourceList();
+    /** 源代码内容没有发生变动的情况则不需要触发编译 **/
+    if (get(cachedResourceInfo, "contenthash", undefined) === sourceCodeContentHash) {
+      return false;
+    };
+    /** 源代码内容发生变动的情况需要触发编译并更新编译信息 **/
+    const dehydrationCompileDatabase = this.$CompileDatabaseManager.getDehydrationCompileDatabase();
+    const assetsFileList = await this.$DehydrationCompileService.startBuild(this.sourceCodeFilePath);
+    dehydrationCompileDatabase.data[this.sourceCodeFilePath] = {
+      contenthash: sourceCodeContentHash,
+      assets: assetsFileList
+    };
+    await dehydrationCompileDatabase.write();
   };
 
   /**
    * 先执行完smartDecide之后在运行该函数获取编译记录
    * **/
   public async getResourceList() {
-
-    return [];
+    const dehydrationCompileDatabase = this.$CompileDatabaseManager.getDehydrationCompileDatabase();
+    await dehydrationCompileDatabase.read();
+    const compileAssetsInfo = dehydrationCompileDatabase.data[this.sourceCodeFilePath];
+    return compileAssetsInfo;
   };
 
 };

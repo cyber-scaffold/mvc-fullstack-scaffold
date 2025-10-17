@@ -1,4 +1,5 @@
 import { get } from "dot-prop";
+import pathExists from "path-exists";
 import { injectable, inject } from "inversify";
 
 import { IOCContainer } from "@/library/commons/IOCContainer";
@@ -27,6 +28,9 @@ export class HydrationResourceManagement implements ResourceManagementInterface 
    * 关联源代码同时做个资源检测,如果不存在的话需要提示
    * **/
   public async relationSourceCode(sourceCodeFilePath: string) {
+    if (!await pathExists(sourceCodeFilePath)) {
+      throw new Error(`源代码文件${sourceCodeFilePath}不存在`);
+    };
     this.sourceCodeFilePath = sourceCodeFilePath;
   };
 
@@ -43,22 +47,22 @@ export class HydrationResourceManagement implements ResourceManagementInterface 
       return false;
     };
     /** 源代码内容发生变动的情况需要触发编译并更新编译信息 **/
-    const compileDatabase = this.$CompileDatabaseManager.getCompileDatabase();
+    const hydrationCompileDatabase = this.$CompileDatabaseManager.getHydrationCompileDatabase();
     const assetsFileList = await this.$HydrationCompileService.startBuild(this.sourceCodeFilePath);
-    compileDatabase.data[this.sourceCodeFilePath] = {
+    hydrationCompileDatabase.data[this.sourceCodeFilePath] = {
       contenthash: sourceCodeContentHash,
       assets: assetsFileList
     };
-    await compileDatabase.write();
+    await hydrationCompileDatabase.write();
   };
 
   /**
    * 先执行完smartDecide之后在运行该函数获取编译记录
    * **/
   public async getResourceList() {
-    const compileDatabase = this.$CompileDatabaseManager.getCompileDatabase();
-    await compileDatabase.read();
-    const compileAssetsInfo = compileDatabase.data[this.sourceCodeFilePath];
+    const hydrationCompileDatabase = this.$CompileDatabaseManager.getHydrationCompileDatabase();
+    await hydrationCompileDatabase.read();
+    const compileAssetsInfo = hydrationCompileDatabase.data[this.sourceCodeFilePath];
     return compileAssetsInfo;
   };
 

@@ -99,10 +99,10 @@ export class ExpressHttpServer {
     /** 注册请求级容器中间件 **/
     this.app.use(requestMiddleware);
     /** 注册控制器 **/
-    this.app.use(this.$DetailPageController.getRouter());
-    this.app.use(this.$IndexPageController.getRouter());
-    this.app.use(this.$SearchController.getRouter());
-    this.app.use(this.$UserPageController.getRouter());
+    this.app.use(await this.$DetailPageController.getRouter());
+    this.app.use(await this.$IndexPageController.getRouter());
+    this.app.use(await this.$SearchController.getRouter());
+    this.app.use(await this.$UserPageController.getRouter());
     /** 提供开发框架静态资源比如swagger文档 **/
     this.app.use(express.static(this.$FrameworkDetail.frameworkDirectory, {
       // maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)

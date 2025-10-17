@@ -46,4 +46,4 @@ export class HydrationCompileService {
 
 };
 
-IOCContainer.bind(HydrationCompileService).toSelf().inSingletonScope();
+IOCContainer.bind(HydrationCompileService).toSelf().inRequestScope();

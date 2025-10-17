@@ -6,7 +6,6 @@ import { responseHtmlWrapper } from "@/frameworks/librarys/responseHtmlWrapper";
 
 import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
 import { RenderHTMLContentService } from "@/main/server/services/RenderHTMLContentService";
-// import { DetailPage } from "@/main/views/pages/DetailPage";
 import { compileDehydratedRenderMethod, compileHydrationResource } from "@/library";
 
 @injectable()
@@ -16,15 +15,19 @@ export class DetailPageController {
     @inject(RenderHTMLContentService) private readonly $RenderHTMLContentService: RenderHTMLContentService
   ) { };
 
-  public getRouter() {
+  private async getRenderResource() {
     const dehydratedRenderMethod = compileDehydratedRenderMethod({
       source: path.resolve(process.cwd(), "./main/views/pages/DetailPage/index.tsx")
     });
-
     const hydrationResource = compileHydrationResource({
       source: path.resolve(process.cwd(), "./main/views/pages/DetailPage/index.tsx")
     });
+    await Promise.all([dehydratedRenderMethod, hydrationResource]);
+    return { dehydrated: dehydratedRenderMethod, hydration: hydrationResource };
+  };
 
+  public async getRouter() {
+    await this.getRenderResource();
     return Router().get("/detail", responseHtmlWrapper(async (request: Request) => {
       return await this.execute(request);
     }));
