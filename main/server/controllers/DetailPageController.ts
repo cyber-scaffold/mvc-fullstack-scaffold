@@ -5,15 +5,12 @@ import { injectable, inject } from "inversify";
 import { responseHtmlWrapper } from "@/frameworks/librarys/responseHtmlWrapper";
 
 import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
-import { RenderHTMLContentService } from "@/main/server/services/RenderHTMLContentService";
+import { renderHTMLContent } from "@/main/server/utils/renderHTMLContent";
 import { compileDehydratedRenderMethod, compileHydrationResource, renderDehydratedResourceWithSandbox } from "@/library";
 
 @injectable()
 export class DetailPageController {
 
-  constructor(
-    @inject(RenderHTMLContentService) private readonly $RenderHTMLContentService: RenderHTMLContentService
-  ) { };
 
   public async getRenderResource() {
     const dehydratedRenderMethodTask = compileDehydratedRenderMethod({
@@ -33,19 +30,18 @@ export class DetailPageController {
   };
 
   public async execute(request: Request): Promise<any> {
-    const { dehydrated }: any = await this.getRenderResource();
+    const { dehydrated, hydration }: any = await this.getRenderResource();
     const dehydratedViewContent = await renderDehydratedResourceWithSandbox(dehydrated.javascript[0]);
-    return dehydratedViewContent;
-    // const renderContent = await this.$RenderHTMLContentService.getContentString({
-    //   title: "详情页",
-    //   assets: {
-    //     stylesheet: "/pages/DetailPage/index.css",
-    //     javascript: "/pages/DetailPage/index.js"
-    //   },
-    //   component: DetailPage,
-    //   content: {}
-    // });
-    // return renderContent;
+    return renderHTMLContent({
+      hydrationAssets: hydration,
+      dehydrationViewContent: dehydratedViewContent,
+      meta: {
+        title: "详情页",
+        keywords: [],
+        description: "这是详情页",
+      },
+      content: {}
+    });
   };
 
 };

@@ -13,8 +13,8 @@ export class FileLoaderConfigManager {
         loader: "file-loader",
         options: {
           emitFile: true,
-          // publicPath: "/files/",
-          // outputPath: "/files/",
+          publicPath: "/hydration/",
+          // outputPath: "/hydration/",
           name: "[name]-[contenthash].[ext]"
         }
       }, {
@@ -38,8 +38,8 @@ export class FileLoaderConfigManager {
         loader: "file-loader",
         options: {
           emitFile: false,
-          // publicPath: "/files/",
-          // outputPath: "/files/",
+          publicPath: "/hydration/",
+          // outputPath: "/hydration/",
           name: "[name]-[contenthash].[ext]"
         }
       }, {

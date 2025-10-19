@@ -6,7 +6,8 @@ import { responseHtmlWrapper } from "@/frameworks/librarys/responseHtmlWrapper";
 
 import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
 import { RenderHTMLContentService } from "@/main/server/services/RenderHTMLContentService";
-import { compileDehydratedRenderMethod, compileHydrationResource } from "@/library";
+import { renderHTMLContent } from "@/main/server/utils/renderHTMLContent";
+import { compileDehydratedRenderMethod, compileHydrationResource, renderDehydratedResourceWithSandbox } from "@/library";
 
 @injectable()
 export class SearchController {
@@ -16,13 +17,13 @@ export class SearchController {
   ) { };
 
   public async getRenderResource() {
-    const dehydratedRenderMethod = compileDehydratedRenderMethod({
+    const dehydratedRenderMethodTask = compileDehydratedRenderMethod({
       source: path.resolve(process.cwd(), "./main/views/pages/SearchPage/index.tsx")
     });
-    const hydrationResource = compileHydrationResource({
+    const hydrationResourceTask = compileHydrationResource({
       source: path.resolve(process.cwd(), "./main/views/pages/SearchPage/index.tsx")
     });
-    await Promise.all([dehydratedRenderMethod, hydrationResource]);
+    const [dehydratedRenderMethod, hydrationResource] = await Promise.all([dehydratedRenderMethodTask, hydrationResourceTask]);
     return { dehydrated: dehydratedRenderMethod, hydration: hydrationResource };
   };
 
@@ -33,18 +34,21 @@ export class SearchController {
   };
 
   public async execute(request: Request): Promise<any> {
-    // console.log("request.query", request.query);
-    // console.log("request.body", request.body);
-    // const renderContent = await this.$RenderHTMLContentService.getContentString({
-    //   title: "搜索结果页",
-    //   assets: {
-    //     stylesheet: "/pages/SearchPage/index.css",
-    //     javascript: "/pages/SearchPage/index.js"
-    //   },
-    //   component: SearchPage,
-    //   content: { list: Array(10).fill(1) }
-    // });
-    // return renderContent;
+    console.log("request.query", request.query);
+    console.log("request.body", request.body);
+    const content = { list: Array(10).fill(1) };
+    const { dehydrated, hydration }: any = await this.getRenderResource();
+    const dehydratedViewContent = await renderDehydratedResourceWithSandbox(dehydrated.javascript[0], content);
+    return renderHTMLContent({
+      hydrationAssets: hydration,
+      dehydrationViewContent: dehydratedViewContent,
+      meta: {
+        title: "搜索结果页",
+        keywords: [],
+        description: "",
+      },
+      content: content
+    });
   };
 
 };

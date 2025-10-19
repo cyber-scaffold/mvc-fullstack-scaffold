@@ -6,7 +6,8 @@ import { responseHtmlWrapper } from "@/frameworks/librarys/responseHtmlWrapper";
 
 import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
 import { RenderHTMLContentService } from "@/main/server/services/RenderHTMLContentService";
-import { compileDehydratedRenderMethod, compileHydrationResource } from "@/library";
+import { renderHTMLContent } from "@/main/server/utils/renderHTMLContent";
+import { compileDehydratedRenderMethod, compileHydrationResource, renderDehydratedResourceWithSandbox } from "@/library";
 
 @injectable()
 export class UserPageController {
@@ -16,13 +17,13 @@ export class UserPageController {
   ) { };
 
   public async getRenderResource() {
-    const dehydratedRenderMethod = compileDehydratedRenderMethod({
+    const dehydratedRenderMethodTask = compileDehydratedRenderMethod({
       source: path.resolve(process.cwd(), "./main/views/pages/UserPage/index.tsx")
     });
-    const hydrationResource = compileHydrationResource({
+    const hydrationResourceTask = compileHydrationResource({
       source: path.resolve(process.cwd(), "./main/views/pages/UserPage/index.tsx")
     });
-    await Promise.all([dehydratedRenderMethod, hydrationResource]);
+    const [dehydratedRenderMethod, hydrationResource] = await Promise.all([dehydratedRenderMethodTask, hydrationResourceTask]);
     return { dehydrated: dehydratedRenderMethod, hydration: hydrationResource };
   };
 
@@ -33,16 +34,18 @@ export class UserPageController {
   };
 
   public async execute(request: Request): Promise<any> {
-    // const renderContent = await this.$RenderHTMLContentService.getContentString({
-    //   title: "用户中心",
-    //   assets: {
-    //     stylesheet: "/pages/UserPage/index.css",
-    //     javascript: "/pages/UserPage/index.js"
-    //   },
-    //   component: UserPage,
-    //   content: {}
-    // });
-    // return renderContent;
+    const { dehydrated, hydration }: any = await this.getRenderResource();
+    const dehydratedViewContent = await renderDehydratedResourceWithSandbox(dehydrated.javascript[0], {});
+    return renderHTMLContent({
+      hydrationAssets: hydration,
+      dehydrationViewContent: dehydratedViewContent,
+      meta: {
+        title: "用户中心",
+        keywords: [],
+        description: "",
+      },
+      content: {}
+    });
   };
 
 };

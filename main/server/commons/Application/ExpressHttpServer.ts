@@ -29,12 +29,18 @@ import { UserPageController } from "@/main/server/controllers/UserPageController
 
 import { logger } from "@/main/server/utils/logger";
 
+import { compileConfiguration } from "@/library";
+
+import type { IFrameworkConfig } from "@/library";
+
 @injectable()
 export class ExpressHttpServer {
 
   private app = express();
 
   private server: http.Server;
+
+  private compileConfigurationInfo: IFrameworkConfig;
 
   constructor(
     @inject(ApplicationConfigManager) private readonly $ApplicationConfigManager: ApplicationConfigManager,
@@ -90,6 +96,7 @@ export class ExpressHttpServer {
 
   public async bootstrap() {
     await this.$ApplicationConfigManager.initialize();
+    this.compileConfigurationInfo = await compileConfiguration();
     // await this.$ViewsMainfastDetail.initialize();
     // const { env } = await this.$ViewsMainfastDetail.getMainfastFileContent();
     /** 注册中间件 **/
@@ -107,10 +114,10 @@ export class ExpressHttpServer {
     this.app.use(express.static(this.$FrameworkDetail.frameworkDirectory, {
       // maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)
     }));
-    /** 提供视图层静态资源 **/
-    // this.app.use(express.static(this.$ViewsMainfastDetail.projectDirectory, {
-    //   maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)
-    // }));
+    /** 提供静态视图层注水资源的 **/
+    this.app.use("/hydration/", express.static(this.compileConfigurationInfo.hydrationResourceDirectoryPath, {
+      // maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)
+    }));
     /** 启动服务器监听端口 **/
     const { server } = this.$ApplicationConfigManager.getRuntimeConfig();
     this.server = this.app.listen(server.port, async () => {

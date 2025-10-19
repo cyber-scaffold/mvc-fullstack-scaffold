@@ -1,9 +1,14 @@
 import path from "path";
 import type { StatsCompilation } from "webpack";
 
-export function filterWebpackStats(statsJson: StatsCompilation) {
+export interface ICompileAssetsList {
+  javascript: string[]
+  stylesheet: string[]
+};
+
+export function filterWebpackStats(statsJson: StatsCompilation): ICompileAssetsList {
   const { outputPath, assetsByChunkName: { main = [] } } = statsJson;
-  const composeAssetsList = {
+  const composeAssetsList: ICompileAssetsList = {
     "javascript": [],
     "stylesheet": []
   };

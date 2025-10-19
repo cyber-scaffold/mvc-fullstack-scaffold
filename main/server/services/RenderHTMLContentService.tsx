@@ -50,8 +50,8 @@ export class RenderHTMLContentService {
           <link href="/statics/favicon.ico" rel="icon" type="image/x-icon" />
           {assets && assets.stylesheet ? (<link rel="stylesheet" href={assets.stylesheet} />) : null}
           <script dangerouslySetInnerHTML={{ __html: `window.process=${JSON.stringify({ env: { NODE_ENV: process.env.NODE_ENV } })};` }}></script>
-          <script dangerouslySetInnerHTML={{ __html: `window.seo=${JSON.stringify(SEOInfomation, null, "")};` }}></script>
           <script dangerouslySetInnerHTML={{ __html: `window.content=${JSON.stringify(content, null, "")};` }}></script>
+          <script dangerouslySetInnerHTML={{ __html: `window.seo=${JSON.stringify(SEOInfomation, null, "")};` }}></script>
         </head>
         <body>
           <div id="root">
