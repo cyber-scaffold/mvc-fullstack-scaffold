@@ -2,6 +2,7 @@ import os from "os";
 import { injectable, inject } from "inversify";
 
 import { IOCContainer } from "@/library/commons/IOCContainer";
+import { filePathContentHash } from "@/library/utils/filePathContentHash";
 
 @injectable()
 export class FileLoaderConfigManager {
@@ -15,7 +16,10 @@ export class FileLoaderConfigManager {
           emitFile: true,
           publicPath: "/hydration/",
           // outputPath: "/hydration/",
-          name: "[name]-[contenthash].[ext]"
+          // name: "[name]-[contenthash].[ext]"
+          name: (resourcePath: string) => {
+            return `[name]-${filePathContentHash(resourcePath)}-[contenthash].[ext]`;
+          }
         }
       }, {
         loader: "thread-loader",
@@ -40,7 +44,9 @@ export class FileLoaderConfigManager {
           emitFile: false,
           publicPath: "/hydration/",
           // outputPath: "/hydration/",
-          name: "[name]-[contenthash].[ext]"
+          name: (resourcePath: string) => {
+            return `[name]-${filePathContentHash(resourcePath)}-[contenthash].[ext]`;
+          }
         }
       }, {
         loader: "thread-loader",

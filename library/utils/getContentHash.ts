@@ -8,5 +8,5 @@ import { promisify } from "util";
 export async function getContentHash(sourceCodeFilePath: string): Promise<string> {
   const sourceCodeContent: string = await promisify(fs.readFile)(sourceCodeFilePath, "utf-8");
   const multiEntropyCompositeHashing: string = md5(sourceCodeContent + md5(sourceCodeContent))
-  return multiEntropyCompositeHashing
+  return multiEntropyCompositeHashing;
 };

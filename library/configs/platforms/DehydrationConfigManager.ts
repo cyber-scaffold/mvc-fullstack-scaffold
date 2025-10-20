@@ -15,6 +15,8 @@ import { LessLoaderConfigManager } from "@/library/configs/loaders/LessLoaderCon
 import { SassLoaderConfigManager } from "@/library/configs/loaders/SassLoaderConfigManager";
 import { CssLoaderConfigManager } from "@/library/configs/loaders/CssLoaderConfigManager";
 
+import { filePathContentHash } from "@/library/utils/filePathContentHash";
+
 /**
  * 脱水化资源的编译选项管理器
  * **/
@@ -83,7 +85,9 @@ export class DehydrationConfigManager {
       devtool: "source-map",
       output: {
         path: dehydrationResourceDirectoryPath,
-        filename: "index.dehydration-[contenthash].js",
+        filename: () => {
+          return `index-${filePathContentHash(sourceCodeFilePath)}-dehydration-[contenthash].js`;
+        },
         library: {
           type: "commonjs2"
         }
@@ -102,7 +106,9 @@ export class DehydrationConfigManager {
       devtool: "source-map",
       output: {
         path: dehydrationResourceDirectoryPath,
-        filename: "index.dehydration-[contenthash].js",
+        filename: () => {
+          return `index-${filePathContentHash(sourceCodeFilePath)}-dehydration-[contenthash].js`;
+        },
         library: {
           type: "commonjs2"
         }

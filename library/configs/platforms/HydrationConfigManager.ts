@@ -18,6 +18,8 @@ import { SassLoaderConfigManager } from "@/library/configs/loaders/SassLoaderCon
 import { BabelLoaderConfigManger } from "@/library/configs/loaders/BabelLoaderConfigManger";
 import { TypeScriptLoaderConfigManger } from "@/library/configs/loaders/TypeScriptLoaderConfigManger";
 
+import { filePathContentHash } from "@/library/utils/filePathContentHash";
+
 @injectable()
 export class HydrationConfigManager {
 
@@ -35,13 +37,9 @@ export class HydrationConfigManager {
   /**
    * 最基础的webpack编译配置
    * **/
-  public async getBasicConfig() {
-    const { hydrationResourceDirectoryPath } = this.$FrameworkConfigManager.getRuntimeConfig();
+  public async getBasicConfig(sourceCodeFilePath: string) {
     return {
-      output: {
-        path: hydrationResourceDirectoryPath,
-        filename: "index-hydration-[contenthash].js"
-      },
+      entry: sourceCodeFilePath,
       resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx"],
         alias: {
@@ -77,7 +75,8 @@ export class HydrationConfigManager {
    * 开发模式下的webpack配置
    * **/
   public async getDevelopmentConfig(sourceCodeFilePath: string) {
-    const basicConfig: any = await this.getBasicConfig();
+    const basicConfig: any = await this.getBasicConfig(sourceCodeFilePath);
+    const { hydrationResourceDirectoryPath } = this.$FrameworkConfigManager.getRuntimeConfig();
     // const WebpackAssetsManifestPlugin = new WebpackAssetsManifest();
     // WebpackAssetsManifestPlugin.hooks.apply.tap("AddENV", (manifest) => {
     //   manifest.set("env", "development");
@@ -85,12 +84,19 @@ export class HydrationConfigManager {
     return merge<Configuration>(basicConfig, {
       mode: "development",
       devtool: "source-map",
-      entry: sourceCodeFilePath,
+      output: {
+        path: hydrationResourceDirectoryPath,
+        filename: () => {
+          return `index-${filePathContentHash(sourceCodeFilePath)}-hydration-[contenthash].js`;
+        }
+      },
       plugins: [
         // WebpackAssetsManifestPlugin,
         new MiniCssExtractPlugin({
           linkType: "text/css",
-          filename: "index-hydration-[contenthash].css"
+          filename: () => {
+            return `index-${filePathContentHash(sourceCodeFilePath)}-hydration-[contenthash].css`;
+          }
         }),
       ]
     });
@@ -100,7 +106,8 @@ export class HydrationConfigManager {
    * 生产模式下的webpack配置
    * **/
   public async getProductionConfig(sourceCodeFilePath: string) {
-    const basicConfig: any = await this.getBasicConfig();
+    const basicConfig: any = await this.getBasicConfig(sourceCodeFilePath);
+    const { hydrationResourceDirectoryPath } = this.$FrameworkConfigManager.getRuntimeConfig();
     // const WebpackAssetsManifestPlugin = new WebpackAssetsManifest();
     // WebpackAssetsManifestPlugin.hooks.apply.tap("AddENV", (manifest) => {
     //   manifest.set("env", "production");
@@ -108,12 +115,19 @@ export class HydrationConfigManager {
     return merge<Configuration>(basicConfig, {
       mode: "production",
       devtool: false,
-      entry: sourceCodeFilePath,
+      output: {
+        path: hydrationResourceDirectoryPath,
+        filename: () => {
+          return `index-${filePathContentHash(sourceCodeFilePath)}-hydration-[contenthash].js`;
+        }
+      },
       plugins: [
         // WebpackAssetsManifestPlugin,
         new MiniCssExtractPlugin({
           linkType: "text/css",
-          filename: "index-hydration-[contenthash].css"
+          filename: () => {
+            return `index-${filePathContentHash(sourceCodeFilePath)}-hydration-[contenthash].css`;
+          }
         }),
       ]
     });
