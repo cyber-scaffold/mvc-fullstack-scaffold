@@ -1,6 +1,5 @@
 import React from "react";
 
-import { renderToDocument } from "@/frameworks/librarys/renderToDocument";
 import { BasicLayout } from "@/main/views/layouts/BasicLayout";
 
 export default function SearchPage({ content }) {
@@ -16,5 +15,3 @@ export default function SearchPage({ content }) {
     </BasicLayout>
   )
 };
-
-renderToDocument(SearchPage);

@@ -11,7 +11,6 @@ import { compileDehydratedRenderMethod, compileHydrationResource, renderDehydrat
 @injectable()
 export class DetailPageController {
 
-
   public async getRenderResource() {
     const dehydratedRenderMethodTask = compileDehydratedRenderMethod({
       source: path.resolve(process.cwd(), "./main/views/pages/DetailPage/index.tsx")

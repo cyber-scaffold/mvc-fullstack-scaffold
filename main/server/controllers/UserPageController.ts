@@ -5,16 +5,11 @@ import { injectable, inject } from "inversify";
 import { responseHtmlWrapper } from "@/frameworks/librarys/responseHtmlWrapper";
 
 import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
-import { RenderHTMLContentService } from "@/main/server/services/RenderHTMLContentService";
 import { renderHTMLContent } from "@/main/server/utils/renderHTMLContent";
 import { compileDehydratedRenderMethod, compileHydrationResource, renderDehydratedResourceWithSandbox } from "@/library";
 
 @injectable()
 export class UserPageController {
-
-  constructor(
-    @inject(RenderHTMLContentService) private readonly $RenderHTMLContentService: RenderHTMLContentService
-  ) { };
 
   public async getRenderResource() {
     const dehydratedRenderMethodTask = compileDehydratedRenderMethod({

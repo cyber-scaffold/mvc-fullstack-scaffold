@@ -17,11 +17,12 @@ export class CompilerActionService {
    * 清理编译目录
    * **/
   public async initialize() {
-    const { assetsDirectoryPath } = await this.$FrameworkConfigManager.getRuntimeConfig();
+    const { assetsDirectoryPath, tempHydrationDirectoryPath } = await this.$FrameworkConfigManager.getRuntimeConfig();
     if (await pathExists(assetsDirectoryPath)) {
       return false;
     };
     await promisify(fs.mkdir)(assetsDirectoryPath);
+    await promisify(fs.mkdir)(tempHydrationDirectoryPath);
   };
 
 };

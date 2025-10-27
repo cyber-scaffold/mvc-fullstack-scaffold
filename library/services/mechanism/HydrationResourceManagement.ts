@@ -6,6 +6,7 @@ import { IOCContainer } from "@/library/commons/IOCContainer";
 import { CompileDatabaseManager } from "@/library/commons/CompileDatabaseManager";
 
 import { HydrationCompileService } from "@/library/services/compile/HydrationCompileService";
+import { HydrationRenderWapperService } from "@/library/services/preprocess/HydrationRenderWapperService";
 
 import { ResourceManagementInterface } from "@/library/services/mechanism/ResourceManagementInterface";
 import { getContentHash } from "@/library/utils/getContentHash";
@@ -20,6 +21,7 @@ export class HydrationResourceManagement implements ResourceManagementInterface 
   private sourceCodeFilePath: string;
 
   constructor(
+    @inject(HydrationRenderWapperService) private readonly $HydrationRenderWapperService: HydrationRenderWapperService,
     @inject(HydrationCompileService) private readonly $HydrationCompileService: HydrationCompileService,
     @inject(CompileDatabaseManager) private readonly $CompileDatabaseManager: CompileDatabaseManager
   ) { }
@@ -48,7 +50,8 @@ export class HydrationResourceManagement implements ResourceManagementInterface 
     };
     /** 源代码内容发生变动的情况需要触发编译并更新编译信息 **/
     const hydrationCompileDatabase = this.$CompileDatabaseManager.getHydrationCompileDatabase();
-    const assetsFileList = await this.$HydrationCompileService.startBuild(this.sourceCodeFilePath);
+    const composeTemporaryRenderFilePath = await this.$HydrationRenderWapperService.generateComposeTemporaryRenderFile(this.sourceCodeFilePath);
+    const assetsFileList = await this.$HydrationCompileService.startBuild(composeTemporaryRenderFilePath);
     hydrationCompileDatabase.data[this.sourceCodeFilePath] = {
       contenthash: sourceCodeContentHash,
       assets: assetsFileList

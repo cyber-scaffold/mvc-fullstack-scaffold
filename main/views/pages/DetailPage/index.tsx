@@ -1,6 +1,5 @@
 import React from "react";
 
-import { renderToDocument } from "@/frameworks/librarys/renderToDocument";
 import { BasicLayout } from "@/main/views/layouts/BasicLayout";
 
 export default function DetailPage(props) {
@@ -15,5 +14,3 @@ export default function DetailPage(props) {
     </BasicLayout>
   )
 };
-
-renderToDocument(DetailPage);

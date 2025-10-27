@@ -1,6 +1,5 @@
 import React from "react";
 
-import { renderToDocument } from "@/frameworks/librarys/renderToDocument";
 import { BasicLayout } from "@/main/views/layouts/BasicLayout";
 
 import hq2 from "./assets/hq2.jpg";
@@ -14,5 +13,3 @@ export default function UserPage(props) {
     </BasicLayout>
   )
 };
-
-renderToDocument(UserPage);
