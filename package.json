@@ -4,7 +4,7 @@
   "description": "基于mvc和视图层序言和标记智能化渲染的nodejs全栈编译器",
   "main": "index.js",
   "scripts": {
-    "dev": "node -r esbuild-register ./main/server/index.ts",
+    "dev": "nodemon --ignore **/dist/** -r esbuild-register ./main/server/index.ts",
     "build": "ts-node -r tsconfig-paths/register ./frameworks/build.ts"
   },
   "keywords": [],
@@ -36,7 +36,7 @@
     "lowdb": "^7.0.1",
     "mini-css-extract-plugin": "^2.9.2",
     "node-polyfill-webpack-plugin": "^2.0.1",
-    "nodemon": "^2.0.21",
+    "nodemon": "^2.0.22",
     "postcss-loader": "^7.3.2",
     "sass": "^1.62.1",
     "sass-loader": "^13.3.1",
