@@ -4,7 +4,7 @@ import { merge } from "webpack-merge";
 import { injectable, inject } from "inversify";
 import { DefinePlugin, Configuration } from "webpack";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
-import WebpackAssetsManifest from "webpack-assets-manifest";
+// import WebpackAssetsManifest from "webpack-assets-manifest";
 import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
 
 import { IOCContainer } from "@/library/commons/IOCContainer";
@@ -15,7 +15,8 @@ import { CssLoaderConfigManager } from "@/library/configs/loaders/CssLoaderConfi
 import { FileLoaderConfigManager } from "@/library/configs/loaders/FileLoaderConfigManager";
 import { LessLoaderConfigManager } from "@/library/configs/loaders/LessLoaderConfigManager";
 import { SassLoaderConfigManager } from "@/library/configs/loaders/SassLoaderConfigManager";
-import { BabelLoaderConfigManger } from "@/library/configs/loaders/BabelLoaderConfigManger";
+// import { BabelLoaderConfigManger } from "@/library/configs/loaders/BabelLoaderConfigManger";
+import { ESBuildLoaderConfigManger } from "@/library/configs/loaders/ESBuildLoaderConfigManger";
 import { TypeScriptLoaderConfigManger } from "@/library/configs/loaders/TypeScriptLoaderConfigManger";
 
 import { filePathContentHash } from "@/library/utils/filePathContentHash";
@@ -26,7 +27,8 @@ export class HydrationConfigManager {
   constructor(
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager,
     @inject(TypeScriptLoaderConfigManger) private readonly $TypeScriptLoaderConfigManger: TypeScriptLoaderConfigManger,
-    @inject(BabelLoaderConfigManger) private readonly $BabelLoaderConfigManger: BabelLoaderConfigManger,
+    @inject(ESBuildLoaderConfigManger) private readonly $ESBuildLoaderConfigManger: ESBuildLoaderConfigManger,
+    // @inject(BabelLoaderConfigManger) private readonly $BabelLoaderConfigManger: BabelLoaderConfigManger,
     @inject(FileLoaderConfigManager) private readonly $FileLoaderConfigManager: FileLoaderConfigManager,
     @inject(LessLoaderConfigManager) private readonly $LessLoaderConfigManager: LessLoaderConfigManager,
     @inject(SassLoaderConfigManager) private readonly $SassLoaderConfigManager: SassLoaderConfigManager,
@@ -62,8 +64,9 @@ export class HydrationConfigManager {
       },
       module: {
         rules: [
-          await this.$TypeScriptLoaderConfigManger.getClientSiderLoaderConfig(),
-          await this.$BabelLoaderConfigManger.getClientSiderLoaderConfig(),
+          // await this.$TypeScriptLoaderConfigManger.getClientSiderLoaderConfig(),
+          await this.$ESBuildLoaderConfigManger.getClientSiderLoaderConfig(),
+          // await this.$BabelLoaderConfigManger.getClientSiderLoaderConfig(),
           await this.$FileLoaderConfigManager.getClientSiderLoaderConfig(),
           await this.$LessLoaderConfigManager.getClientSiderLoaderConfig(),
           await this.$SassLoaderConfigManager.getClientSiderLoaderConfig(),

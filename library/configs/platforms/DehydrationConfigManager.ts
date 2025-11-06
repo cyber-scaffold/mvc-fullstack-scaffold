@@ -9,7 +9,8 @@ import { IOCContainer } from "@/library/commons/IOCContainer";
 import { FrameworkConfigManager } from "@/library/commons/FrameworkConfigManager";
 
 import { TypeScriptLoaderConfigManger } from "@/library/configs/loaders/TypeScriptLoaderConfigManger";
-import { BabelLoaderConfigManger } from "@/library/configs/loaders/BabelLoaderConfigManger";
+import { ESBuildLoaderConfigManger } from "@/library/configs/loaders/ESBuildLoaderConfigManger";
+// import { BabelLoaderConfigManger } from "@/library/configs/loaders/BabelLoaderConfigManger";
 import { FileLoaderConfigManager } from "@/library/configs/loaders/FileLoaderConfigManager";
 import { LessLoaderConfigManager } from "@/library/configs/loaders/LessLoaderConfigManager";
 import { SassLoaderConfigManager } from "@/library/configs/loaders/SassLoaderConfigManager";
@@ -26,7 +27,8 @@ export class DehydrationConfigManager {
   constructor(
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager,
     @inject(TypeScriptLoaderConfigManger) private readonly $TypeScriptLoaderConfigManger: TypeScriptLoaderConfigManger,
-    @inject(BabelLoaderConfigManger) private readonly $BabelLoaderConfigManger: BabelLoaderConfigManger,
+    @inject(ESBuildLoaderConfigManger) private readonly $ESBuildLoaderConfigManger: ESBuildLoaderConfigManger,
+    // @inject(BabelLoaderConfigManger) private readonly $BabelLoaderConfigManger: BabelLoaderConfigManger,
     @inject(FileLoaderConfigManager) private readonly $FileLoaderConfigManager: FileLoaderConfigManager,
     @inject(LessLoaderConfigManager) private readonly $LessLoaderConfigManager: LessLoaderConfigManager,
     @inject(SassLoaderConfigManager) private readonly $SassLoaderConfigManager: SassLoaderConfigManager,
@@ -56,8 +58,9 @@ export class DehydrationConfigManager {
       },
       module: {
         rules: [
-          await this.$TypeScriptLoaderConfigManger.getServerSiderLoaderConfig(),
-          await this.$BabelLoaderConfigManger.getServerSiderLoaderConfig(),
+          // await this.$TypeScriptLoaderConfigManger.getServerSiderLoaderConfig(),
+          // await this.$BabelLoaderConfigManger.getServerSiderLoaderConfig(),
+          await this.$ESBuildLoaderConfigManger.getServerSiderLoaderConfig(),
           await this.$FileLoaderConfigManager.getServerSiderLoaderConfig(),
           await this.$LessLoaderConfigManager.getServerSiderLoaderConfig(),
           await this.$SassLoaderConfigManager.getServerSiderLoaderConfig(),
