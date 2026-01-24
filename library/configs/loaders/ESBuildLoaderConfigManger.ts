@@ -9,26 +9,20 @@ export class ESBuildLoaderConfigManger {
 
   public async getClientSiderLoaderConfig() {
     return [{
-      test: /\.(js|jsx|ts|tsx)$/,
-      // exclude: /(node_modules)/,
+      test: /\.(js|jsx|mjs|cjs|ts|tsx)$/,
+      include: /(node_modules)/,
       use: [{
-        loader: "esbuild-loader",
-        options: {
-          // configFile: path.join(process.cwd(), "./.babelrc.js")
-        }
+        loader: "esbuild-loader"
       }]
     }];
   };
 
   public async getServerSiderLoaderConfig() {
     return [{
-      test: /\.(js|jsx|ts|tsx)$/,
-      // exclude: /(node_modules)/,
+      test: /\.(js|jsx|mjs|cjs|ts|tsx)$/,
+      include: /(node_modules)/,
       use: [{
-        loader: "esbuild-loader",
-        options: {
-          // configFile: path.join(process.cwd(), "./.babelrc.js")
-        }
+        loader: "esbuild-loader"
       }]
     }];
   };

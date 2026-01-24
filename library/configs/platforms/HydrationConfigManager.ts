@@ -26,7 +26,7 @@ export class HydrationConfigManager {
 
   constructor(
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager,
-    // @inject(TypeScriptLoaderConfigManger) private readonly $TypeScriptLoaderConfigManger: TypeScriptLoaderConfigManger,
+    @inject(TypeScriptLoaderConfigManger) private readonly $TypeScriptLoaderConfigManger: TypeScriptLoaderConfigManger,
     @inject(ESBuildLoaderConfigManger) private readonly $ESBuildLoaderConfigManger: ESBuildLoaderConfigManger,
     // @inject(BabelLoaderConfigManger) private readonly $BabelLoaderConfigManger: BabelLoaderConfigManger,
     @inject(FileLoaderConfigManager) private readonly $FileLoaderConfigManager: FileLoaderConfigManager,
@@ -55,6 +55,8 @@ export class HydrationConfigManager {
       resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx"],
         alias: {
+          "ServerSideCssModuleLoader": path.resolve(process.cwd(), "./library/utils/ServerSideCssModuleLoader.js"),
+          "MiniCssExtractPluginLoader": path.resolve(MiniCssExtractPlugin.loader),
           "@@": path.resolve(process.cwd(), "../"),
           "@": process.cwd()
         }
@@ -63,15 +65,15 @@ export class HydrationConfigManager {
         nodeEnv: false
       },
       module: {
-        rules: [
-          // await this.$TypeScriptLoaderConfigManger.getClientSiderLoaderConfig(),
-          await this.$ESBuildLoaderConfigManger.getClientSiderLoaderConfig(),
-          // await this.$BabelLoaderConfigManger.getClientSiderLoaderConfig(),
-          await this.$FileLoaderConfigManager.getClientSiderLoaderConfig(),
-          await this.$LessLoaderConfigManager.getClientSiderLoaderConfig(),
-          await this.$SassLoaderConfigManager.getClientSiderLoaderConfig(),
-          await this.$CssLoaderConfigManager.getClientSiderLoaderConfig()
-        ].flat()
+        rules: (await Promise.all([
+          this.$TypeScriptLoaderConfigManger.getClientSiderLoaderConfig(),
+          this.$ESBuildLoaderConfigManger.getClientSiderLoaderConfig(),
+          // this.$BabelLoaderConfigManger.getClientSiderLoaderConfig(),
+          this.$FileLoaderConfigManager.getClientSiderLoaderConfig(),
+          this.$LessLoaderConfigManager.getClientSiderLoaderConfig(),
+          this.$SassLoaderConfigManager.getClientSiderLoaderConfig(),
+          this.$CssLoaderConfigManager.getClientSiderLoaderConfig()
+        ])).flat()
       },
       plugins: [
         new DefinePlugin({

@@ -16,9 +16,9 @@ declare global {
   }
 };
 
+
 const serverApplicationInstance = IOCContainer.get(ExpressHttpServer);
 
-/** 获取应用启动类,然后执行启动 **/
 setImmediate(async () => {
   await serverApplicationInstance.beforeBootstrap();
   await serverApplicationInstance.bootstrap();

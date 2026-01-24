@@ -6,7 +6,7 @@ import { renderToString } from "react-dom/server";
 import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
 // import { ViewsMainfastDetail } from "@/main/server/commons/Application/ViewsMainfastDetail";
 
-import { RenderContextProvider } from "@/frameworks/librarys/RenderContext";
+// import { RenderContextProvider } from "@/frameworks/librarys/RenderContext";
 
 type paramsType = {
   title?: string,
@@ -56,9 +56,7 @@ export class RenderHTMLContentService {
         <body>
           <div id="root">
             {RenderComponent ? (
-              <RenderContextProvider seo={SEOInfomation} content={content}>
-                <RenderComponent />
-              </RenderContextProvider>
+              <RenderComponent />
             ) : null}
           </div>
           {assets && assets.javascript ? (<script src={assets.javascript}></script>) : null}

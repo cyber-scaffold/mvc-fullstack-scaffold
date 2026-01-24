@@ -4,6 +4,7 @@ import { merge } from "webpack-merge";
 import { injectable, inject } from "inversify";
 import nodeExternals from "webpack-node-externals";
 import { DefinePlugin, Configuration } from "webpack";
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
 
 import { IOCContainer } from "@/library/commons/IOCContainer";
 import { FrameworkConfigManager } from "@/library/commons/FrameworkConfigManager";
@@ -26,7 +27,7 @@ export class DehydrationConfigManager {
 
   constructor(
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager,
-    // @inject(TypeScriptLoaderConfigManger) private readonly $TypeScriptLoaderConfigManger: TypeScriptLoaderConfigManger,
+    @inject(TypeScriptLoaderConfigManger) private readonly $TypeScriptLoaderConfigManger: TypeScriptLoaderConfigManger,
     @inject(ESBuildLoaderConfigManger) private readonly $ESBuildLoaderConfigManger: ESBuildLoaderConfigManger,
     // @inject(BabelLoaderConfigManger) private readonly $BabelLoaderConfigManger: BabelLoaderConfigManger,
     @inject(FileLoaderConfigManager) private readonly $FileLoaderConfigManager: FileLoaderConfigManager,
@@ -45,6 +46,8 @@ export class DehydrationConfigManager {
       resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx"],
         alias: {
+          "ServerSideCssModuleLoader": path.resolve(process.cwd(), "./library/utils/ServerSideCssModuleLoader.js"),
+          "MiniCssExtractPluginLoader": path.resolve(MiniCssExtractPlugin.loader),
           "@@": path.resolve(process.cwd(), "../"),
           "@": process.cwd()
         }
@@ -57,15 +60,15 @@ export class DehydrationConfigManager {
         nodeEnv: false
       },
       module: {
-        rules: [
-          // await this.$TypeScriptLoaderConfigManger.getServerSiderLoaderConfig(),
-          // await this.$BabelLoaderConfigManger.getServerSiderLoaderConfig(),
-          await this.$ESBuildLoaderConfigManger.getServerSiderLoaderConfig(),
-          await this.$FileLoaderConfigManager.getServerSiderLoaderConfig(),
-          await this.$LessLoaderConfigManager.getServerSiderLoaderConfig(),
-          await this.$SassLoaderConfigManager.getServerSiderLoaderConfig(),
-          await this.$CssLoaderConfigManager.getServerSiderLoaderConfig()
-        ].flat()
+        rules: (await Promise.all([
+          this.$TypeScriptLoaderConfigManger.getServerSiderLoaderConfig(),
+          // this.$BabelLoaderConfigManger.getServerSiderLoaderConfig(),
+          this.$ESBuildLoaderConfigManger.getServerSiderLoaderConfig(),
+          this.$FileLoaderConfigManager.getServerSiderLoaderConfig(),
+          this.$LessLoaderConfigManager.getServerSiderLoaderConfig(),
+          this.$SassLoaderConfigManager.getServerSiderLoaderConfig(),
+          this.$CssLoaderConfigManager.getServerSiderLoaderConfig()
+        ])).flat()
       },
       plugins: [
         new DefinePlugin({
@@ -105,7 +108,7 @@ export class DehydrationConfigManager {
     const basicConfig: any = await this.getBasicConfig(sourceCodeFilePath);
     const { dehydrationResourceDirectoryPath } = this.$FrameworkConfigManager.getRuntimeConfig();
     return merge<Configuration>(basicConfig, {
-      mode: "production",
+      mode: "none",
       devtool: "source-map",
       output: {
         path: dehydrationResourceDirectoryPath,

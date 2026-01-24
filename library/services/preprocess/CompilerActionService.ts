@@ -18,11 +18,11 @@ export class CompilerActionService {
    * **/
   public async initialize() {
     const { assetsDirectoryPath, tempHydrationDirectoryPath } = await this.$FrameworkConfigManager.getRuntimeConfig();
-    if (await pathExists(assetsDirectoryPath)) {
-      return false;
-    };
-    await promisify(fs.mkdir)(assetsDirectoryPath);
-    await promisify(fs.mkdir)(tempHydrationDirectoryPath);
+    // if (await pathExists(assetsDirectoryPath)) {
+    //   return false;
+    // };
+    await promisify(fs.mkdir)(assetsDirectoryPath, { recursive: true });
+    await promisify(fs.mkdir)(tempHydrationDirectoryPath, { recursive: true });
   };
 
 };

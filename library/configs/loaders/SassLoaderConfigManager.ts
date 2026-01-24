@@ -1,9 +1,9 @@
 import os from "os";
+import path from "path";
 import { injectable, inject } from "inversify";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 
 import { IOCContainer } from "@/library/commons/IOCContainer";
-
 
 @injectable()
 export class SassLoaderConfigManager {
@@ -42,16 +42,6 @@ export class SassLoaderConfigManager {
         loader: "sass-loader",
         options: {}
       }]
-    }, {
-      loader: "thread-loader",
-      options: {
-        workers: os.cpus().length - 1,
-        workerParallelJobs: 50,
-        workerNodeArgs: ['--max-old-space-size=1024'],
-        poolRespawn: false,
-        poolTimeout: 2000,
-        poolParallelJobs: 50,
-      },
     }]
   };
 
@@ -59,7 +49,7 @@ export class SassLoaderConfigManager {
     return [{
       test: /\.(scss|sass)$/,
       use: [{
-        loader: require.resolve("../../utils/ServerSideCssModuleLoader.js")
+        loader: path.resolve(process.cwd(), "./library/utils/ServerSideCssModuleLoader.js")
       }, {
         loader: "css-loader",
         options: {
@@ -88,16 +78,6 @@ export class SassLoaderConfigManager {
       }, {
         loader: "sass-loader",
         options: {}
-      }, {
-        loader: "thread-loader",
-        options: {
-          workers: os.cpus().length - 1,
-          workerParallelJobs: 50,
-          workerNodeArgs: ['--max-old-space-size=1024'],
-          poolRespawn: false,
-          poolTimeout: 2000,
-          poolParallelJobs: 50,
-        },
       }]
     }]
   };
