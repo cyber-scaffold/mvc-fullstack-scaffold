@@ -1,40 +1,22 @@
 import path from "path";
-import WebpackBar from "webpackbar";
 import { merge } from "webpack-merge";
 import { injectable, inject } from "inversify";
 import nodeExternals from "webpack-node-externals";
 import CopyWebpackPlugin from "copy-webpack-plugin";
-import { DefinePlugin, Configuration } from "webpack";
+import { Configuration } from "webpack";
 
 import { IOCContainer } from "@/frameworks/commons/IOCContainer";
-import { EventManager } from "@/frameworks/commons/EventManager";
 import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
 
-import { TypeScriptLoaderConfigManger } from "@/frameworks/configs/loaders/TypeScriptLoaderConfigManger";
-import { BabelLoaderConfigManger } from "@/frameworks/configs/loaders/BabelLoaderConfigManger";
-import { FileLoaderConfigManager } from "@/frameworks/configs/loaders/FileLoaderConfigManager";
-import { LessLoaderConfigManager } from "@/frameworks/configs/loaders/LessLoaderConfigManager";
-import { SassLoaderConfigManager } from "@/frameworks/configs/loaders/SassLoaderConfigManager";
-import { CssLoaderConfigManager } from "@/frameworks/configs/loaders/CssLoaderConfigManager";
+import { ESBuildLoaderConfigManger } from "@/frameworks/configs/loaders/ESBuildLoaderConfigManger";
 
-import { WapperClientToHydrationService } from "@/frameworks/services/preprocess/WapperClientToHydrationService";
-
-import { ServerCompilerProgressPlugin } from "@/frameworks/utils/ServerCompilerProgressPlugin";
-import { TrackRequirementPlugin } from "@/frameworks/utils/TrackRequirementPlugin";
 
 @injectable()
 export class ServerSiderConfigManager {
 
   constructor(
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager,
-    @inject(TypeScriptLoaderConfigManger) private readonly $TypeScriptLoaderConfigManger: TypeScriptLoaderConfigManger,
-    @inject(BabelLoaderConfigManger) private readonly $BabelLoaderConfigManger: BabelLoaderConfigManger,
-    @inject(FileLoaderConfigManager) private readonly $FileLoaderConfigManager: FileLoaderConfigManager,
-    @inject(LessLoaderConfigManager) private readonly $LessLoaderConfigManager: LessLoaderConfigManager,
-    @inject(SassLoaderConfigManager) private readonly $SassLoaderConfigManager: SassLoaderConfigManager,
-    @inject(CssLoaderConfigManager) private readonly $CssLoaderConfigManager: CssLoaderConfigManager,
-    @inject(WapperClientToHydrationService) private readonly $WapperClientToHydrationService: WapperClientToHydrationService,
-    @inject(EventManager) private readonly $EventManager: EventManager
+    @inject(ESBuildLoaderConfigManger) private readonly $ESBuildLoaderConfigManger: ESBuildLoaderConfigManger
   ) { };
 
   /**
@@ -46,7 +28,7 @@ export class ServerSiderConfigManager {
       entry: ["source-map-support/register", path.resolve(source, "./index.ts")],
       target: "node",
       resolve: {
-        extensions: [".ts", ".tsx", ".js", ".jsx"],
+        extensions: [".ts", ".js"],
         alias: {
           "@@": path.resolve(process.cwd(), "../"),
           "@": process.cwd()
@@ -61,28 +43,16 @@ export class ServerSiderConfigManager {
       },
       module: {
         rules: [
-          await this.$TypeScriptLoaderConfigManger.getServerSiderLoaderConfig(),
-          await this.$BabelLoaderConfigManger.getServerSiderLoaderConfig(),
-          await this.$FileLoaderConfigManager.getServerSiderLoaderConfig(),
-          await this.$LessLoaderConfigManager.getServerSiderLoaderConfig(),
-          await this.$SassLoaderConfigManager.getServerSiderLoaderConfig(),
-          await this.$CssLoaderConfigManager.getServerSiderLoaderConfig()
+          await this.$ESBuildLoaderConfigManger.getServerSiderLoaderConfig(),
         ].flat()
       },
       plugins: [
-        new DefinePlugin({
-          "process.isClient": JSON.stringify(false),
-          "process.isServer": JSON.stringify(true)
-        }),
-        new WebpackBar({ name: "编译服务端" }),
         new CopyWebpackPlugin({
           patterns: [{
             from: resources.source,
             to: path.resolve(destnation, "./frameworks/")
           }]
-        }),
-        new TrackRequirementPlugin(this.$WapperClientToHydrationService),
-        new ServerCompilerProgressPlugin(this.$EventManager)
+        })
       ]
     };
   };

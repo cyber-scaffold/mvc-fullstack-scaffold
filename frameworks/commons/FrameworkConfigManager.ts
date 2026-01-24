@@ -13,8 +13,6 @@ export class FrameworkConfigManager {
   private defaultConfig: any = {
     /** 编译产物的目标地址 **/
     destnation: path.resolve(process.cwd(), "./dist/"),
-    /** 临时水合化脚本的生成目录 **/
-    tempHydrationDirectory: path.resolve(process.cwd(), "./dist/.hydration/"),
     /** 静态资源相关的配置选项 **/
     resources: {
       source: path.resolve(process.cwd(), "./frameworks/resources/")
@@ -22,10 +20,6 @@ export class FrameworkConfigManager {
     /** 服务端的编译选项 **/
     serverCompilerConfig: {
       source: path.resolve(process.cwd(), "./main/server/"),
-    },
-    /** 客户端的编译选项 **/
-    clinetCompilerConfig: {
-      source: path.resolve(process.cwd(), "./main/views/"),
     }
   };
 

@@ -114,7 +114,7 @@ export class ExpressHttpServer {
     this.app.use(express.static(this.$FrameworkDetail.frameworkDirectory, {
       // maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)
     }));
-    /** 提供静态视图层注水资源的 **/
+    /** 提供注水javascript和静态资源的路由 */
     this.app.use("/hydration/", express.static(this.compileConfigurationInfo.hydrationResourceDirectoryPath, {
       // maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)
     }));
