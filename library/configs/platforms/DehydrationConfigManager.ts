@@ -44,8 +44,6 @@ export class DehydrationConfigManager {
       resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx"],
         alias: {
-          "ServerSideCssModuleLoader": path.resolve(process.cwd(), "./library/utils/ServerSideCssModuleLoader.js"),
-          "MiniCssExtractPluginLoader": path.resolve(MiniCssExtractPlugin.loader),
           "@@": path.resolve(process.cwd(), "../"),
           "@": process.cwd()
         }
