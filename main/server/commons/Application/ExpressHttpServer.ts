@@ -1,22 +1,21 @@
 import http from "http";
+import express from "express";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
-import express, { Express } from "express";
 import { injectable, inject } from "inversify";
+import { compileConfiguration } from "@/library";
+
+import type { Express } from "express";
+import type { IFrameworkConfig } from "@/library";
 
 import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
+import { RegistryRouter } from "@/main/server/commons/Application/RegistryRouter";
 import { FrameworkDetail } from "@/main/server/commons/Application/FrameworkDetail";
 import { InitialComponent } from "@/main/server/commons/Application/InitialComponent";
-import { RegistryRouter } from "@/main/server/commons/Application/RegistryRouter";
 import { ApplicationConfigManager } from "@/main/server/commons/Application/ApplicationConfigManager";
 
 import { requestMiddleware } from "@/main/server/interceptors/requestMiddleware";
-
 import { logger } from "@/main/server/utils/logger";
-
-import { compileConfiguration } from "@/library";
-
-import type { IFrameworkConfig } from "@/library";
 
 @injectable()
 export class ExpressHttpServer {
