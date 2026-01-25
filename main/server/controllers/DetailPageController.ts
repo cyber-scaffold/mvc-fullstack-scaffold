@@ -1,7 +1,7 @@
 import path from "path";
 import { Router, Request } from "express";
 import { injectable, inject } from "inversify";
-import { compileDehydratedRenderMethod, compileHydrationResource, renderDehydratedResourceWithSandbox } from "@/library";
+import { compileDehydratedResource, compileHydrationResource, renderDehydratedResourceWithSandbox } from "@/library";
 
 import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
 import { responseHtmlWrapper } from "@/main/server/utils/responseHtmlWrapper";
@@ -13,7 +13,7 @@ export class DetailPageController {
 
   /** 获取脱水和注水资源的方法可以用于预处理和运行时渲染 **/
   public async getRenderResource() {
-    const dehydratedRenderMethodTask = compileDehydratedRenderMethod({
+    const dehydratedRenderMethodTask = compileDehydratedResource({
       source: path.resolve(process.cwd(), "./main/views/pages/DetailPage/index.tsx")
     });
     const hydrationResourceTask = compileHydrationResource({

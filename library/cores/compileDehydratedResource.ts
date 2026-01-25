@@ -8,7 +8,7 @@ export type DehydratedRenderMethodParamsType = {
 /**
  * 获取服务端脱水渲染方法的函数
  * **/
-export async function compileDehydratedRenderMethod(params: DehydratedRenderMethodParamsType) {
+export async function compileDehydratedResource(params: DehydratedRenderMethodParamsType) {
   const $DehydrationResourceManagement = IOCContainer.get(DehydrationResourceManagement);
   await $DehydrationResourceManagement.relationSourceCode(params.source);
   await $DehydrationResourceManagement.smartDecide();
