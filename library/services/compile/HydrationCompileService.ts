@@ -14,28 +14,16 @@ export class HydrationCompileService {
     @inject(HydrationConfigManager) private readonly $HydrationConfigManager: HydrationConfigManager
   ) { };
 
-  public async startWatch(sourceCodeFilePath: string) {
-    /** 获取开发环境下的编译配置 **/
-    const hydrationRenderConfig: any = await this.$HydrationConfigManager.getDevelopmentConfig(sourceCodeFilePath);
-    /** 开启一个编译对象 **/
-    const hydrationCompiler = webpack(hydrationRenderConfig);
-    hydrationCompiler.watch({}, async (error, stats) => {
-      if (error) {
-        console.log(error);
-      } else {
-        return filterWebpackStats(stats.toJson({ all: false, assets: true, outputPath: true }));
-      };
-    });
-  };
 
   public async startBuild(sourceCodeFilePath: string) {
-    const hydrationRenderConfig: any = await this.$HydrationConfigManager.getDevelopmentConfig(sourceCodeFilePath);
+    const hydrationRenderConfig: any = await this.$HydrationConfigManager.getFinallyConfig(sourceCodeFilePath);
     const hydrationCompiler = webpack(hydrationRenderConfig);
     return new Promise((resolve, reject) => {
       hydrationCompiler.run(async (error, stats) => {
         if (error) {
           reject(error);
         } else {
+          // console.log(stats.toString({ colors: true }));
           resolve(filterWebpackStats(stats.toJson({ all: false, assets: true, outputPath: true })));
         };
       });

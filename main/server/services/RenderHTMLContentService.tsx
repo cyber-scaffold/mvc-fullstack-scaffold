@@ -5,7 +5,6 @@ import { renderToString } from "react-dom/server";
 
 import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
 // import { ViewsMainfastDetail } from "@/main/server/commons/Application/ViewsMainfastDetail";
-
 // import { RenderContextProvider } from "@/frameworks/librarys/RenderContext";
 
 type paramsType = {

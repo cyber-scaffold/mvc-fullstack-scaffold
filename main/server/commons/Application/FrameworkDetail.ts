@@ -7,9 +7,16 @@ import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
 export class FrameworkDetail {
 
   /**
-   * 框架层的基准目录
+   * 项目根目录的绝对路径
    * **/
-  public frameworkDirectory = path.join(path.dirname(__filename), "frameworks");
+  public projectDirectoryPath = path.resolve(path.dirname(__filename), "../");
+
+  /**
+   * 框架层的基准目录是根据 项目根目录的绝对路径 计算得到的
+   * **/
+  get frameworkDirectory() {
+    return path.join(this.projectDirectoryPath, "./dist/frameworks");
+  };
 
 };
 

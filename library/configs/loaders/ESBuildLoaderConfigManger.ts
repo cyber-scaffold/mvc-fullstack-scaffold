@@ -7,7 +7,7 @@ import { IOCContainer } from "@/library/commons/IOCContainer";
 @injectable()
 export class ESBuildLoaderConfigManger {
 
-  public async getClientSiderLoaderConfig() {
+  public async getHydrationSiderLoaderConfig() {
     return [{
       test: /\.(js|jsx|mjs|cjs|ts|tsx)$/,
       include: /(node_modules)/,
@@ -17,7 +17,7 @@ export class ESBuildLoaderConfigManger {
     }];
   };
 
-  public async getServerSiderLoaderConfig() {
+  public async getDehydrationSiderLoaderConfig() {
     return [{
       test: /\.(js|jsx|mjs|cjs|ts|tsx)$/,
       include: /(node_modules)/,

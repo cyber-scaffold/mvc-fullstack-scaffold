@@ -1,4 +1,5 @@
 import http from "http";
+import path from "path";
 import express from "express";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
@@ -35,8 +36,15 @@ export class ExpressHttpServer {
 
   /** 在服务启动前需要执行的操作 **/
   public async beforeBootstrap() {
+    const projectDirectoryPath = this.$FrameworkDetail.projectDirectoryPath;
     await this.$ApplicationConfigManager.initialize();
-    this.compileConfigurationInfo = await compileConfiguration();
+    this.compileConfigurationInfo = await compileConfiguration({
+      projectDirectoryPath,
+      assetsDirectoryPath: path.resolve(projectDirectoryPath, "./dist/"),
+      tempHydrationDirectoryPath: path.resolve(projectDirectoryPath, "./dist/.hydration/"),
+      hydrationResourceDirectoryPath: path.resolve(projectDirectoryPath, "./dist/hydration/"),
+      dehydrationResourceDirectoryPath: path.resolve(projectDirectoryPath, "./dist/dehydration/"),
+    });
   };
 
   /** 服务启动时执行的代码 **/

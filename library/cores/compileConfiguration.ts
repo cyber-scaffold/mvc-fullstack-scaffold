@@ -5,10 +5,10 @@ import { CompilerActionService } from "@/library/services/preprocess/CompilerAct
 
 import type { IFrameworkConfig } from "@/library/commons/FrameworkConfigManager";
 
-export async function compileConfiguration(): Promise<IFrameworkConfig> {
+export async function compileConfiguration(inputCustmerConfig?: any): Promise<IFrameworkConfig> {
   /** 初始化配置文件 **/
   const $FrameworkConfigManager = IOCContainer.get(FrameworkConfigManager);
-  await $FrameworkConfigManager.initialize();
+  await $FrameworkConfigManager.initialize(inputCustmerConfig);
   /** 初始化工程环境 **/
   const $CompilerActionService = IOCContainer.get(CompilerActionService);
   await $CompilerActionService.initialize();

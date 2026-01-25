@@ -13,11 +13,12 @@ export class IndexPageController {
 
   /** 获取脱水和注水资源的方法可以用于预处理和运行时渲染 **/
   public async getRenderResource() {
+    const projectDirectoryPath = path.resolve(path.dirname(__filename), "../");
     const dehydratedRenderMethodTask = compileDehydratedResource({
-      source: path.resolve(process.cwd(), "./main/views/pages/IndexPage/index.tsx")
+      source: path.resolve(projectDirectoryPath, "./main/views/pages/IndexPage/index.tsx")
     });
     const hydrationResourceTask = compileHydrationResource({
-      source: path.resolve(process.cwd(), "./main/views/pages/IndexPage/index.tsx")
+      source: path.resolve(projectDirectoryPath, "./main/views/pages/IndexPage/index.tsx")
     });
     const [dehydratedRenderMethod, hydrationResource] = await Promise.all([dehydratedRenderMethodTask, hydrationResourceTask]);
     return { dehydrated: dehydratedRenderMethod, hydration: hydrationResource };

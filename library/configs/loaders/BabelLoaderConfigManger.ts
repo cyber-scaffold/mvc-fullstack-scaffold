@@ -7,7 +7,7 @@ import { IOCContainer } from "@/library/commons/IOCContainer";
 @injectable()
 export class BabelLoaderConfigManger {
 
-  public async getClientSiderLoaderConfig() {
+  public async getHydrationSiderLoaderConfig() {
     return [{
       test: /\.(js|jsx)$/,
       exclude: /(node_modules)/,
@@ -20,7 +20,7 @@ export class BabelLoaderConfigManger {
     }];
   };
 
-  public async getServerSiderLoaderConfig() {
+  public async getDehydrationSiderLoaderConfig() {
     return [{
       test: /\.(js|jsx)$/,
       exclude: /(node_modules)/,

@@ -4,11 +4,16 @@ import { injectable, inject } from "inversify";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 
 import { IOCContainer } from "@/library/commons/IOCContainer";
+import { FrameworkConfigManager } from "@/library/commons/FrameworkConfigManager";
 
 @injectable()
 export class CssLoaderConfigManager {
 
-  public async getClientSiderLoaderConfig() {
+  constructor(
+    @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager
+  ) { };
+
+  public async getHydrationSiderLoaderConfig() {
     return [{
       test: /\.(css)$/,
       use: [
@@ -44,11 +49,12 @@ export class CssLoaderConfigManager {
     }];
   };
 
-  public async getServerSiderLoaderConfig() {
+  public async getDehydrationSiderLoaderConfig() {
+    const { projectDirectoryPath } = this.$FrameworkConfigManager.getRuntimeConfig();
     return [{
       test: /\.(css)$/,
       use: [
-        { loader: path.resolve(process.cwd(), "./library/utils/ServerSideCssModuleLoader.js") },
+        { loader: path.resolve(projectDirectoryPath, "./library/utils/DehydrationSideCssModuleLoader.js") },
         {
           loader: "css-loader",
           options: {

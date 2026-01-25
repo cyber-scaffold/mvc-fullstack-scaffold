@@ -12,11 +12,12 @@ export class SearchController {
 
   /** 获取脱水和注水资源的方法可以用于预处理和运行时渲染 **/
   public async getRenderResource() {
+    const projectDirectoryPath = path.resolve(path.dirname(__filename), "../");
     const dehydratedRenderMethodTask = compileDehydratedResource({
-      source: path.resolve(process.cwd(), "./main/views/pages/SearchPage/index.tsx")
+      source: path.resolve(projectDirectoryPath, "./main/views/pages/SearchPage/index.tsx")
     });
     const hydrationResourceTask = compileHydrationResource({
-      source: path.resolve(process.cwd(), "./main/views/pages/SearchPage/index.tsx")
+      source: path.resolve(projectDirectoryPath, "./main/views/pages/SearchPage/index.tsx")
     });
     const [dehydratedRenderMethod, hydrationResource] = await Promise.all([dehydratedRenderMethodTask, hydrationResourceTask]);
     return { dehydrated: dehydratedRenderMethod, hydration: hydrationResource };

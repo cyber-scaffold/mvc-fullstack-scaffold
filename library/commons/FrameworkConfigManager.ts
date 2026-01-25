@@ -7,6 +7,7 @@ import { injectable } from "inversify";
 import { IOCContainer } from "@/library/commons/IOCContainer";
 
 export interface IFrameworkConfig {
+  projectDirectoryPath: string,
   assetsDirectoryPath: string
   tempHydrationDirectoryPath: string
   hydrationResourceDirectoryPath: string
@@ -14,6 +15,7 @@ export interface IFrameworkConfig {
 };
 
 export interface ICustmerFrameworkConfig {
+  projectDirectoryPath?: string,
   assetsDirectoryPath?: string
   tempHydrationDirectoryPath?: string
   hydrationResourceDirectoryPath?: string
@@ -25,6 +27,8 @@ export class FrameworkConfigManager {
 
   /** 应用层内置的默认配置 **/
   private defaultConfig: IFrameworkConfig = {
+    /** 项目的根目录 **/
+    projectDirectoryPath: process.cwd(),
     /** 编译资产的输出目录 **/
     assetsDirectoryPath: path.resolve(process.cwd(), "./dist/"),
     /** 临时水合化脚本的生成目录 **/
@@ -36,18 +40,13 @@ export class FrameworkConfigManager {
 
   };
 
-  /** $HOME目录下的配置 **/
+  /** 用户自定义的运行时配置 **/
   private custmerConfig: ICustmerFrameworkConfig = {};
 
-  /** 声明在$HOME目录下的配置文件路径 **/
-  get custmerConfigPath() {
-    return path.join(process.cwd(), "./config.json");
-  };
-
   /** 初始化并加载配置到运行时 **/
-  public async initialize() {
-    if (await pathExists(this.custmerConfigPath)) {
-      this.custmerConfig = await readFile(this.custmerConfigPath);
+  public async initialize(inputCustmerConfig) {
+    if (inputCustmerConfig) {
+      this.custmerConfig = inputCustmerConfig;
     };
   };
 

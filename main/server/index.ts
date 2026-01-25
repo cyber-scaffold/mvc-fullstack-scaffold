@@ -1,3 +1,4 @@
+import path from "path";
 import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
 import { ExpressHttpServer } from "@/main/server/commons/Application/ExpressHttpServer";
 

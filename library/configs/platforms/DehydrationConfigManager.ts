@@ -4,7 +4,6 @@ import { merge } from "webpack-merge";
 import { injectable, inject } from "inversify";
 import nodeExternals from "webpack-node-externals";
 import { DefinePlugin, Configuration } from "webpack";
-import MiniCssExtractPlugin from "mini-css-extract-plugin";
 
 import { IOCContainer } from "@/library/commons/IOCContainer";
 import { FrameworkConfigManager } from "@/library/commons/FrameworkConfigManager";
@@ -38,67 +37,45 @@ export class DehydrationConfigManager {
    * 最基础的webpack编译配置
    * **/
   public async getBasicConfig(sourceCodeFilePath: string) {
+    const { projectDirectoryPath } = this.$FrameworkConfigManager.getRuntimeConfig();
     return {
       entry: ["source-map-support/register", sourceCodeFilePath],
       target: "node",
       resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx"],
         alias: {
-          "@@": path.resolve(process.cwd(), "../"),
-          "@": process.cwd()
+          "@@": path.resolve(projectDirectoryPath, "../"),
+          "@": projectDirectoryPath
         }
       },
       externalsPresets: { node: true },
       externals: [nodeExternals({
-        modulesFromFile: path.resolve(process.cwd(), "./package.json")
+        modulesFromFile: path.resolve(projectDirectoryPath, "./package.json")
       })],
       optimization: {
         nodeEnv: false
       },
       module: {
         rules: (await Promise.all([
-          this.$TypeScriptLoaderConfigManger.getServerSiderLoaderConfig(),
-          this.$ESBuildLoaderConfigManger.getServerSiderLoaderConfig(),
-          this.$FileLoaderConfigManager.getServerSiderLoaderConfig(),
-          this.$LessLoaderConfigManager.getServerSiderLoaderConfig(),
-          this.$SassLoaderConfigManager.getServerSiderLoaderConfig(),
-          this.$CssLoaderConfigManager.getServerSiderLoaderConfig()
+          this.$TypeScriptLoaderConfigManger.getDehydrationSiderLoaderConfig(),
+          this.$ESBuildLoaderConfigManger.getDehydrationSiderLoaderConfig(),
+          this.$FileLoaderConfigManager.getDehydrationSiderLoaderConfig(),
+          this.$LessLoaderConfigManager.getDehydrationSiderLoaderConfig(),
+          this.$SassLoaderConfigManager.getDehydrationSiderLoaderConfig(),
+          this.$CssLoaderConfigManager.getDehydrationSiderLoaderConfig()
         ])).flat()
       },
       plugins: [
-        new DefinePlugin({
-          "process.TYPE": JSON.stringify("dehydration")
-        }),
-        new WebpackBar({ name: "编译脱水化渲染资源" })
+        new WebpackBar({ name: "编译脱水化渲染资源" }),
+        new DefinePlugin({ "process.TYPE": JSON.stringify("dehydration") })
       ]
     };
   };
 
   /**
- * 开发模式下的webpack配置
- * **/
-  public async getDevelopmentConfig(sourceCodeFilePath: string) {
-    const basicConfig: any = await this.getBasicConfig(sourceCodeFilePath);
-    const { dehydrationResourceDirectoryPath } = this.$FrameworkConfigManager.getRuntimeConfig();
-    return merge<Configuration>(basicConfig, {
-      mode: "development",
-      devtool: "source-map",
-      output: {
-        path: dehydrationResourceDirectoryPath,
-        filename: () => {
-          return `index-${filePathContentHash(sourceCodeFilePath)}-dehydration-[contenthash].js`;
-        },
-        library: {
-          type: "commonjs2"
-        }
-      },
-    });
-  };
-
-  /**
    * 生产模式下的webpack配置
    * **/
-  public async getProductionConfig(sourceCodeFilePath: string) {
+  public async getFinallyConfig(sourceCodeFilePath: string) {
     const basicConfig: any = await this.getBasicConfig(sourceCodeFilePath);
     const { dehydrationResourceDirectoryPath } = this.$FrameworkConfigManager.getRuntimeConfig();
     return merge<Configuration>(basicConfig, {

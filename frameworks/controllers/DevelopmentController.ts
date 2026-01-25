@@ -39,6 +39,7 @@ export class DevelopmentControllerProcess {
       };
       await this.$GenerateSwaggerDocsService.execute();
       this.childProcess = await spawn("node", [path.resolve(destnation, "./server.js")], {
+        // cwd: path.resolve(process.cwd(), "./dist/"),
         stdio: "inherit",
         stderr: "inherit"
       });

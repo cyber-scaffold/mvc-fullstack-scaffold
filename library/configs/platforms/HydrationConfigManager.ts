@@ -35,7 +35,7 @@ export class HydrationConfigManager {
    * 最基础的webpack编译配置
    * **/
   public async getBasicConfig(sourceCodeFilePath: string) {
-    const { hydrationResourceDirectoryPath } = await this.$FrameworkConfigManager.getRuntimeConfig();
+    const { hydrationResourceDirectoryPath, projectDirectoryPath } = await this.$FrameworkConfigManager.getRuntimeConfig();
     return {
       entry: sourceCodeFilePath,
       output: {
@@ -50,8 +50,8 @@ export class HydrationConfigManager {
       resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx"],
         alias: {
-          "@@": path.resolve(process.cwd(), "../"),
-          "@": process.cwd()
+          "@@": path.resolve(projectDirectoryPath, "../"),
+          "@": projectDirectoryPath
         }
       },
       optimization: {
@@ -59,20 +59,18 @@ export class HydrationConfigManager {
       },
       module: {
         rules: (await Promise.all([
-          this.$TypeScriptLoaderConfigManger.getClientSiderLoaderConfig(),
-          this.$ESBuildLoaderConfigManger.getClientSiderLoaderConfig(),
-          this.$FileLoaderConfigManager.getClientSiderLoaderConfig(),
-          this.$LessLoaderConfigManager.getClientSiderLoaderConfig(),
-          this.$SassLoaderConfigManager.getClientSiderLoaderConfig(),
-          this.$CssLoaderConfigManager.getClientSiderLoaderConfig()
+          this.$TypeScriptLoaderConfigManger.getHydrationSiderLoaderConfig(),
+          this.$ESBuildLoaderConfigManger.getHydrationSiderLoaderConfig(),
+          this.$FileLoaderConfigManager.getHydrationSiderLoaderConfig(),
+          this.$LessLoaderConfigManager.getHydrationSiderLoaderConfig(),
+          this.$SassLoaderConfigManager.getHydrationSiderLoaderConfig(),
+          this.$CssLoaderConfigManager.getHydrationSiderLoaderConfig()
         ])).flat()
       },
       plugins: [
-        new DefinePlugin({
-          "process.TYPE": JSON.stringify("hydration")
-        }),
         new NodePolyfillPlugin(),
         new WebpackBar({ name: "编译水合化渲染资源" }),
+        new DefinePlugin({ "process.TYPE": JSON.stringify("hydration") }),
         new MiniCssExtractPlugin({
           linkType: "text/css",
           filename: () => `index-${filePathContentHash(sourceCodeFilePath)}-hydration-[contenthash].css`
@@ -82,23 +80,12 @@ export class HydrationConfigManager {
   };
 
   /**
-   * 开发模式下的webpack配置
-   * **/
-  public async getDevelopmentConfig(sourceCodeFilePath: string) {
-    const basicConfig: any = await this.getBasicConfig(sourceCodeFilePath);
-    return merge<Configuration>(basicConfig, {
-      mode: "development",
-      devtool: "source-map"
-    });
-  };
-
-  /**
    * 生产模式下的webpack配置
    * **/
-  public async getProductionConfig(sourceCodeFilePath: string) {
+  public async getFinallyConfig(sourceCodeFilePath: string) {
     const basicConfig: any = await this.getBasicConfig(sourceCodeFilePath);
     return merge<Configuration>(basicConfig, {
-      mode: "production",
+      mode: "none",
       devtool: false
     });
   };

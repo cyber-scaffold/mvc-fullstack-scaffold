@@ -1,4 +1,3 @@
-import os from "os";
 import { injectable, inject } from "inversify";
 
 import { IOCContainer } from "@/library/commons/IOCContainer";
@@ -7,7 +6,7 @@ import { filePathContentHash } from "@/library/utils/filePathContentHash";
 @injectable()
 export class FileLoaderConfigManager {
 
-  public async getClientSiderLoaderConfig() {
+  public async getHydrationSiderLoaderConfig() {
     return [{
       test: /\.(ico|png|jpg|jpeg|gif|mp3|mp4|avi|svg|ttf|eot|otf|fon|ttc|woff|woff2)$/,
       use: [{
@@ -25,7 +24,7 @@ export class FileLoaderConfigManager {
     }]
   };
 
-  public async getServerSiderLoaderConfig() {
+  public async getDehydrationSiderLoaderConfig() {
     return [{
       test: /\.(ico|png|jpg|jpeg|gif|mp3|mp4|avi|svg|ttf|eot|otf|fon|ttc|woff|woff2)$/,
       use: [{
