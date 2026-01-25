@@ -11,7 +11,6 @@ import { FrameworkConfigManager } from "@/library/commons/FrameworkConfigManager
 
 import { TypeScriptLoaderConfigManger } from "@/library/configs/loaders/TypeScriptLoaderConfigManger";
 import { ESBuildLoaderConfigManger } from "@/library/configs/loaders/ESBuildLoaderConfigManger";
-// import { BabelLoaderConfigManger } from "@/library/configs/loaders/BabelLoaderConfigManger";
 import { FileLoaderConfigManager } from "@/library/configs/loaders/FileLoaderConfigManager";
 import { LessLoaderConfigManager } from "@/library/configs/loaders/LessLoaderConfigManager";
 import { SassLoaderConfigManager } from "@/library/configs/loaders/SassLoaderConfigManager";
@@ -29,7 +28,6 @@ export class DehydrationConfigManager {
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager,
     @inject(TypeScriptLoaderConfigManger) private readonly $TypeScriptLoaderConfigManger: TypeScriptLoaderConfigManger,
     @inject(ESBuildLoaderConfigManger) private readonly $ESBuildLoaderConfigManger: ESBuildLoaderConfigManger,
-    // @inject(BabelLoaderConfigManger) private readonly $BabelLoaderConfigManger: BabelLoaderConfigManger,
     @inject(FileLoaderConfigManager) private readonly $FileLoaderConfigManager: FileLoaderConfigManager,
     @inject(LessLoaderConfigManager) private readonly $LessLoaderConfigManager: LessLoaderConfigManager,
     @inject(SassLoaderConfigManager) private readonly $SassLoaderConfigManager: SassLoaderConfigManager,
@@ -62,7 +60,6 @@ export class DehydrationConfigManager {
       module: {
         rules: (await Promise.all([
           this.$TypeScriptLoaderConfigManger.getServerSiderLoaderConfig(),
-          // this.$BabelLoaderConfigManger.getServerSiderLoaderConfig(),
           this.$ESBuildLoaderConfigManger.getServerSiderLoaderConfig(),
           this.$FileLoaderConfigManager.getServerSiderLoaderConfig(),
           this.$LessLoaderConfigManager.getServerSiderLoaderConfig(),
@@ -72,8 +69,7 @@ export class DehydrationConfigManager {
       },
       plugins: [
         new DefinePlugin({
-          "process.isClient": JSON.stringify(false),
-          "process.isServer": JSON.stringify(true)
+          "process.TYPE": JSON.stringify("dehydration")
         }),
         new WebpackBar({ name: "编译脱水化渲染资源" })
       ]
