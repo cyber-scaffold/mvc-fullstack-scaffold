@@ -16,16 +16,6 @@ export class BabelLoaderConfigManger {
         options: {
           configFile: path.join(process.cwd(), "./.babelrc.js")
         }
-      }, {
-        loader: "thread-loader",
-        options: {
-          workers: os.cpus().length - 1,
-          workerParallelJobs: 50,
-          workerNodeArgs: ['--max-old-space-size=1024'],
-          poolRespawn: false,
-          poolTimeout: 2000,
-          poolParallelJobs: 50,
-        },
       }]
     }];
   };
@@ -39,16 +29,6 @@ export class BabelLoaderConfigManger {
         options: {
           configFile: path.join(process.cwd(), "./.babelrc.js")
         }
-      }, {
-        loader: "thread-loader",
-        options: {
-          workers: os.cpus().length - 1,
-          workerParallelJobs: 50,
-          workerNodeArgs: ['--max-old-space-size=1024'],
-          poolRespawn: false,
-          poolTimeout: 2000,
-          poolParallelJobs: 50,
-        },
       }]
     }];
   };

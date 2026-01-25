@@ -11,74 +11,80 @@ export class SassLoaderConfigManager {
   public async getClientSiderLoaderConfig() {
     return [{
       test: /\.(scss|sass)$/,
-      use: [{
-        loader: MiniCssExtractPlugin.loader,
-      }, {
-        loader: "css-loader",
-        options: {
-          modules: {
-            exportOnlyLocals: false,
-            mode: (resourcePath) => {
-              if (/\.(global)/.test(resourcePath)) {
-                return "global";
+      use: [
+        { loader: MiniCssExtractPlugin.loader },
+        {
+          loader: "css-loader",
+          options: {
+            modules: {
+              exportOnlyLocals: false,
+              mode: (resourcePath) => {
+                if (/\.(global)/.test(resourcePath)) {
+                  return "global";
+                }
+                if (/(node_modules)/.test(resourcePath)) {
+                  return "global";
+                };
+                return "local";
               }
-              if (/(node_modules)/.test(resourcePath)) {
-                return "global";
-              };
-              return "local";
-            }
-          },
-          sourceMap: true
+            },
+            sourceMap: true
+          }
+        },
+        {
+          loader: "postcss-loader",
+          options: {
+            postcssOptions: {
+              config: true
+            },
+            sourceMap: true
+          }
+        },
+        {
+          loader: "sass-loader",
+          options: {}
         }
-      }, {
-        loader: "postcss-loader",
-        options: {
-          postcssOptions: {
-            config: true
-          },
-          sourceMap: true
-        }
-      }, {
-        loader: "sass-loader",
-        options: {}
-      }]
+      ]
     }]
   };
 
   public async getServerSiderLoaderConfig() {
     return [{
       test: /\.(scss|sass)$/,
-      use: [{
-        loader: path.resolve(process.cwd(), "./library/utils/ServerSideCssModuleLoader.js")
-      }, {
-        loader: "css-loader",
-        options: {
-          modules: {
-            exportOnlyLocals: true,
-            mode: (resourcePath) => {
-              if (/\.(global)/.test(resourcePath)) {
-                return "global";
+      use: [
+        { loader: path.resolve(process.cwd(), "./library/utils/ServerSideCssModuleLoader.js") },
+        {
+          loader: "css-loader",
+          options: {
+            modules: {
+              exportOnlyLocals: true,
+              mode: (resourcePath) => {
+                if (/\.(global)/.test(resourcePath)) {
+                  return "global";
+                }
+                if (/(node_modules)/.test(resourcePath)) {
+                  return "global";
+                };
+                return "local";
               }
-              if (/(node_modules)/.test(resourcePath)) {
-                return "global";
-              };
-              return "local";
-            }
-          },
-          sourceMap: true
+            },
+            sourceMap: true
+          }
+        },
+        {
+          loader: "postcss-loader",
+          options: {
+            postcssOptions: {
+              config: true
+            },
+            sourceMap: true
+          }
+        },
+        {
+          loader: "sass-loader",
+          options: {}
         }
-      }, {
-        loader: "postcss-loader",
-        options: {
-          postcssOptions: {
-            config: true
-          },
-          sourceMap: true
-        }
-      }, {
-        loader: "sass-loader",
-        options: {}
-      }]
+      ]
     }]
   };
 

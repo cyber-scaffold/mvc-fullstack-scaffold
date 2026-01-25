@@ -23,6 +23,7 @@ export class DevelopmentControllerProcess {
 
   public async execute() {
     const { destnation } = this.$FrameworkConfigManager.getRuntimeConfig();
+    /** 开发模式下需要使用watch模式,启动服务端脚本应该在callback中执行 **/
     await this.$ServerSiderCompileService.startWatch(async () => {
       if (this.childProcess) {
         await new Promise((resolve) => {
