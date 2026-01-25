@@ -2,7 +2,6 @@ import { injectable, inject } from "inversify";
 
 import { IOCContainer } from "@/frameworks/commons/IOCContainer";
 import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
-// import { ClientSiderCompileService } from "@/frameworks/services/compile/ClientSiderCompileService";
 import { ServerSiderCompileService } from "@/frameworks/services/compile/ServerSiderCompileService";
 import { GenerateSwaggerDocsService } from "@/frameworks/services/preprocess/GenerateSwaggerDocsService";
 
@@ -14,7 +13,6 @@ export class BuildController {
 
   constructor(
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager,
-    // @inject(ClientSiderCompileService) private readonly $ClientSiderCompileService: ClientSiderCompileService,
     @inject(ServerSiderCompileService) private readonly $ServerSiderCompileService: ServerSiderCompileService,
     @inject(GenerateSwaggerDocsService) private readonly $GenerateSwaggerDocsService: GenerateSwaggerDocsService
   ) { };

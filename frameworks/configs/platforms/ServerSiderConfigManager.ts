@@ -1,4 +1,5 @@
 import path from "path";
+import WebpackBar from "webpackbar";
 import { merge } from "webpack-merge";
 import { injectable, inject } from "inversify";
 // import nodeExternals from "webpack-node-externals";
@@ -69,6 +70,7 @@ export class ServerSiderConfigManager {
         ])).flat()
       },
       plugins: [
+        new WebpackBar({ name: "工程编译中" }),
         new CopyWebpackPlugin({
           patterns: [{
             from: resources.source,

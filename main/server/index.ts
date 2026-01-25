@@ -16,9 +16,7 @@ declare global {
   }
 };
 
-
 const serverApplicationInstance = IOCContainer.get(ExpressHttpServer);
-
 setImmediate(async () => {
   await serverApplicationInstance.beforeBootstrap();
   await serverApplicationInstance.bootstrap();
