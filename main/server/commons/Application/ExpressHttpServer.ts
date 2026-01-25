@@ -8,8 +8,8 @@ import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
 import { FrameworkDetail } from "@/main/server/commons/Application/FrameworkDetail";
 import { InitialComponent } from "@/main/server/commons/Application/InitialComponent";
 import { RegistryRouter } from "@/main/server/commons/Application/RegistryRouter";
+import { ApplicationConfigManager } from "@/main/server/commons/Application/ApplicationConfigManager";
 
-import { ApplicationConfigManager } from "@/main/server/configs/ApplicationConfigManager";
 import { requestMiddleware } from "@/main/server/interceptors/requestMiddleware";
 
 import { logger } from "@/main/server/utils/logger";

@@ -1,7 +1,7 @@
 import { injectable, inject } from "inversify";
 import { createPool, Pool, PoolConnection } from "mysql2/promise";
 
-import { ApplicationConfigManager } from "@/main/server/configs/ApplicationConfigManager";
+import { ApplicationConfigManager } from "@/main/server/commons/Application/ApplicationConfigManager";
 import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
 
 import { logger } from "@/main/server/utils/logger";

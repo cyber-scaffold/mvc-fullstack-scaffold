@@ -1,7 +1,7 @@
 import knex, { Knex } from "knex";
 import { injectable, inject } from "inversify";
 
-import { ApplicationConfigManager } from "@/main/server/configs/ApplicationConfigManager";
+import { ApplicationConfigManager } from "@/main/server/commons/Application/ApplicationConfigManager";
 import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
 
 import { logger } from "@/main/server/utils/logger";
