@@ -18,7 +18,6 @@ export class BuildController {
   ) { };
 
   public async execute() {
-    // await this.$ClientSiderCompileService.startBuild();
     await this.$ServerSiderCompileService.startBuild();
     await this.$GenerateSwaggerDocsService.execute();
   };
