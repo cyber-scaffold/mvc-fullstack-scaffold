@@ -3,7 +3,7 @@ import { injectable, inject } from "inversify";
 import { IOCContainer } from "@/frameworks/commons/IOCContainer";
 import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
 
-import { makeHydrationResource, makeDehydratedResource } from "@/library";
+import { makeHydrationResource, makeDehydratedResource } from "@/library/compilation";
 
 /**
  * 脱水和注水物料的开发模式

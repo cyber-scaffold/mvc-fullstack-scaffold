@@ -1,6 +1,6 @@
 import { Router, Request } from "express";
 import { injectable, inject } from "inversify";
-import { getDehydratedResource, getHydrationResource, renderDehydratedResourceWithSandbox } from "@/library";
+import { getDehydratedResource, getHydrationResource, renderDehydratedResourceWithSandbox } from "@/library/runtime";
 
 import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
 import { responseHtmlWrapper } from "@/main/server/utils/responseHtmlWrapper";

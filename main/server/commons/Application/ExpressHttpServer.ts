@@ -3,7 +3,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { injectable, inject } from "inversify";
-import { compileConfiguration, getRuntimeConfiguration } from "@/library";
+import { compileConfiguration, getRuntimeConfiguration } from "@/library/runtime";
 
 import type { Express } from "express";
 

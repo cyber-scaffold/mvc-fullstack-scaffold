@@ -2,7 +2,7 @@ import { injectable, inject } from "inversify";
 
 import { IOCContainer } from "@/frameworks/commons/IOCContainer";
 import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
-import { compileConfiguration, makeHydrationResource, makeDehydratedResource } from "@/library";
+import { compileConfiguration, makeHydrationResource, makeDehydratedResource } from "@/library/compilation";
 
 
 /**

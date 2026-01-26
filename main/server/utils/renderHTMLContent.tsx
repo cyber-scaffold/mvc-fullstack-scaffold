@@ -4,8 +4,8 @@ import pretty from "pretty";
 import { get } from "dot-prop";
 import { renderToString } from "react-dom/server";
 
-import type { ICompileAssetsList } from "@/library";
-import { getRuntimeConfiguration } from "@/library";
+import type { ICompileAssetsList } from "@/library/runtime";
+import { getRuntimeConfiguration } from "@/library/runtime";
 
 interface IParmas {
   dehydrationViewContent: string
