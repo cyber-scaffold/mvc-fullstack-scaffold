@@ -1,8 +1,6 @@
-import path from "path";
 import WebpackBar from "webpackbar";
 import { merge } from "webpack-merge";
 import { injectable, inject } from "inversify";
-// import nodeExternals from "webpack-node-externals";
 import CopyWebpackPlugin from "copy-webpack-plugin";
 import { Configuration } from "webpack";
 
@@ -26,14 +24,13 @@ export class ServerSiderConfigManager {
    * 最基础的webpack编译配置
    * **/
   public async getBasicConfig() {
-    const { resources, destnation, serverCompilerConfig: { source } } = this.$FrameworkConfigManager.getRuntimeConfig();
+    const { entryFile, staticSourceDirectoryPath, staticDestinationDirectoryPath } = this.$FrameworkConfigManager.getRuntimeConfig();
     return {
-      entry: ["source-map-support/register", path.resolve(source, "./index.ts")],
+      entry: ["source-map-support/register", entryFile],
       target: "node",
       resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx"],
         alias: {
-          "@@": path.resolve(process.cwd(), "../"),
           "@": process.cwd()
         }
       },
@@ -73,8 +70,8 @@ export class ServerSiderConfigManager {
         new WebpackBar({ name: "工程编译中" }),
         new CopyWebpackPlugin({
           patterns: [{
-            from: resources.source,
-            to: path.resolve(destnation, "./frameworks/")
+            from: staticSourceDirectoryPath,
+            to: staticDestinationDirectoryPath
           }]
         })
       ]
@@ -86,12 +83,12 @@ export class ServerSiderConfigManager {
  * **/
   public async getDevelopmentConfig() {
     const basicConfig: any = await this.getBasicConfig();
-    const { destnation } = this.$FrameworkConfigManager.getRuntimeConfig();
+    const { assetsDirectoryPath } = this.$FrameworkConfigManager.getRuntimeConfig();
     return merge<Configuration>(basicConfig, {
       devtool: "source-map",
       mode: "development",
       output: {
-        path: destnation,
+        path: assetsDirectoryPath,
         filename: "server.js",
       },
     });
@@ -102,12 +99,12 @@ export class ServerSiderConfigManager {
    * **/
   public async getProductionConfig() {
     const basicConfig: any = await this.getBasicConfig();
-    const { destnation } = this.$FrameworkConfigManager.getRuntimeConfig();
+    const { assetsDirectoryPath } = this.$FrameworkConfigManager.getRuntimeConfig();
     return merge<Configuration>(basicConfig, {
       mode: "none",
       devtool: "source-map",
       output: {
-        path: destnation,
+        path: assetsDirectoryPath,
         filename: "server.js",
       },
     });

@@ -1,6 +1,8 @@
 const path = require("path");
 
 module.exports = {
+  projectDirectoryPath: process.cwd(),
+  assetsDirectoryName: "dist",
   materiels: [
     {
       alias: "IndexPage",

@@ -30,8 +30,8 @@ export class ExpressHttpServer {
   public async beforeBootstrap() {
     await this.$ApplicationConfigManager.initialize();
     /** 在运行时的时候需要基于当前的filename来确定项目的根目录 **/
-    const { projectDirectoryPath } = this.$ApplicationConfigManager.getRuntimeConfig();
-    await compileConfiguration({ projectDirectoryPath });
+    const { projectDirectoryPath, assetsDirectoryName } = this.$ApplicationConfigManager.getRuntimeConfig();
+    await compileConfiguration({ projectDirectoryPath, assetsDirectoryName });
   };
 
   /** 服务启动时执行的代码 **/

@@ -1,4 +1,3 @@
-import path from "path";
 import WebpackBar from "webpackbar";
 import { merge } from "webpack-merge";
 import { injectable, inject } from "inversify";
@@ -50,7 +49,6 @@ export class HydrationConfigManager {
       resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx"],
         alias: {
-          "@@": path.resolve(projectDirectoryPath, "../"),
           "@": projectDirectoryPath
         }
       },

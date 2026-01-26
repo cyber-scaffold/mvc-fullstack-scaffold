@@ -2,7 +2,6 @@ import vm from "vm";
 import fs from "fs";
 import path from "path";
 import Module from "module";
-import { merge } from "lodash";
 import { promisify } from "util";
 import pathExists from "path-exists";
 import { injectable } from "inversify";
@@ -12,28 +11,60 @@ import { IOCContainer } from "@/frameworks/commons/IOCContainer";
 @injectable()
 export class FrameworkConfigManager {
 
-  /** 应用层内置的默认配置 **/
-  private defaultConfig: any = {
-    /** 编译产物的目标地址 **/
-    destnation: path.resolve(process.cwd(), "./dist/"),
-    /** 静态资源相关的配置选项 **/
-    resources: {
-      source: path.resolve(process.cwd(), "./frameworks/resources/")
-    },
-    /** 服务端的编译选项 **/
-    serverCompilerConfig: {
-      source: path.resolve(process.cwd(), "./main/server/"),
-    },
-    /** 服务端渲染物料的详细制作信息 **/
-    materiels: []
+  /**
+   * 入口文件
+   * **/
+  private entryFile = path.resolve(process.cwd(), "./main/server/index.ts");
+
+  /**
+   * 提取Swagger文档的glob表达式
+   * **/
+  private extractSwaggerGlobExpression = path.resolve(process.cwd(), "./main/server/controllers/**/*.{ts,tsx,js,jsx}");
+
+  /**
+   * 项目根目录的路径
+   * **/
+  private projectDirectoryPath = process.cwd();
+
+  /**
+   * 编译产物的目标地址的文件夹名称
+   * **/
+  private assetsDirectoryName = "dist";
+
+  /**
+   * 计算后得到的编译资产输出目录
+   * **/
+  get assetsDirectoryPath() {
+    return path.resolve(this.projectDirectoryPath, this.assetsDirectoryName);
   };
 
-  /** 项目根目录下的自定义配置 **/
-  private custmerConfig: any = {
-    materiels: []
+  /**
+   * 静态资源的原始目录
+   * **/
+  get staticSourceDirectoryPath() {
+    return path.resolve(this.projectDirectoryPath, "./frameworks/resources/");
   };
 
-  /** 声明在$HOME目录下的配置文件路径 **/
+  /**
+   * 静态资源的目标目录名称
+   * **/
+  private staticDestinationDirectoryName = "resources";
+
+  /**
+   * 静态资源的目标目录的路径
+   * **/
+  get staticDestinationDirectoryPath() {
+    return path.resolve(this.assetsDirectoryPath, this.staticDestinationDirectoryName);
+  };
+
+  /**
+   * 服务端渲染物料的详细制作信息
+   * **/
+  private materiels = [];
+
+  /**
+   * 声明在$HOME目录下的配置文件路径
+   * **/
   get custmerConfigPath() {
     return path.join(process.cwd(), "./.framework.js");
   };
@@ -60,15 +91,43 @@ export class FrameworkConfigManager {
 
   /** 初始化并加载配置到运行时 **/
   public async initialize() {
-    if (await pathExists(this.custmerConfigPath)) {
-      this.custmerConfig = await this.loadCustmerConfigWithSandbox();
+    if (!(await pathExists(this.custmerConfigPath))) {
+      return false;
+    };
+    const custmerConfig = await this.loadCustmerConfigWithSandbox();
+    if (custmerConfig.entryFile) {
+      this.entryFile = custmerConfig.entryFile;
+    };
+    if (custmerConfig.projectDirectoryPath) {
+      this.projectDirectoryPath = custmerConfig.projectDirectoryPath;
+    };
+    if (custmerConfig.assetsDirectoryName) {
+      this.assetsDirectoryName = custmerConfig.assetsDirectoryName;
+    };
+    if (custmerConfig.extractSwaggerGlobExpression) {
+      this.extractSwaggerGlobExpression = custmerConfig.extractSwaggerGlobExpression;
+    };
+    if (custmerConfig.staticDestinationDirectoryName) {
+      this.staticDestinationDirectoryName = custmerConfig.staticDestinationDirectoryName;
+    };
+    if (custmerConfig.materiels) {
+      this.materiels = custmerConfig.materiels;
     };
   };
 
   /** 获取最终组合之后的运行时配置 **/
   public getRuntimeConfig() {
-    const composeConfig = merge({}, this.defaultConfig, this.custmerConfig);
-    return composeConfig;
+    return {
+      entryFile: this.entryFile,
+      extractSwaggerGlobExpression: this.extractSwaggerGlobExpression,
+      projectDirectoryPath: this.projectDirectoryPath,
+      assetsDirectoryName: this.assetsDirectoryName,
+      assetsDirectoryPath: this.assetsDirectoryPath,
+      staticSourceDirectoryPath: this.staticSourceDirectoryPath,
+      staticDestinationDirectoryName: this.staticDestinationDirectoryName,
+      staticDestinationDirectoryPath: this.staticDestinationDirectoryPath,
+      materiels: this.materiels
+    };
   };
 
 };

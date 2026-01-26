@@ -44,7 +44,6 @@ export class DehydrationConfigManager {
       resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx"],
         alias: {
-          "@@": path.resolve(projectDirectoryPath, "../"),
           "@": projectDirectoryPath
         }
       },

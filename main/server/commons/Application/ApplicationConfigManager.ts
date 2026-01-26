@@ -1,5 +1,7 @@
 import path from "path";
 import { injectable } from "inversify";
+
+
 import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
 
 // type CustmerConfigParamType = {
@@ -13,18 +15,22 @@ import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
 @injectable()
 export class ApplicationConfigManager {
 
+  private assetsDirectoryName = "dist";
+
   /**
    * 用于确定其余资源
    * 项目根目录的绝对路径
    * **/
-  public projectDirectoryPath = path.dirname(__filename).replace(/(dist)$/ig, "");
+  get projectDirectoryPath() {
+    return path.dirname(__filename).replace(/(dist)$/ig, "");
+  };
 
   /**
    * 用于启动静态资源服务器
    * 框架层的基准目录是根据 项目根目录的绝对路径 计算得到的
    * **/
   get staticResourceDirectory() {
-    return path.join(this.projectDirectoryPath, "./dist/frameworks");
+    return path.join(this.projectDirectoryPath, this.assetsDirectoryName, "resources");
   };
 
   private server = {
@@ -67,6 +73,7 @@ export class ApplicationConfigManager {
   /** 获取最终组合之后的运行时配置 **/
   public getRuntimeConfig() {
     return {
+      assetsDirectoryName: this.assetsDirectoryName,
       projectDirectoryPath: this.projectDirectoryPath,
       staticResourceDirectory: this.staticResourceDirectory,
       server: this.server,

@@ -17,11 +17,11 @@ export class CompilerActionService {
    * 清理编译目录
    * **/
   public async cleanDestnation() {
-    const { destnation } = this.$FrameworkConfigManager.getRuntimeConfig();
-    if (!await pathExists(destnation)) {
+    const { assetsDirectoryPath } = this.$FrameworkConfigManager.getRuntimeConfig();
+    if (!await pathExists(assetsDirectoryPath)) {
       return false;
     };
-    await promisify(fs.rm)(destnation, { recursive: true });
+    await promisify(fs.rm)(assetsDirectoryPath, { recursive: true });
   };
 
 };

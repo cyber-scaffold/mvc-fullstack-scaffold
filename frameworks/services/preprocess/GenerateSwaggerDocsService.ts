@@ -14,8 +14,8 @@ export class GenerateSwaggerDocsService {
   ) { };
 
   public async execute() {
-    const { destnation, serverCompilerConfig } = this.$FrameworkConfigManager.getRuntimeConfig();
-    const destnationFilename = path.resolve(destnation, "./frameworks/swagger.json");
+    const { staticDestinationDirectoryPath, extractSwaggerGlobExpression } = this.$FrameworkConfigManager.getRuntimeConfig();
+    const destnationFilename = path.resolve(staticDestinationDirectoryPath, "./swagger.json");
     const swagger_api_docs = swaggerJSDocGenerater({
       definition: {
         openapi: "3.0.0",
@@ -24,7 +24,7 @@ export class GenerateSwaggerDocsService {
           version: "1.0.0",
         },
       },
-      apis: [path.resolve(serverCompilerConfig.source, "./controllers/**/*.{ts,tsx,js,jsx}")],
+      apis: [extractSwaggerGlobExpression],
     });
     await writeFile(destnationFilename, swagger_api_docs, { spaces: 2, EOL: "\r\n" });
   };
