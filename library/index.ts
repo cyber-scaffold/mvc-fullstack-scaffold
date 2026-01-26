@@ -1,7 +1,7 @@
 
 export { compileConfiguration } from "@/library/cores/compileConfiguration";
-export { compileHydrationResource } from "@/library/cores/compileHydrationResource";
-export { compileDehydratedResource } from "@/library/cores/compileDehydratedResource";
+export { makeHydrationResource } from "@/library/cores/makeHydrationResource";
+export { makeDehydratedResource } from "@/library/cores/makeDehydratedResource";
 export { renderDehydratedResourceWithSandbox } from "@/library/cores/renderDehydratedResourceWithSandbox";
 
 

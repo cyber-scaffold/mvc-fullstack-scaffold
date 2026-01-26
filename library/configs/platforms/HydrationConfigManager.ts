@@ -69,7 +69,7 @@ export class HydrationConfigManager {
       },
       plugins: [
         new NodePolyfillPlugin(),
-        new WebpackBar({ name: "编译注水物料" }),
+        new WebpackBar({ name: "制作注水物料" }),
         new DefinePlugin({ "process.TYPE": JSON.stringify("hydration") }),
         new MiniCssExtractPlugin({
           linkType: "text/css",

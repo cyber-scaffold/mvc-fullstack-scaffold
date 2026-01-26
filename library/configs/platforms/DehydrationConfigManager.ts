@@ -66,7 +66,7 @@ export class DehydrationConfigManager {
         ])).flat()
       },
       plugins: [
-        new WebpackBar({ name: "编译脱水物料" }),
+        new WebpackBar({ name: "制作脱水物料" }),
         new DefinePlugin({ "process.TYPE": JSON.stringify("dehydration") })
       ]
     };
