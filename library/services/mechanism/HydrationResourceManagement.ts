@@ -50,8 +50,11 @@ export class HydrationResourceManagement implements ResourceManagementInterface 
     };
     /** 源代码内容发生变动的情况需要触发编译并更新编译信息 **/
     const hydrationCompileDatabase = this.$CompileDatabaseManager.getHydrationCompileDatabase();
+    /** 需要对原始的tsx文件进行额外加工使其的引用变成标准化的引用 **/
     const composeTemporaryRenderFilePath = await this.$HydrationRenderWapperService.generateComposeTemporaryRenderFile(this.sourceCodeFilePath);
+    /** 进行构建并获得资源清单 **/
     const assetsFileList = await this.$HydrationCompileService.startBuild(composeTemporaryRenderFilePath);
+    /** 在json数据库中保存资源信息 **/
     hydrationCompileDatabase.data[this.sourceCodeFilePath] = {
       contenthash: sourceCodeContentHash,
       assets: assetsFileList

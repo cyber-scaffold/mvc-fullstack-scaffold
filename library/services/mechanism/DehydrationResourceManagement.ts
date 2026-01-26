@@ -48,7 +48,9 @@ export class DehydrationResourceManagement implements ResourceManagementInterfac
     };
     /** 源代码内容发生变动的情况需要触发编译并更新编译信息 **/
     const dehydrationCompileDatabase = this.$CompileDatabaseManager.getDehydrationCompileDatabase();
+    /** 进行构建并获得资源清单 **/
     const assetsFileList = await this.$DehydrationCompileService.startBuild(this.sourceCodeFilePath);
+    /** 在json数据库中保存资源信息 **/
     dehydrationCompileDatabase.data[this.sourceCodeFilePath] = {
       contenthash: sourceCodeContentHash,
       assets: assetsFileList
