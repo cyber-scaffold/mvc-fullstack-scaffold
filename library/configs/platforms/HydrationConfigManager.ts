@@ -69,7 +69,7 @@ export class HydrationConfigManager {
       },
       plugins: [
         new NodePolyfillPlugin(),
-        new WebpackBar({ name: "编译水合化渲染资源" }),
+        new WebpackBar({ name: "编译注水物料" }),
         new DefinePlugin({ "process.TYPE": JSON.stringify("hydration") }),
         new MiniCssExtractPlugin({
           linkType: "text/css",
@@ -80,9 +80,20 @@ export class HydrationConfigManager {
   };
 
   /**
+   * 开发模式下的webpack配置
+   * **/
+  public async getDevelopmentConfig(sourceCodeFilePath: string) {
+    const basicConfig: any = await this.getBasicConfig(sourceCodeFilePath);
+    return merge<Configuration>(basicConfig, {
+      mode: "development",
+      devtool: "source-map"
+    });
+  };
+
+  /**
    * 生产模式下的webpack配置
    * **/
-  public async getFinallyConfig(sourceCodeFilePath: string) {
+  public async getProductionConfig(sourceCodeFilePath: string) {
     const basicConfig: any = await this.getBasicConfig(sourceCodeFilePath);
     return merge<Configuration>(basicConfig, {
       mode: "none",

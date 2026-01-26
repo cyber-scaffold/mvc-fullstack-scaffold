@@ -13,9 +13,20 @@ export class DehydrationCompileService {
     @inject(DehydrationConfigManager) private readonly $DehydrationConfigManager: DehydrationConfigManager
   ) { };
 
+  public async startWatch(sourceCodeFilePath: string) {
+    const dehydrationRenderConfig: any = await this.$DehydrationConfigManager.getDevelopmentConfig(sourceCodeFilePath);
+    const dehydrationCompiler = webpack(dehydrationRenderConfig);
+    dehydrationCompiler.watch({}, (error, stats) => {
+      if (error) {
+        console.log(error);
+      } else {
+        return filterWebpackStats(stats.toJson({ all: false, assets: true, outputPath: true }));
+      };
+    });
+  };
 
   public async startBuild(sourceCodeFilePath: string) {
-    const dehydrationRenderConfig: any = await this.$DehydrationConfigManager.getFinallyConfig(sourceCodeFilePath);
+    const dehydrationRenderConfig: any = await this.$DehydrationConfigManager.getProductionConfig(sourceCodeFilePath);
     const dehydrationCompiler = webpack(dehydrationRenderConfig);
     return new Promise((resolve, reject) => {
       dehydrationCompiler.run((error, stats) => {

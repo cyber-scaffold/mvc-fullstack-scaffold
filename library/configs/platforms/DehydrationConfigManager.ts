@@ -66,16 +66,37 @@ export class DehydrationConfigManager {
         ])).flat()
       },
       plugins: [
-        new WebpackBar({ name: "编译脱水化渲染资源" }),
+        new WebpackBar({ name: "编译脱水物料" }),
         new DefinePlugin({ "process.TYPE": JSON.stringify("dehydration") })
       ]
     };
   };
 
   /**
+   * 开发模式下的webpack配置
+   * **/
+  public async getDevelopmentConfig(sourceCodeFilePath: string) {
+    const basicConfig: any = await this.getBasicConfig(sourceCodeFilePath);
+    const { dehydrationResourceDirectoryPath } = this.$FrameworkConfigManager.getRuntimeConfig();
+    return merge<Configuration>(basicConfig, {
+      mode: "development",
+      devtool: "source-map",
+      output: {
+        path: dehydrationResourceDirectoryPath,
+        filename: () => {
+          return `index-${filePathContentHash(sourceCodeFilePath)}-dehydration-[contenthash].js`;
+        },
+        library: {
+          type: "commonjs2"
+        }
+      },
+    });
+  };
+
+  /**
    * 生产模式下的webpack配置
    * **/
-  public async getFinallyConfig(sourceCodeFilePath: string) {
+  public async getProductionConfig(sourceCodeFilePath: string) {
     const basicConfig: any = await this.getBasicConfig(sourceCodeFilePath);
     const { dehydrationResourceDirectoryPath } = this.$FrameworkConfigManager.getRuntimeConfig();
     return merge<Configuration>(basicConfig, {
