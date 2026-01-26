@@ -1,64 +1,80 @@
 import path from "path";
-import { merge } from "lodash";
-import { readFile } from "jsonfile";
-import pathExists from "path-exists";
 import { injectable } from "inversify";
-
 import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
+
+// type CustmerConfigParamType = {
+//   server?: any
+//   redis?: any
+//   mysql?: any
+//   mongodb?: any
+//   rabbitmq?: any
+// };
 
 @injectable()
 export class ApplicationConfigManager {
 
-  /** 应用层内置的默认配置 **/
-  private defaultConfig: any = {
-    server: {
-      port: 8190
-    },
-    redis: {
-      port: 6379,
-      host: "0.0.0.0",
-    },
-    mysql: {
-      port: 3306,
-      host: "0.0.0.0",
-      username: "root",
-      password: "gaea0571",
-      database: "gmecamp_config"
-    },
-    mongodb: {
-      host: "0.0.0.0",
-      port: 27017,
-      username: "root",
-      password: "gaea0571",
-      database: "test_data"
-    },
-    rabbitmq: {
-      host: "0.0.0.0",
-      port: 5672,
-      username: "root",
-      password: "gaea0571"
-    }
+  /**
+   * 用于确定其余资源
+   * 项目根目录的绝对路径
+   * **/
+  public projectDirectoryPath = path.dirname(__filename).replace(/(dist)$/ig, "");
+
+  /**
+   * 用于启动静态资源服务器
+   * 框架层的基准目录是根据 项目根目录的绝对路径 计算得到的
+   * **/
+  get staticResourceDirectory() {
+    return path.join(this.projectDirectoryPath, "./dist/frameworks");
   };
 
-  /** $HOME目录下的配置 **/
-  private custmerConfig: any = {};
+  private server = {
+    port: 8190
+  };
 
-  /** 声明在$HOME目录下的配置文件路径 **/
-  get custmerConfigPath() {
-    return path.join(process.cwd(), "./config.json");
+  private redis = {
+    port: 6379,
+    host: "0.0.0.0",
+  };
+
+  private mysql = {
+    port: 3306,
+    host: "0.0.0.0",
+    username: "root",
+    password: "gaea0571",
+    database: "gmecamp_config"
+  };
+
+  private mongodb = {
+    host: "0.0.0.0",
+    port: 27017,
+    username: "root",
+    password: "gaea0571",
+    database: "test_data"
+  };
+
+  private rabbitmq = {
+    host: "0.0.0.0",
+    port: 5672,
+    username: "root",
+    password: "gaea0571"
   };
 
   /** 初始化并加载配置到运行时 **/
   public async initialize() {
-    if (await pathExists(this.custmerConfigPath)) {
-      this.custmerConfig = await readFile(this.custmerConfigPath);
-    };
+
   };
 
   /** 获取最终组合之后的运行时配置 **/
   public getRuntimeConfig() {
-    const composeConfig = merge({}, this.defaultConfig, this.custmerConfig);
-    return composeConfig;
+    return {
+      projectDirectoryPath: this.projectDirectoryPath,
+      staticResourceDirectory: this.staticResourceDirectory,
+      server: this.server,
+      redis: this.redis,
+      mysql: this.mysql,
+      mongodb: this.mongodb,
+      rabbitmq: this.rabbitmq
+    };
   };
 
 };

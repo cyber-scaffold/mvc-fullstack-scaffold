@@ -1,7 +1,6 @@
-import path from "path";
 import { Router, Request } from "express";
 import { injectable, inject } from "inversify";
-import { makeDehydratedResource, makeHydrationResource, renderDehydratedResourceWithSandbox } from "@/library";
+import { getDehydratedResource, getHydrationResource, renderDehydratedResourceWithSandbox } from "@/library";
 
 import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
 import { responseHtmlWrapper } from "@/main/server/utils/responseHtmlWrapper";
@@ -13,15 +12,8 @@ export class IndexPageController {
 
   /** 获取脱水和注水资源的方法可以用于预处理和运行时渲染 **/
   public async getRenderResource() {
-    const projectDirectoryPath = path.resolve(path.dirname(__filename), "../");
-    const dehydratedRenderMethodTask = makeDehydratedResource({
-      alias: "IndexPage",
-      source: path.resolve(projectDirectoryPath, "./main/views/pages/IndexPage/index.tsx")
-    });
-    const hydrationResourceTask = makeHydrationResource({
-      alias: "IndexPage",
-      source: path.resolve(projectDirectoryPath, "./main/views/pages/IndexPage/index.tsx")
-    });
+    const dehydratedRenderMethodTask = getDehydratedResource({ alias: "IndexPage" });
+    const hydrationResourceTask = getHydrationResource({ alias: "IndexPage" });
     const [dehydratedRenderMethod, hydrationResource] = await Promise.all([dehydratedRenderMethodTask, hydrationResourceTask]);
     return { dehydrated: dehydratedRenderMethod, hydration: hydrationResource };
   };
@@ -38,7 +30,7 @@ export class IndexPageController {
     const content = { list: Array(10).fill(1).map((fill, index) => fill + index) };
     const { dehydrated, hydration }: any = await this.getRenderResource();
     const dehydratedViewContent = await renderDehydratedResourceWithSandbox(dehydrated.javascript[0], content);
-    return renderHTMLContent({
+    return await renderHTMLContent({
       hydrationAssets: hydration,
       dehydrationViewContent: dehydratedViewContent,
       meta: {

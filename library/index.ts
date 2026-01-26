@@ -1,5 +1,6 @@
 
 export { compileConfiguration } from "@/library/cores/compileConfiguration";
+export { getRuntimeConfiguration } from "@/library/cores/getRuntimeConfiguration";
 export { makeHydrationResource } from "@/library/cores/makeHydrationResource";
 export { getHydrationResource } from "@/library/cores/getHydrationResource";
 export { makeDehydratedResource } from "@/library/cores/makeDehydratedResource";

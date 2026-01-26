@@ -10,6 +10,7 @@ setImmediate(async () => {
   try {
     await IOCContainer.get(FrameworkConfigManager).initialize();
     await IOCContainer.get(CompilerActionService).cleanDestnation();
+    await IOCContainer.get(MaterielResourceBuildController).buildMaterielResource();
     await IOCContainer.get(ApplicationBuildController).execute();
   } catch (error) {
     console.log("error", error);

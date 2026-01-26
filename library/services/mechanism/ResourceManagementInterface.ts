@@ -6,6 +6,6 @@ export interface ResourceManagementInterface {
 
   smartDecideWithUniqueAlias(alias: string): Promise<void | boolean>;
 
-  getResourceList(): Promise<any[]>;
+  getResourceListWithAlias(alias: string): Promise<any[]>;
 
 };

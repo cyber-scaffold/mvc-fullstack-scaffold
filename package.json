@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "node -r esbuild-register ./frameworks/development.ts",
-    "build": "ts-node -r tsconfig-paths/register ./frameworks/build.ts"
+    "build": "node -r esbuild-register ./frameworks/build.ts"
   },
   "keywords": [],
   "author": "",

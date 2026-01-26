@@ -17,17 +17,6 @@ export class RegistryRouter {
     @inject(SearchController) private readonly $SearchController: SearchController,
   ) { }
 
-  /** 处理SSR相关资源 **/
-  public async processSSRResource() {
-    await Promise.all([
-      this.$IndexPageController.getRenderResource(),
-      this.$DetailPageController.getRenderResource(),
-      this.$UserPageController.getRenderResource(),
-      this.$SearchController.getRenderResource()
-    ]);
-  };
-
-
   /** 执行路由注册 **/
   public async execute(expressInstance: Express) {
     expressInstance.use(this.$DetailPageController.getRouter());

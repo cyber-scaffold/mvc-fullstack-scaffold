@@ -1,7 +1,6 @@
-import path from "path";
 import { Router, Request } from "express";
 import { injectable, inject } from "inversify";
-import { makeDehydratedResource, makeHydrationResource, renderDehydratedResourceWithSandbox } from "@/library";
+import { getDehydratedResource, getHydrationResource, renderDehydratedResourceWithSandbox } from "@/library";
 
 import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
 import { responseHtmlWrapper } from "@/main/server/utils/responseHtmlWrapper";
@@ -12,15 +11,8 @@ export class UserPageController {
 
   /** 获取脱水和注水资源的方法可以用于预处理和运行时渲染 **/
   public async getRenderResource() {
-    const projectDirectoryPath = path.resolve(path.dirname(__filename), "../");
-    const dehydratedRenderMethodTask = makeDehydratedResource({
-      alias: "UserPage",
-      source: path.resolve(projectDirectoryPath, "./main/views/pages/UserPage/index.tsx")
-    });
-    const hydrationResourceTask = makeHydrationResource({
-      alias: "UserPage",
-      source: path.resolve(projectDirectoryPath, "./main/views/pages/UserPage/index.tsx")
-    });
+    const dehydratedRenderMethodTask = getDehydratedResource({ alias: "UserPage" });
+    const hydrationResourceTask = getHydrationResource({ alias: "UserPage" });
     const [dehydratedRenderMethod, hydrationResource] = await Promise.all([dehydratedRenderMethodTask, hydrationResourceTask]);
     return { dehydrated: dehydratedRenderMethod, hydration: hydrationResource };
   };
@@ -36,7 +28,7 @@ export class UserPageController {
   public async execute(request: Request): Promise<any> {
     const { dehydrated, hydration }: any = await this.getRenderResource();
     const dehydratedViewContent = await renderDehydratedResourceWithSandbox(dehydrated.javascript[0], {});
-    return renderHTMLContent({
+    return await renderHTMLContent({
       hydrationAssets: hydration,
       dehydrationViewContent: dehydratedViewContent,
       meta: {

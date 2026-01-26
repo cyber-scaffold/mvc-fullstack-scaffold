@@ -10,7 +10,8 @@ export type getDehydratedResourceParamsType = {
 /**
  * 获取脱水物料资源的入口函数
  * **/
-export async function getDehydratedResource(params: getDehydratedResourceParamsType) {
+export async function getDehydratedResource({ alias }: getDehydratedResourceParamsType) {
   const $DehydrationResourceManagement = IOCContainer.get(DehydrationResourceManagement);
-
+  const compileAssetsInfo = await $DehydrationResourceManagement.getResourceListWithAlias(alias);
+  return compileAssetsInfo.assets;
 };

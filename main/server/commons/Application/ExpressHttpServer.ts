@@ -1,18 +1,14 @@
 import http from "http";
-import path from "path";
 import express from "express";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { injectable, inject } from "inversify";
-import { compileConfiguration } from "@/library";
+import { compileConfiguration, getRuntimeConfiguration } from "@/library";
 
 import type { Express } from "express";
-import type { IFrameworkConfig } from "@/library";
 
 import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
 import { RegistryRouter } from "@/main/server/commons/Application/RegistryRouter";
-import { FrameworkDetail } from "@/main/server/commons/Application/FrameworkDetail";
-import { InitialComponent } from "@/main/server/commons/Application/InitialComponent";
 import { ApplicationConfigManager } from "@/main/server/commons/Application/ApplicationConfigManager";
 
 import { requestMiddleware } from "@/main/server/interceptors/requestMiddleware";
@@ -25,30 +21,23 @@ export class ExpressHttpServer {
 
   private expressInstance: Express = express();
 
-  private compileConfigurationInfo: IFrameworkConfig;
-
   constructor(
     @inject(ApplicationConfigManager) private readonly $ApplicationConfigManager: ApplicationConfigManager,
-    @inject(InitialComponent) private readonly $InitialComponent: InitialComponent,
-    @inject(FrameworkDetail) private readonly $FrameworkDetail: FrameworkDetail,
     @inject(RegistryRouter) private readonly $RegistryRouter: RegistryRouter,
   ) { }
 
   /** 在服务启动前需要执行的操作 **/
   public async beforeBootstrap() {
-    const projectDirectoryPath = this.$FrameworkDetail.projectDirectoryPath;
     await this.$ApplicationConfigManager.initialize();
-    this.compileConfigurationInfo = await compileConfiguration({
-      projectDirectoryPath,
-      assetsDirectoryPath: path.resolve(projectDirectoryPath, "./dist/"),
-      tempHydrationDirectoryPath: path.resolve(projectDirectoryPath, "./dist/.hydration/"),
-      hydrationResourceDirectoryPath: path.resolve(projectDirectoryPath, "./dist/hydration/"),
-      dehydrationResourceDirectoryPath: path.resolve(projectDirectoryPath, "./dist/dehydration/"),
-    });
+    /** 在运行时的时候需要基于当前的filename来确定项目的根目录 **/
+    const { projectDirectoryPath } = this.$ApplicationConfigManager.getRuntimeConfig();
+    await compileConfiguration({ projectDirectoryPath });
   };
 
   /** 服务启动时执行的代码 **/
   public async bootstrap() {
+    const { hydrationResourceDirectoryPath } = await getRuntimeConfiguration();
+    const { staticResourceDirectory } = this.$ApplicationConfigManager.getRuntimeConfig();
     /** 注册中间件 **/
     this.expressInstance.use(cookieParser());
     this.expressInstance.use(bodyParser.json());
@@ -58,19 +47,17 @@ export class ExpressHttpServer {
     /** 注册控制器 **/
     await this.$RegistryRouter.execute(this.expressInstance);
     /** 提供开发框架静态资源比如swagger文档 **/
-    this.expressInstance.use(express.static(this.$FrameworkDetail.frameworkDirectory, {
+    this.expressInstance.use(express.static(staticResourceDirectory, {
       // maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)
     }));
     /** 提供注水javascript和静态资源的路由 */
-    this.expressInstance.use("/hydration/", express.static(this.compileConfigurationInfo.hydrationResourceDirectoryPath, {
+    this.expressInstance.use("/hydration/", express.static(hydrationResourceDirectoryPath, {
       // maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)
     }));
     /** 启动服务器监听端口 **/
     const { server } = this.$ApplicationConfigManager.getRuntimeConfig();
     this.serverInstance = this.expressInstance.listen(server.port, async () => {
       try {
-        // await this.$InitialComponent.execute();
-        await this.$RegistryRouter.processSSRResource();
         logger.info("Address %s", this.serverInstance.address());
       } catch (error) {
         logger.error(error);

@@ -21,6 +21,6 @@ export async function makeDehydratedResource({ alias, source, mode, watch }: mak
   await $DehydrationResourceManagement.checkSourceCodeAndRelation(source);
   /** 根据唯一的alis别名智能判定是否进行编译 **/
   await $DehydrationResourceManagement.smartDecideWithUniqueAlias(alias);
-  const compileAssetsInfo = await $DehydrationResourceManagement.getResourceList();
+  const compileAssetsInfo = await $DehydrationResourceManagement.getResourceListWithAlias(alias);
   return compileAssetsInfo.assets;
 };

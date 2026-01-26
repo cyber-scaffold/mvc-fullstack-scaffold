@@ -4,10 +4,8 @@ import pretty from "pretty";
 import { get } from "dot-prop";
 import { renderToString } from "react-dom/server";
 
-import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
-import { FrameworkDetail } from "@/main/server/commons/Application/FrameworkDetail";
-
 import type { ICompileAssetsList } from "@/library";
+import { getRuntimeConfiguration } from "@/library";
 
 interface IParmas {
   dehydrationViewContent: string
@@ -20,9 +18,8 @@ interface IParmas {
   content?: any
 };
 
-export function renderHTMLContent(params: IParmas) {
-  const $FrameworkDetail = IOCContainer.get(FrameworkDetail);
-  const projectDirectoryPath = $FrameworkDetail.projectDirectoryPath;
+export async function renderHTMLContent(params: IParmas) {
+  const { assetsDirectoryPath, hydrationResourceDirectoryPath } = await getRuntimeConfiguration();
   const dehydrationViewContent = params.dehydrationViewContent;
   const hydrationAssets = params.hydrationAssets;
   const hydrationContent = params.content;
@@ -46,7 +43,7 @@ export function renderHTMLContent(params: IParmas) {
         <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
         <link href="/statics/favicon.ico" rel="icon" type="image/x-icon" />
         {get(hydrationAssets, "stylesheet", []).map((stylesheetResourceRelativePath: string) => (
-          <link key={stylesheetResourceRelativePath} rel="stylesheet" href={path.relative(path.join(projectDirectoryPath, "./dist/"), stylesheetResourceRelativePath)} />
+          <link key={stylesheetResourceRelativePath} rel="stylesheet" href={path.join(hydrationResourceDirectoryPath, stylesheetResourceRelativePath).replace(assetsDirectoryPath, "")} />
         ))}
         <script dangerouslySetInnerHTML={{ __html: `window.process=${JSON.stringify({ env: { NODE_ENV: process.env.NODE_ENV } })};` }}></script>
         <script dangerouslySetInnerHTML={{ __html: `window.content=${JSON.stringify(hydrationContent, null, "")};` }}></script>
@@ -55,7 +52,7 @@ export function renderHTMLContent(params: IParmas) {
       <body>
         <div id="root" dangerouslySetInnerHTML={{ __html: dehydrationViewContent }} />
         {get(hydrationAssets, "javascript", []).map((javascriptResourceRelativePath: string) => (
-          <script key={javascriptResourceRelativePath} src={path.relative(path.join(projectDirectoryPath, "./dist/"), javascriptResourceRelativePath)}></script>
+          <script key={javascriptResourceRelativePath} src={path.join(hydrationResourceDirectoryPath, javascriptResourceRelativePath).replace(assetsDirectoryPath, "")}></script>
         ))}
         <script dangerouslySetInnerHTML={{ __html: `window.renderHydration(document.getElementById("root"),{meta:window.meta,process:window.process,content:window.content})` }}></script>
       </body>

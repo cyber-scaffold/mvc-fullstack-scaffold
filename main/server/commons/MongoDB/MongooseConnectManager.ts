@@ -18,8 +18,8 @@ export class MongooseConnectManager {
   public async initialize() {
     try {
       const { mongodb } = this.$ApplicationConfigManager.getRuntimeConfig();
-      const { host, port, username, password, dataDb } = mongodb;
-      const connectionURL = `mongodb://${username}:${password}@${host}:${port}/${dataDb}?authSource=admin`;
+      const { host, port, username, password, database } = mongodb;
+      const connectionURL = `mongodb://${username}:${password}@${host}:${port}/${database}?authSource=admin`;
       const connection = await createConnection(connectionURL);
       this.connection = connection;
       logger.info("Mongoose 连接成功!!!");
