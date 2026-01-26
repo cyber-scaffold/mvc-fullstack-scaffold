@@ -1,30 +1,48 @@
 import path from "path";
+import webpack from "webpack";
 import spawn from "cross-spawn";
 import { injectable, inject } from "inversify";
 
 import { IOCContainer } from "@/frameworks/commons/IOCContainer";
 import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
-import { ServerSiderCompileService } from "@/frameworks/services/compile/ServerSiderCompileService";
+import { ServerSiderConfigManager } from "@/frameworks/configs/platforms/ServerSiderConfigManager";
 import { GenerateSwaggerDocsService } from "@/frameworks/services/preprocess/GenerateSwaggerDocsService";
 
 /**
  * @description 运行开发命令,可以基于cluster同时开启服务端和客户端渲染服务
  * **/
 @injectable()
-export class DevelopmentControllerProcess {
+export class ApplicationDevelopmentController {
 
   private childProcess: spawn;
 
   constructor(
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager,
-    @inject(ServerSiderCompileService) private readonly $ServerSiderCompileService: ServerSiderCompileService,
+    @inject(ServerSiderConfigManager) private readonly $ServerSiderConfigManager: ServerSiderConfigManager,
     @inject(GenerateSwaggerDocsService) private readonly $GenerateSwaggerDocsService: GenerateSwaggerDocsService
   ) { };
+
+  /**
+   * 启动应用服务的开发模式
+   * **/
+  public async startDevelopmentMode(callback) {
+    const serverSiderRenderConfig: any = await this.$ServerSiderConfigManager.getDevelopmentConfig();
+    const serverSiderCompiler = webpack(serverSiderRenderConfig);
+    serverSiderCompiler.watch({}, async (error, stats) => {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(stats.toString({ colors: true }));
+        await callback();
+        return false;
+      };
+    });
+  };
 
   public async execute() {
     const { destnation } = this.$FrameworkConfigManager.getRuntimeConfig();
     /** 开发模式下需要使用watch模式,启动服务端脚本应该在callback中执行 **/
-    await this.$ServerSiderCompileService.startWatch(async () => {
+    await this.startDevelopmentMode(async () => {
       if (this.childProcess) {
         await new Promise((resolve) => {
           const handleClose = () => {
@@ -48,4 +66,4 @@ export class DevelopmentControllerProcess {
 
 };
 
-IOCContainer.bind(DevelopmentControllerProcess).toSelf().inSingletonScope();
+IOCContainer.bind(ApplicationDevelopmentController).toSelf().inSingletonScope();
