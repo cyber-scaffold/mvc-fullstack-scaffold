@@ -6,17 +6,21 @@ export type makeHydrationResourceParamsType = {
   alias: string
   /** 注水物料指向的原文件 **/
   source: string
+  /** 运行模式 **/
+  mode: "development" | "production" | "none"
+  /** 是否使用watch模式监听文件的改变 **/
+  watch: boolean
 };
 
 /**
  * 编译注水物料的入口函数
  * **/
-export async function makeHydrationResource({ alias, source }: makeHydrationResourceParamsType) {
+export async function makeHydrationResource({ alias, source, mode, watch }: makeHydrationResourceParamsType) {
   const $HydrationResourceManagement = IOCContainer.get(HydrationResourceManagement);
-  /** 关联原代码路径 **/
-  await $HydrationResourceManagement.relationSourceCode(source);
-  /** 智能判定是否进行编译 **/
-  await $HydrationResourceManagement.smartDecide();
+  /** 检查原代码路径并进行关联 **/
+  await $HydrationResourceManagement.checkSourceCodeAndRelation(source);
+  /** 根据唯一的alis别名智能判定是否进行编译 **/
+  await $HydrationResourceManagement.smartDecideWithUniqueAlias(alias);
   const compileAssetsInfo = await $HydrationResourceManagement.getResourceList();
   return compileAssetsInfo.assets;
 };

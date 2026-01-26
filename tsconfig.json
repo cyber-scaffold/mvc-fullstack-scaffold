@@ -1,10 +1,4 @@
 {
-  "ts-node": {
-    "transpileOnly": true,
-    "require": [
-      "typescript-transform-paths/register"
-    ]
-  },
   "compilerOptions": {
     "jsx": "react",
     "emitDecoratorMetadata": true,

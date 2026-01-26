@@ -2,6 +2,7 @@
 import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
 import { IOCContainer } from "@/frameworks/commons/IOCContainer";
 
+import { MaterielResourceBuildController } from "@/frameworks/controllers/MaterielResource/MaterielResourceBuildController";
 import { ApplicationBuildController } from "@/frameworks/controllers/ServerApplication/ApplicationBuildController";
 import { CompilerActionService } from "@/frameworks/services/preprocess/CompilerActionService";
 

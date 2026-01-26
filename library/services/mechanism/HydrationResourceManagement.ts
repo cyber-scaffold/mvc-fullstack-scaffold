@@ -29,7 +29,7 @@ export class HydrationResourceManagement implements ResourceManagementInterface 
   /**
    * 关联源代码同时做个资源检测,如果不存在的话需要提示
    * **/
-  public async relationSourceCode(sourceCodeFilePath: string) {
+  public async checkSourceCodeAndRelation(sourceCodeFilePath: string) {
     if (!await pathExists(sourceCodeFilePath)) {
       throw new Error(`源代码文件${sourceCodeFilePath}不存在`);
     };
@@ -39,7 +39,7 @@ export class HydrationResourceManagement implements ResourceManagementInterface 
   /**
    * 判断源代码是否有编译记录,没有编译记录并且允许编译的情况下就会自动触发编译
    * **/
-  public async smartDecide(): Promise<void | boolean> {
+  public async smartDecideWithUniqueAlias(alias: string): Promise<void | boolean> {
     /** 计算源代码的contenthash **/
     const sourceCodeContentHash = await getContentHash(this.sourceCodeFilePath);
     /** 获取缓存的编译信息 **/
