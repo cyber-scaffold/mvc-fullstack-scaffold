@@ -37,10 +37,10 @@ export class DehydrationResourceManagement implements ResourceManagementInterfac
   public async buildResourceWithUniqueAlias({ alias, mode, watch }) {
     if (watch) {
       /** 在watch模式下进行编译 **/
-      await this.$DehydrationCompileService.startWatch({ alias, sourceCodeFilePath: this.sourceCodeFilePath });
+      await this.$DehydrationCompileService.startWatch({ alias, mode, sourceCodeFilePath: this.sourceCodeFilePath });
     } else {
       /** 在非watch模式下进行编译 **/
-      await this.$DehydrationCompileService.startBuild({ alias, sourceCodeFilePath: this.sourceCodeFilePath });
+      await this.$DehydrationCompileService.startBuild({ alias, mode, sourceCodeFilePath: this.sourceCodeFilePath });
     };
   };
 
@@ -50,8 +50,12 @@ export class DehydrationResourceManagement implements ResourceManagementInterfac
   public async getResourceListWithAlias(alias: string) {
     const dehydrationCompileDatabase = this.$MaterielResourceDatabaseManager.getDehydrationCompileDatabase();
     await dehydrationCompileDatabase.read();
-    const compileAssetsInfo = dehydrationCompileDatabase.data[alias];
-    return compileAssetsInfo;
+    if (dehydrationCompileDatabase.data[alias].status === "done") {
+      const compileAssetsInfo = dehydrationCompileDatabase.data[alias];
+      return compileAssetsInfo;
+    };
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    return await this.getResourceListWithAlias(alias);
   };
 
 };

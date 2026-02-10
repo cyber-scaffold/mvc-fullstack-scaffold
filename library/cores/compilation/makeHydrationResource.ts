@@ -21,6 +21,4 @@ export async function makeHydrationResource({ alias, source, mode, watch }: make
   await $HydrationResourceManagement.checkSourceCodeAndRelation(source);
   /** 根据不同的模式和参数对物料进行编译  **/
   await $HydrationResourceManagement.buildResourceWithUniqueAlias({ alias, mode, watch });
-  const compileAssetsInfo = await $HydrationResourceManagement.getResourceListWithAlias(alias);
-  return compileAssetsInfo;
 };

@@ -37,10 +37,10 @@ export class HydrationResourceManagement implements ResourceManagementInterface 
   public async buildResourceWithUniqueAlias({ alias, mode, watch }): Promise<void | boolean> {
     if (watch) {
       /** 在watch模式下进行编译 **/
-      await this.$HydrationCompileService.startWatch({ alias, sourceCodeFilePath: this.sourceCodeFilePath });
+      await this.$HydrationCompileService.startWatch({ alias, mode, sourceCodeFilePath: this.sourceCodeFilePath });
     } else {
       /** 在非watch模式下进行编译 **/
-      await this.$HydrationCompileService.startBuild({ alias, sourceCodeFilePath: this.sourceCodeFilePath });
+      await this.$HydrationCompileService.startBuild({ alias, mode, sourceCodeFilePath: this.sourceCodeFilePath });
     };
   };
 
@@ -50,8 +50,12 @@ export class HydrationResourceManagement implements ResourceManagementInterface 
   public async getResourceListWithAlias(alias: string) {
     const hydrationCompileDatabase = this.$MaterielResourceDatabaseManager.getHydrationCompileDatabase();
     await hydrationCompileDatabase.read();
-    const compileAssetsInfo = hydrationCompileDatabase.data[alias];
-    return compileAssetsInfo;
+    if (hydrationCompileDatabase.data[alias].status === "done") {
+      const compileAssetsInfo = hydrationCompileDatabase.data[alias];
+      return compileAssetsInfo;
+    };
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    return await this.getResourceListWithAlias(alias);
   };
 
 };

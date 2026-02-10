@@ -8,6 +8,7 @@ import { DefinePlugin, Configuration } from "webpack";
 import { IOCContainer } from "@/library/commons/IOCContainer";
 import { RuntimeConfigManager } from "@/library/commons/RuntimeConfigManager";
 
+import { MaterielResourceDatabaseManager } from "@/library/commons/MaterielResourceDatabaseManager";
 import { TypeScriptLoaderConfigManger } from "@/library/configs/loaders/TypeScriptLoaderConfigManger";
 import { ESBuildLoaderConfigManger } from "@/library/configs/loaders/ESBuildLoaderConfigManger";
 import { FileLoaderConfigManager } from "@/library/configs/loaders/FileLoaderConfigManager";
@@ -15,6 +16,7 @@ import { LessLoaderConfigManager } from "@/library/configs/loaders/LessLoaderCon
 import { SassLoaderConfigManager } from "@/library/configs/loaders/SassLoaderConfigManager";
 import { CssLoaderConfigManager } from "@/library/configs/loaders/CssLoaderConfigManager";
 
+import { CompilerProgressPlugin } from "@/library/utils/CompilerProgressPlugin";
 import { filePathContentHash } from "@/library/utils/filePathContentHash";
 
 /**
@@ -24,19 +26,21 @@ import { filePathContentHash } from "@/library/utils/filePathContentHash";
 export class DehydrationConfigManager {
 
   constructor(
-    @inject(RuntimeConfigManager) private readonly $RuntimeConfigManager: RuntimeConfigManager,
+    @inject(MaterielResourceDatabaseManager) private readonly $MaterielResourceDatabaseManager: MaterielResourceDatabaseManager,
     @inject(TypeScriptLoaderConfigManger) private readonly $TypeScriptLoaderConfigManger: TypeScriptLoaderConfigManger,
     @inject(ESBuildLoaderConfigManger) private readonly $ESBuildLoaderConfigManger: ESBuildLoaderConfigManger,
     @inject(FileLoaderConfigManager) private readonly $FileLoaderConfigManager: FileLoaderConfigManager,
     @inject(LessLoaderConfigManager) private readonly $LessLoaderConfigManager: LessLoaderConfigManager,
     @inject(SassLoaderConfigManager) private readonly $SassLoaderConfigManager: SassLoaderConfigManager,
     @inject(CssLoaderConfigManager) private readonly $CssLoaderConfigManager: CssLoaderConfigManager,
+    @inject(RuntimeConfigManager) private readonly $RuntimeConfigManager: RuntimeConfigManager
   ) { };
 
   /**
    * 最基础的webpack编译配置
    * **/
-  public async getBasicConfig(sourceCodeFilePath: string) {
+  public async getBasicConfig(params) {
+    const { alias, sourceCodeFilePath } = params;
     const { projectDirectoryPath } = this.$RuntimeConfigManager.getRuntimeConfig();
     return {
       entry: ["source-map-support/register", sourceCodeFilePath],
@@ -65,6 +69,11 @@ export class DehydrationConfigManager {
         ])).flat()
       },
       plugins: [
+        new CompilerProgressPlugin({
+          alias,
+          type: "dehydration",
+          materielResourceDatabaseManager: this.$MaterielResourceDatabaseManager
+        }),
         new WebpackBar({ name: "制作脱水物料" }),
         new DefinePlugin({ "process.TYPE": JSON.stringify("dehydration") })
       ]
@@ -74,8 +83,9 @@ export class DehydrationConfigManager {
   /**
    * 开发模式下的webpack配置
    * **/
-  public async getDevelopmentConfig(sourceCodeFilePath: string) {
-    const basicConfig: any = await this.getBasicConfig(sourceCodeFilePath);
+  public async getDevelopmentConfig(params) {
+    const { alias, sourceCodeFilePath } = params;
+    const basicConfig: any = await this.getBasicConfig({ alias, sourceCodeFilePath });
     const { dehydrationResourceDirectoryPath } = this.$RuntimeConfigManager.getRuntimeConfig();
     return merge<Configuration>(basicConfig, {
       mode: "development",
@@ -95,8 +105,9 @@ export class DehydrationConfigManager {
   /**
    * 生产模式下的webpack配置
    * **/
-  public async getProductionConfig(sourceCodeFilePath: string) {
-    const basicConfig: any = await this.getBasicConfig(sourceCodeFilePath);
+  public async getProductionConfig(params) {
+    const { alias, sourceCodeFilePath } = params;
+    const basicConfig: any = await this.getBasicConfig({ alias, sourceCodeFilePath });
     const { dehydrationResourceDirectoryPath } = this.$RuntimeConfigManager.getRuntimeConfig();
     return merge<Configuration>(basicConfig, {
       mode: "none",
