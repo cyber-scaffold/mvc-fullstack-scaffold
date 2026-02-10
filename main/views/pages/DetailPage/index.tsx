@@ -2,6 +2,7 @@ import React from "react";
 
 import { BasicLayout } from "@/main/views/layouts/BasicLayout";
 
+
 export default function DetailPage(props) {
   return (
     <BasicLayout>

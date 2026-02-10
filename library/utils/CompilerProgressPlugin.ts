@@ -29,6 +29,7 @@ export class CompilerProgressPlugin {
         dehydrationCompileDatabase.data[this.params.alias].status = "compile";
         await dehydrationCompileDatabase.write();
       };
+      // console.log(this.params.alias, "compile");
     });
 
     // 在资源即将输出前触发
@@ -44,6 +45,7 @@ export class CompilerProgressPlugin {
         await dehydrationCompileDatabase.write();
       };
       callback();
+      // console.log(this.params.alias, "emit");
     });
 
     // 在编译完成时触发
@@ -58,6 +60,7 @@ export class CompilerProgressPlugin {
         dehydrationCompileDatabase.data[this.params.alias].status = "done";
         await dehydrationCompileDatabase.write();
       };
+      // console.log(this.params.alias, "done");
     });
   };
 
