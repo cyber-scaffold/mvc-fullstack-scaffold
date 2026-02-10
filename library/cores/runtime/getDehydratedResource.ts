@@ -13,5 +13,5 @@ export type getDehydratedResourceParamsType = {
 export async function getDehydratedResource({ alias }: getDehydratedResourceParamsType) {
   const $DehydrationResourceManagement = IOCContainer.get(DehydrationResourceManagement);
   const compileAssetsInfo = await $DehydrationResourceManagement.getResourceListWithAlias(alias);
-  return compileAssetsInfo.assets;
+  return compileAssetsInfo;
 };

@@ -13,5 +13,5 @@ export type getHydrationResourceParamsType = {
 export async function getHydrationResource({ alias }: getHydrationResourceParamsType) {
   const $HydrationResourceManagement = IOCContainer.get(HydrationResourceManagement);
   const compileAssetsInfo = await $HydrationResourceManagement.getResourceListWithAlias(alias);
-  return compileAssetsInfo.assets;
+  return compileAssetsInfo;
 };

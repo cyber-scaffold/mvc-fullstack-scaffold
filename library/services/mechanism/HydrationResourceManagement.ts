@@ -39,15 +39,7 @@ export class HydrationResourceManagement implements ResourceManagementInterface 
   /**
    * 判断源代码是否有编译记录,没有编译记录并且允许编译的情况下就会自动触发编译
    * **/
-  public async smartDecideWithUniqueAlias(alias: string): Promise<void | boolean> {
-    /** 计算源代码的contenthash **/
-    const sourceCodeContentHash = await getContentHash(this.sourceCodeFilePath);
-    /** 获取缓存的编译信息 **/
-    const cachedResourceInfo = await this.getResourceListWithAlias(alias);
-    /** 源代码内容没有发生变动的情况则不需要触发编译 **/
-    if (get(cachedResourceInfo, "contenthash", undefined) === sourceCodeContentHash) {
-      return false;
-    };
+  public async buildResourceWithUniqueAlias(alias: string): Promise<void | boolean> {
     /** 源代码内容发生变动的情况需要触发编译并更新编译信息 **/
     const hydrationCompileDatabase = this.$MaterielResourceDatabaseManager.getHydrationCompileDatabase();
     /** 需要对原始的tsx文件进行额外加工使其的引用变成标准化的引用 **/
@@ -55,10 +47,7 @@ export class HydrationResourceManagement implements ResourceManagementInterface 
     /** 进行构建并获得资源清单 **/
     const assetsFileList = await this.$HydrationCompileService.startBuild(composeTemporaryRenderFilePath);
     /** 在json数据库中保存资源信息 **/
-    hydrationCompileDatabase.data[alias] = {
-      contenthash: sourceCodeContentHash,
-      assets: assetsFileList
-    };
+    hydrationCompileDatabase.data[alias] = assetsFileList;
     await hydrationCompileDatabase.write();
   };
 

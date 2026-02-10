@@ -19,8 +19,8 @@ export async function makeDehydratedResource({ alias, source, mode, watch }: mak
   const $DehydrationResourceManagement = IOCContainer.get(DehydrationResourceManagement);
   /** 检查原代码路径并进行关联 **/
   await $DehydrationResourceManagement.checkSourceCodeAndRelation(source);
-  /** 根据唯一的alis别名智能判定是否进行编译 **/
-  await $DehydrationResourceManagement.smartDecideWithUniqueAlias(alias);
+  /** 根据唯一的alias别名智能判定是否进行编译 **/
+  await $DehydrationResourceManagement.buildResourceWithUniqueAlias(alias);
   const compileAssetsInfo = await $DehydrationResourceManagement.getResourceListWithAlias(alias);
   return compileAssetsInfo.assets;
 };
