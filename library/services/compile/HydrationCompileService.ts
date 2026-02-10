@@ -30,7 +30,7 @@ export class HydrationCompileService {
     const hydrationRenderConfig: any = await this.$HydrationConfigManager.getDevelopmentConfig({ alias, sourceCodeFilePath: composeTemporaryRenderFilePath });
     /** 开启一个编译对象 **/
     const hydrationCompiler = webpack(hydrationRenderConfig);
-    hydrationCompiler.watch({}, async (error, stats) => {
+    hydrationCompiler.watch({ ignored: "**/node_modules/**" }, async (error, stats) => {
       if (error) {
         console.log(error);
       } else {

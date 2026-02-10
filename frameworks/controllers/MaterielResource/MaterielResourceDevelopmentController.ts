@@ -10,10 +10,6 @@ import { compileConfiguration, makeHydrationResource, makeDehydratedResource } f
 @injectable()
 export class MaterielResourceDevelopmentController {
 
-  private hydration = {};
-
-  private dehydrated = {};
-
   constructor(
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager
   ) { };
@@ -21,24 +17,29 @@ export class MaterielResourceDevelopmentController {
   public async startDevelopmentMode() {
     const { projectDirectoryPath, assetsDirectoryName, materiels = [] } = await this.$FrameworkConfigManager.getRuntimeConfig();
     await compileConfiguration({ projectDirectoryPath, assetsDirectoryName });
-    materiels.map((everyMaterielInfo) => {
+    /** 对每一组物料的详细编译信息进行分析生成编译队列 **/
+    const allMaterielsMakeTask = materiels.map((everyMaterielInfo) => {
+      const everyMaterielMakeTask = [];
       if (everyMaterielInfo.hydration) {
-        this.hydration[everyMaterielInfo.alias] = makeHydrationResource({
+        everyMaterielMakeTask.push(makeHydrationResource({
           alias: everyMaterielInfo.alias,
           source: everyMaterielInfo.source,
           mode: "development",
           watch: true
-        });
+        }));
       };
       if (everyMaterielInfo.dehydrated) {
-        this.dehydrated[everyMaterielInfo.alias] = makeDehydratedResource({
+        everyMaterielMakeTask.push(makeDehydratedResource({
           alias: everyMaterielInfo.alias,
           source: everyMaterielInfo.source,
           mode: "development",
           watch: true
-        });
+        }));
       };
+      return everyMaterielMakeTask;
     });
+    /** allMaterielsMakeTask是有分组的二维数组,如果要配合Promise.all的话需要进行flat处理 **/
+    await Promise.all(allMaterielsMakeTask.flat());
   };
 
 };

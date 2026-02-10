@@ -25,7 +25,7 @@ export class DehydrationCompileService {
     const dehydrationRenderConfig: any = await this.$DehydrationConfigManager.getDevelopmentConfig({ alias, sourceCodeFilePath });
     /** 开启一个编译对象 **/
     const dehydrationCompiler = webpack(dehydrationRenderConfig);
-    dehydrationCompiler.watch({}, async (error, stats) => {
+    dehydrationCompiler.watch({ ignored: "**/node_modules/**" }, async (error, stats) => {
       if (error) {
         console.log(error);
       } else {

@@ -28,12 +28,12 @@ export class ApplicationDevelopmentController {
   public async startDevelopmentMode(callback) {
     const serverSiderRenderConfig: any = await this.$ServerSiderConfigManager.getDevelopmentConfig();
     const serverSiderCompiler = webpack(serverSiderRenderConfig);
-    serverSiderCompiler.watch({}, async (error, stats) => {
+    serverSiderCompiler.watch({ ignored: "**/node_modules/**" }, (error, stats) => {
       if (error) {
         console.log(error);
       } else {
-        console.log(stats.toString({ colors: true }));
-        await callback();
+        // console.log(stats.toString({ colors: true }));
+        callback();
         return false;
       };
     });

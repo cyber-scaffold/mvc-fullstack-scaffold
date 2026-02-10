@@ -3,7 +3,6 @@ import React from "react";
 import { BasicLayout } from "@/main/views/layouts/BasicLayout";
 import hq2 from "./assets/hq2.jpg";
 
-
 export default function IndexPage({ content }) {
   return (
     <BasicLayout>
