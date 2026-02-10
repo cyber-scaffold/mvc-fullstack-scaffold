@@ -19,8 +19,8 @@ export async function makeHydrationResource({ alias, source, mode, watch }: make
   const $HydrationResourceManagement = IOCContainer.get(HydrationResourceManagement);
   /** 检查原代码路径并进行关联 **/
   await $HydrationResourceManagement.checkSourceCodeAndRelation(source);
-  /** 根据唯一的alias别名智能判定是否进行编译 **/
-  await $HydrationResourceManagement.buildResourceWithUniqueAlias(alias);
+  /** 根据不同的模式和参数对物料进行编译  **/
+  await $HydrationResourceManagement.buildResourceWithUniqueAlias({ alias, mode, watch });
   const compileAssetsInfo = await $HydrationResourceManagement.getResourceListWithAlias(alias);
-  return compileAssetsInfo.assets;
+  return compileAssetsInfo;
 };

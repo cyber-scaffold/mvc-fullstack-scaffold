@@ -1,15 +1,11 @@
-import { get } from "dot-prop";
 import pathExists from "path-exists";
 import { injectable, inject } from "inversify";
 
 import { IOCContainer } from "@/library/commons/IOCContainer";
+import { HydrationCompileService } from "@/library/services/compile/HydrationCompileService";
 import { MaterielResourceDatabaseManager } from "@/library/commons/MaterielResourceDatabaseManager";
 
-import { HydrationCompileService } from "@/library/services/compile/HydrationCompileService";
-import { HydrationRenderWapperService } from "@/library/services/preprocess/HydrationRenderWapperService";
-
 import { ResourceManagementInterface } from "@/library/services/mechanism/ResourceManagementInterface";
-import { getContentHash } from "@/library/utils/getContentHash";
 
 /**
  * 水合化资源的资源管理器
@@ -22,8 +18,7 @@ export class HydrationResourceManagement implements ResourceManagementInterface 
 
   constructor(
     @inject(MaterielResourceDatabaseManager) private readonly $MaterielResourceDatabaseManager: MaterielResourceDatabaseManager,
-    @inject(HydrationRenderWapperService) private readonly $HydrationRenderWapperService: HydrationRenderWapperService,
-    @inject(HydrationCompileService) private readonly $HydrationCompileService: HydrationCompileService,
+    @inject(HydrationCompileService) private readonly $HydrationCompileService: HydrationCompileService
   ) { }
 
   /**
@@ -39,16 +34,14 @@ export class HydrationResourceManagement implements ResourceManagementInterface 
   /**
    * 判断源代码是否有编译记录,没有编译记录并且允许编译的情况下就会自动触发编译
    * **/
-  public async buildResourceWithUniqueAlias(alias: string): Promise<void | boolean> {
-    /** 源代码内容发生变动的情况需要触发编译并更新编译信息 **/
-    const hydrationCompileDatabase = this.$MaterielResourceDatabaseManager.getHydrationCompileDatabase();
-    /** 需要对原始的tsx文件进行额外加工使其的引用变成标准化的引用 **/
-    const composeTemporaryRenderFilePath = await this.$HydrationRenderWapperService.generateStandardizationHydrationFile(this.sourceCodeFilePath);
-    /** 进行构建并获得资源清单 **/
-    const assetsFileList = await this.$HydrationCompileService.startBuild(composeTemporaryRenderFilePath);
-    /** 在json数据库中保存资源信息 **/
-    hydrationCompileDatabase.data[alias] = assetsFileList;
-    await hydrationCompileDatabase.write();
+  public async buildResourceWithUniqueAlias({ alias, mode, watch }): Promise<void | boolean> {
+    if (watch) {
+      /** 在watch模式下进行编译 **/
+      await this.$HydrationCompileService.startWatch({ alias, sourceCodeFilePath: this.sourceCodeFilePath });
+    } else {
+      /** 在非watch模式下进行编译 **/
+      await this.$HydrationCompileService.startBuild({ alias, sourceCodeFilePath: this.sourceCodeFilePath });
+    };
   };
 
   /**

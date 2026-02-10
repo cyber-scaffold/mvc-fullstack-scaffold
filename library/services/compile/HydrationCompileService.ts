@@ -3,6 +3,8 @@ import { injectable, inject } from "inversify";
 
 import { IOCContainer } from "@/library/commons/IOCContainer";
 
+import { MaterielResourceDatabaseManager } from "@/library/commons/MaterielResourceDatabaseManager";
+import { HydrationRenderWapperService } from "@/library/services/preprocess/HydrationRenderWapperService";
 import { HydrationConfigManager } from "@/library/configs/platforms/HydrationConfigManager";
 import { filterWebpackStats } from "@/library/utils/filterWebpackStats";
 
@@ -11,37 +13,56 @@ import { filterWebpackStats } from "@/library/utils/filterWebpackStats";
 export class HydrationCompileService {
 
   constructor(
+    @inject(MaterielResourceDatabaseManager) private readonly $MaterielResourceDatabaseManager: MaterielResourceDatabaseManager,
+    @inject(HydrationRenderWapperService) private readonly $HydrationRenderWapperService: HydrationRenderWapperService,
     @inject(HydrationConfigManager) private readonly $HydrationConfigManager: HydrationConfigManager
   ) { };
 
-  public async startWatch(sourceCodeFilePath: string) {
+  public async startWatch(params) {
+    const { alias, sourceCodeFilePath } = params;
+    /** 获取注水物料的编译结果的管理数据库 **/
+    const hydrationCompileDatabase = this.$MaterielResourceDatabaseManager.getHydrationCompileDatabase();
+    /** 需要对原始的tsx文件进行额外加工使其的引用变成标准化的引用 **/
+    const composeTemporaryRenderFilePath = await this.$HydrationRenderWapperService.generateStandardizationHydrationFile(sourceCodeFilePath);
     /** 获取开发环境下的编译配置 **/
-    const hydrationRenderConfig: any = await this.$HydrationConfigManager.getDevelopmentConfig(sourceCodeFilePath);
+    const hydrationRenderConfig: any = await this.$HydrationConfigManager.getDevelopmentConfig(composeTemporaryRenderFilePath);
     /** 开启一个编译对象 **/
     const hydrationCompiler = webpack(hydrationRenderConfig);
     hydrationCompiler.watch({}, async (error, stats) => {
       if (error) {
         console.log(error);
       } else {
-        return filterWebpackStats(stats.toJson({ all: false, assets: true, outputPath: true }));
+        // console.log(stats.toString({ colors: true }));
+        const assetsFileList = filterWebpackStats(stats.toJson({ all: false, assets: true, outputPath: true }));
+        /** 在json数据库中保存资源信息 **/
+        hydrationCompileDatabase.data[alias] = assetsFileList;
+        await hydrationCompileDatabase.write();
       };
     });
   };
 
-  public async startBuild(sourceCodeFilePath: string) {
-    const hydrationRenderConfig: any = await this.$HydrationConfigManager.getProductionConfig(sourceCodeFilePath);
+  public async startBuild(params) {
+    const { alias, sourceCodeFilePath } = params;
+    /** 获取注水物料的编译结果的管理数据库 **/
+    const hydrationCompileDatabase = this.$MaterielResourceDatabaseManager.getHydrationCompileDatabase();
+    /** 需要对原始的tsx文件进行额外加工使其的引用变成标准化的引用 **/
+    const composeTemporaryRenderFilePath = await this.$HydrationRenderWapperService.generateStandardizationHydrationFile(sourceCodeFilePath);
+    /** 生成编译配置 **/
+    const hydrationRenderConfig: any = await this.$HydrationConfigManager.getProductionConfig(composeTemporaryRenderFilePath);
+    /** 生成编译对象 **/
     const hydrationCompiler = webpack(hydrationRenderConfig);
-    return new Promise((resolve, reject) => {
-      hydrationCompiler.run(async (error, stats) => {
-        if (error) {
-          reject(error);
-        } else {
-          // console.log(stats.toString({ colors: true }));
-          resolve(filterWebpackStats(stats.toJson({ all: false, assets: true, outputPath: true })));
-        };
-      });
+    /**  执行编译并记录结果 **/
+    hydrationCompiler.run(async (error, stats) => {
+      if (error) {
+        console.log(error);
+      } else {
+        // console.log(stats.toString({ colors: true }));
+        const assetsFileList = filterWebpackStats(stats.toJson({ all: false, assets: true, outputPath: true }));
+        /** 在json数据库中保存资源信息 **/
+        hydrationCompileDatabase.data[alias] = assetsFileList;
+        await hydrationCompileDatabase.write();
+      };
     });
-
   };
 
 };

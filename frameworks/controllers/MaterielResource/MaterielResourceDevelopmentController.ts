@@ -2,8 +2,7 @@ import { injectable, inject } from "inversify";
 
 import { IOCContainer } from "@/frameworks/commons/IOCContainer";
 import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
-
-import { makeHydrationResource, makeDehydratedResource } from "@/library/compilation";
+import { compileConfiguration, makeHydrationResource, makeDehydratedResource } from "@/library/compilation";
 
 /**
  * 脱水和注水物料的开发模式
@@ -20,7 +19,8 @@ export class MaterielResourceDevelopmentController {
   ) { };
 
   public async startDevelopmentMode() {
-    const { materiels = [] } = await this.$FrameworkConfigManager.getRuntimeConfig();
+    const { projectDirectoryPath, assetsDirectoryName, materiels = [] } = await this.$FrameworkConfigManager.getRuntimeConfig();
+    await compileConfiguration({ projectDirectoryPath, assetsDirectoryName });
     materiels.map((everyMaterielInfo) => {
       if (everyMaterielInfo.hydration) {
         this.hydration[everyMaterielInfo.alias] = makeHydrationResource({

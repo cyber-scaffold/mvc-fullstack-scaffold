@@ -3,6 +3,7 @@ import { injectable, inject } from "inversify";
 
 import { IOCContainer } from "@/library/commons/IOCContainer";
 
+import { MaterielResourceDatabaseManager } from "@/library/commons/MaterielResourceDatabaseManager";
 import { DehydrationConfigManager } from "@/library/configs/platforms/DehydrationConfigManager";
 import { filterWebpackStats } from "@/library/utils/filterWebpackStats";
 
@@ -10,33 +11,48 @@ import { filterWebpackStats } from "@/library/utils/filterWebpackStats";
 export class DehydrationCompileService {
 
   constructor(
+    @inject(MaterielResourceDatabaseManager) private readonly $MaterielResourceDatabaseManager: MaterielResourceDatabaseManager,
     @inject(DehydrationConfigManager) private readonly $DehydrationConfigManager: DehydrationConfigManager
   ) { };
 
-  public async startWatch(sourceCodeFilePath: string) {
+  public async startWatch(params) {
+    const { alias, sourceCodeFilePath } = params;
+    /** 获取脱水物料的编译结果的管理数据库 **/
+    const dehydrationCompileDatabase = this.$MaterielResourceDatabaseManager.getDehydrationCompileDatabase();
+    /** 获取开发环境下的编译配置 **/
     const dehydrationRenderConfig: any = await this.$DehydrationConfigManager.getDevelopmentConfig(sourceCodeFilePath);
+    /** 开启一个编译对象 **/
     const dehydrationCompiler = webpack(dehydrationRenderConfig);
-    dehydrationCompiler.watch({}, (error, stats) => {
+    dehydrationCompiler.watch({}, async (error, stats) => {
       if (error) {
         console.log(error);
       } else {
-        return filterWebpackStats(stats.toJson({ all: false, assets: true, outputPath: true }));
+        const assetsFileList = filterWebpackStats(stats.toJson({ all: false, assets: true, outputPath: true }));
+        /** 在json数据库中保存资源信息 **/
+        dehydrationCompileDatabase.data[alias] = assetsFileList;
+        await dehydrationCompileDatabase.write();
       };
     });
   };
 
-  public async startBuild(sourceCodeFilePath: string) {
+  public async startBuild(params) {
+    const { alias, sourceCodeFilePath } = params;
+    /** 获取脱水物料的编译结果的管理数据库 **/
+    const dehydrationCompileDatabase = this.$MaterielResourceDatabaseManager.getDehydrationCompileDatabase();
+    /** 获取开发环境下的编译配置 **/
     const dehydrationRenderConfig: any = await this.$DehydrationConfigManager.getProductionConfig(sourceCodeFilePath);
+    /** 开启一个编译对象 **/
     const dehydrationCompiler = webpack(dehydrationRenderConfig);
-    return new Promise((resolve, reject) => {
-      dehydrationCompiler.run((error, stats) => {
-        if (error) {
-          reject(error);
-        } else {
-          // console.log(stats.toString({ colors: true }));
-          resolve(filterWebpackStats(stats.toJson({ all: false, assets: true, outputPath: true })));
-        };
-      });
+    dehydrationCompiler.run(async (error, stats) => {
+      if (error) {
+        console.log(error);
+      } else {
+        // console.log(stats.toString({ colors: true }));
+        const assetsFileList = filterWebpackStats(stats.toJson({ all: false, assets: true, outputPath: true }));
+        /** 在json数据库中保存资源信息 **/
+        dehydrationCompileDatabase.data[alias] = assetsFileList;
+        await dehydrationCompileDatabase.write();
+      };
     });
   };
 

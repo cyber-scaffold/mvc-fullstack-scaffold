@@ -1,4 +1,3 @@
-import { get } from "dot-prop";
 import pathExists from "path-exists";
 import { injectable, inject } from "inversify";
 
@@ -6,9 +5,7 @@ import { IOCContainer } from "@/library/commons/IOCContainer";
 import { MaterielResourceDatabaseManager } from "@/library/commons/MaterielResourceDatabaseManager";
 
 import { DehydrationCompileService } from "@/library/services/compile/DehydrationCompileService";
-
 import { ResourceManagementInterface } from "@/library/services/mechanism/ResourceManagementInterface";
-import { getContentHash } from "@/library/utils/getContentHash";
 
 /**
  * 脱水资源的资源管理器
@@ -20,8 +17,8 @@ export class DehydrationResourceManagement implements ResourceManagementInterfac
   private sourceCodeFilePath: string;
 
   constructor(
-    @inject(DehydrationCompileService) private readonly $DehydrationCompileService: DehydrationCompileService,
-    @inject(MaterielResourceDatabaseManager) private readonly $MaterielResourceDatabaseManager: MaterielResourceDatabaseManager
+    @inject(MaterielResourceDatabaseManager) private readonly $MaterielResourceDatabaseManager: MaterielResourceDatabaseManager,
+    @inject(DehydrationCompileService) private readonly $DehydrationCompileService: DehydrationCompileService
   ) { }
 
   /**
@@ -37,14 +34,14 @@ export class DehydrationResourceManagement implements ResourceManagementInterfac
   /**
    * 判断源代码是否有编译记录,没有编译记录并且允许编译的情况下就会自动触发编译
    * **/
-  public async buildResourceWithUniqueAlias(alias: string) {
-    /** 源代码内容发生变动的情况需要触发编译并更新编译信息 **/
-    const dehydrationCompileDatabase = this.$MaterielResourceDatabaseManager.getDehydrationCompileDatabase();
-    /** 进行构建并获得资源清单 **/
-    const assetsFileList = await this.$DehydrationCompileService.startBuild(this.sourceCodeFilePath);
-    /** 在json数据库中保存资源信息 **/
-    dehydrationCompileDatabase.data[alias] = assetsFileList;
-    await dehydrationCompileDatabase.write();
+  public async buildResourceWithUniqueAlias({ alias, mode, watch }) {
+    if (watch) {
+      /** 在watch模式下进行编译 **/
+      await this.$DehydrationCompileService.startWatch({ alias, sourceCodeFilePath: this.sourceCodeFilePath });
+    } else {
+      /** 在非watch模式下进行编译 **/
+      await this.$DehydrationCompileService.startBuild({ alias, sourceCodeFilePath: this.sourceCodeFilePath });
+    };
   };
 
   /**
