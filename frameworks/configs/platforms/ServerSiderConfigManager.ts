@@ -1,8 +1,8 @@
 import WebpackBar from "webpackbar";
 import { merge } from "webpack-merge";
+import { Configuration } from "webpack";
 import { injectable, inject } from "inversify";
 import CopyWebpackPlugin from "copy-webpack-plugin";
-import { Configuration } from "webpack";
 
 import { IOCContainer } from "@/frameworks/commons/IOCContainer";
 import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";

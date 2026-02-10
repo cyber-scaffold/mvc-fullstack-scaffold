@@ -2,17 +2,17 @@ import path from "path";
 import { injectable, inject } from "inversify";
 
 import { IOCContainer } from "@/library/commons/IOCContainer";
-import { FrameworkConfigManager } from "@/library/commons/FrameworkConfigManager";
+import { RuntimeConfigManager } from "@/library/commons/RuntimeConfigManager";
 
 @injectable()
 export class TypeScriptLoaderConfigManger {
 
   constructor(
-    @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager
+    @inject(RuntimeConfigManager) private readonly $RuntimeConfigManager: RuntimeConfigManager
   ) { };
 
   public async getHydrationSiderLoaderConfig() {
-    const { projectDirectoryPath } = this.$FrameworkConfigManager.getRuntimeConfig();
+    const { projectDirectoryPath } = this.$RuntimeConfigManager.getRuntimeConfig();
     return [{
       test: /\.(ts|tsx)$/,
       exclude: /(node_modules)/,
@@ -26,7 +26,7 @@ export class TypeScriptLoaderConfigManger {
   };
 
   public async getDehydrationSiderLoaderConfig() {
-    const { projectDirectoryPath } = this.$FrameworkConfigManager.getRuntimeConfig();
+    const { projectDirectoryPath } = this.$RuntimeConfigManager.getRuntimeConfig();
     return [{
       test: /\.(ts|tsx)$/,
       exclude: /(node_modules)/,

@@ -3,7 +3,7 @@ import pathExists from "path-exists";
 import { injectable, inject } from "inversify";
 
 import { IOCContainer } from "@/library/commons/IOCContainer";
-import { CompileDatabaseManager } from "@/library/commons/CompileDatabaseManager";
+import { MaterielResourceDatabaseManager } from "@/library/commons/MaterielResourceDatabaseManager";
 
 import { HydrationCompileService } from "@/library/services/compile/HydrationCompileService";
 import { HydrationRenderWapperService } from "@/library/services/preprocess/HydrationRenderWapperService";
@@ -21,9 +21,9 @@ export class HydrationResourceManagement implements ResourceManagementInterface 
   private sourceCodeFilePath: string;
 
   constructor(
+    @inject(MaterielResourceDatabaseManager) private readonly $MaterielResourceDatabaseManager: MaterielResourceDatabaseManager,
     @inject(HydrationRenderWapperService) private readonly $HydrationRenderWapperService: HydrationRenderWapperService,
     @inject(HydrationCompileService) private readonly $HydrationCompileService: HydrationCompileService,
-    @inject(CompileDatabaseManager) private readonly $CompileDatabaseManager: CompileDatabaseManager,
   ) { }
 
   /**
@@ -49,7 +49,7 @@ export class HydrationResourceManagement implements ResourceManagementInterface 
       return false;
     };
     /** 源代码内容发生变动的情况需要触发编译并更新编译信息 **/
-    const hydrationCompileDatabase = this.$CompileDatabaseManager.getHydrationCompileDatabase();
+    const hydrationCompileDatabase = this.$MaterielResourceDatabaseManager.getHydrationCompileDatabase();
     /** 需要对原始的tsx文件进行额外加工使其的引用变成标准化的引用 **/
     const composeTemporaryRenderFilePath = await this.$HydrationRenderWapperService.generateStandardizationHydrationFile(this.sourceCodeFilePath);
     /** 进行构建并获得资源清单 **/
@@ -66,7 +66,7 @@ export class HydrationResourceManagement implements ResourceManagementInterface 
    * 先执行完smartDecide之后在运行该函数获取编译记录
    * **/
   public async getResourceListWithAlias(alias: string) {
-    const hydrationCompileDatabase = this.$CompileDatabaseManager.getHydrationCompileDatabase();
+    const hydrationCompileDatabase = this.$MaterielResourceDatabaseManager.getHydrationCompileDatabase();
     await hydrationCompileDatabase.read();
     const compileAssetsInfo = hydrationCompileDatabase.data[alias];
     return compileAssetsInfo;

@@ -3,7 +3,7 @@ import pathExists from "path-exists";
 import { injectable, inject } from "inversify";
 
 import { IOCContainer } from "@/library/commons/IOCContainer";
-import { CompileDatabaseManager } from "@/library/commons/CompileDatabaseManager";
+import { MaterielResourceDatabaseManager } from "@/library/commons/MaterielResourceDatabaseManager";
 
 import { DehydrationCompileService } from "@/library/services/compile/DehydrationCompileService";
 
@@ -21,7 +21,7 @@ export class DehydrationResourceManagement implements ResourceManagementInterfac
 
   constructor(
     @inject(DehydrationCompileService) private readonly $DehydrationCompileService: DehydrationCompileService,
-    @inject(CompileDatabaseManager) private readonly $CompileDatabaseManager: CompileDatabaseManager
+    @inject(MaterielResourceDatabaseManager) private readonly $MaterielResourceDatabaseManager: MaterielResourceDatabaseManager
   ) { }
 
   /**
@@ -47,7 +47,7 @@ export class DehydrationResourceManagement implements ResourceManagementInterfac
       return false;
     };
     /** 源代码内容发生变动的情况需要触发编译并更新编译信息 **/
-    const dehydrationCompileDatabase = this.$CompileDatabaseManager.getDehydrationCompileDatabase();
+    const dehydrationCompileDatabase = this.$MaterielResourceDatabaseManager.getDehydrationCompileDatabase();
     /** 进行构建并获得资源清单 **/
     const assetsFileList = await this.$DehydrationCompileService.startBuild(this.sourceCodeFilePath);
     /** 在json数据库中保存资源信息 **/
@@ -62,7 +62,7 @@ export class DehydrationResourceManagement implements ResourceManagementInterfac
    * 先执行完smartDecide之后在运行该函数获取编译记录
    * **/
   public async getResourceListWithAlias(alias: string) {
-    const dehydrationCompileDatabase = this.$CompileDatabaseManager.getDehydrationCompileDatabase();
+    const dehydrationCompileDatabase = this.$MaterielResourceDatabaseManager.getDehydrationCompileDatabase();
     await dehydrationCompileDatabase.read();
     const compileAssetsInfo = dehydrationCompileDatabase.data[alias];
     return compileAssetsInfo;

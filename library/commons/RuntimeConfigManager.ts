@@ -3,7 +3,7 @@ import { injectable } from "inversify";
 
 import { IOCContainer } from "@/library/commons/IOCContainer";
 
-export interface IFrameworkConfig {
+export interface IRuntimeConfig {
   projectDirectoryPath: string,
   assetsDirectoryPath: string
   hydrationResourceDirectoryPath: string
@@ -11,7 +11,7 @@ export interface IFrameworkConfig {
   standardizationHydrationTempDirectoryPath: string
 };
 
-export interface ICustmerFrameworkConfig {
+export interface ICustmerRuntimeConfig {
   projectDirectoryPath?: string,
   assetsDirectoryName?: string
   hydrationResourceDirectoryName?: string
@@ -20,14 +20,17 @@ export interface ICustmerFrameworkConfig {
 };
 
 /** 
- * 制作物料阶段的框架配置
+ * 运行时的服务提取物料配置的管理器
+ * 主要是通过修改projectDirectoryPath 和 assetsDirectoryName来和编译配置保持一致
+ * 方便后续的服务在获取物料配置的时候可以获取到完整的路径
  * **/
 @injectable()
-export class FrameworkConfigManager {
+export class RuntimeConfigManager {
 
   /** 项目的根目录 **/
   private projectDirectoryPath = process.cwd();
 
+  /** 物料资产的目录 **/
   private assetsDirectoryName = "dist";
 
   /** 文件输出的目录(根据 项目的根目录 计算得到) **/
@@ -49,6 +52,7 @@ export class FrameworkConfigManager {
     return path.resolve(this.assetsDirectoryPath, this.dehydrationResourceDirectoryName);
   };
 
+  /** 标准化注水文件的输出目录(对原文件进行wapper处理后的文件) **/
   private standardizationHydrationTempDirectoryName = ".hydration";
 
   /** 标准化注水资源的临时生成目录(根据 文件输出的目录 计算得到) **/
@@ -57,7 +61,7 @@ export class FrameworkConfigManager {
   };
 
   /** 初始化配置并计算出剩余的属性 **/
-  public async initialize(inputCustmerConfig: ICustmerFrameworkConfig) {
+  public async initialize(inputCustmerConfig: ICustmerRuntimeConfig) {
     if (!inputCustmerConfig) {
       return false;
     };
@@ -79,7 +83,7 @@ export class FrameworkConfigManager {
   };
 
   /** 获取最终组合之后的运行时配置 **/
-  public getRuntimeConfig(): IFrameworkConfig {
+  public getRuntimeConfig(): IRuntimeConfig {
     return {
       projectDirectoryPath: this.projectDirectoryPath,
       assetsDirectoryPath: this.assetsDirectoryPath,
@@ -91,4 +95,4 @@ export class FrameworkConfigManager {
 
 };
 
-IOCContainer.bind(FrameworkConfigManager).toSelf().inSingletonScope();
+IOCContainer.bind(RuntimeConfigManager).toSelf().inSingletonScope();

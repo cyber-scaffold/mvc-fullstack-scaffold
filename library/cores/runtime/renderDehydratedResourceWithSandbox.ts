@@ -7,14 +7,14 @@ import { promisify } from "util";
 import { renderToString } from "react-dom/server";
 
 import { IOCContainer } from "@/library/commons/IOCContainer";
-import { FrameworkConfigManager } from "@/library/commons/FrameworkConfigManager";
+import { RuntimeConfigManager } from "@/library/commons/RuntimeConfigManager";
 
 /**
  * 基于nodejs的vm模块加载脱水渲染函数
  * **/
 export async function renderDehydratedResourceWithSandbox(resourceFilePath: string, content?: any) {
-  const $FrameworkConfigManager = IOCContainer.get(FrameworkConfigManager);
-  const { projectDirectoryPath, dehydrationResourceDirectoryPath } = $FrameworkConfigManager.getRuntimeConfig();
+  const $RuntimeConfigManager = IOCContainer.get(RuntimeConfigManager);
+  const { projectDirectoryPath, dehydrationResourceDirectoryPath } = $RuntimeConfigManager.getRuntimeConfig();
   /** 由于脱水物料的路径信息使用的是相对路径,最终的真实路径需要在运行时进行实时计算 **/
   const realDehydratedResourceFilePath = path.resolve(dehydrationResourceDirectoryPath, resourceFilePath);
   const resourceFileCode = await promisify(fs.readFile)(realDehydratedResourceFilePath, "utf-8");

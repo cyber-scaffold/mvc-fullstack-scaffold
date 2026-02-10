@@ -4,22 +4,22 @@ import { JSONFilePreset } from "lowdb/node";
 import { injectable, inject } from "inversify";
 
 import { IOCContainer } from "@/library/commons/IOCContainer";
-import { FrameworkConfigManager } from "@/library/commons/FrameworkConfigManager";
+import { CompilationConfigManager } from "@/library/commons/CompilationConfigManager";
 
 @injectable()
-export class CompileDatabaseManager {
+export class MaterielResourceDatabaseManager {
 
   private hydrationCompileDatabase: Low<{}>;
 
   private dehydrationCompileDatabase: Low<{}>;
 
   constructor(
-    @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager
+    @inject(CompilationConfigManager) private readonly $CompilationConfigManager: CompilationConfigManager
   ) { };
 
   public async initialize() {
     try {
-      const { assetsDirectoryPath } = await this.$FrameworkConfigManager.getRuntimeConfig();
+      const { assetsDirectoryPath } = await this.$CompilationConfigManager.getRuntimeConfig();
       this.hydrationCompileDatabase = await JSONFilePreset(path.resolve(assetsDirectoryPath, "./hydration-compile.json"), {});
       await this.hydrationCompileDatabase.write();
       this.dehydrationCompileDatabase = await JSONFilePreset(path.resolve(assetsDirectoryPath, "./dehydration-compile.json"), {});
@@ -39,4 +39,4 @@ export class CompileDatabaseManager {
 
 };
 
-IOCContainer.bind(CompileDatabaseManager).toSelf().inSingletonScope();
+IOCContainer.bind(MaterielResourceDatabaseManager).toSelf().inSingletonScope();

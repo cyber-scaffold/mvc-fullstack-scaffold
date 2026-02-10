@@ -6,7 +6,7 @@ import nodeExternals from "webpack-node-externals";
 import { DefinePlugin, Configuration } from "webpack";
 
 import { IOCContainer } from "@/library/commons/IOCContainer";
-import { FrameworkConfigManager } from "@/library/commons/FrameworkConfigManager";
+import { RuntimeConfigManager } from "@/library/commons/RuntimeConfigManager";
 
 import { TypeScriptLoaderConfigManger } from "@/library/configs/loaders/TypeScriptLoaderConfigManger";
 import { ESBuildLoaderConfigManger } from "@/library/configs/loaders/ESBuildLoaderConfigManger";
@@ -24,7 +24,7 @@ import { filePathContentHash } from "@/library/utils/filePathContentHash";
 export class DehydrationConfigManager {
 
   constructor(
-    @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager,
+    @inject(RuntimeConfigManager) private readonly $RuntimeConfigManager: RuntimeConfigManager,
     @inject(TypeScriptLoaderConfigManger) private readonly $TypeScriptLoaderConfigManger: TypeScriptLoaderConfigManger,
     @inject(ESBuildLoaderConfigManger) private readonly $ESBuildLoaderConfigManger: ESBuildLoaderConfigManger,
     @inject(FileLoaderConfigManager) private readonly $FileLoaderConfigManager: FileLoaderConfigManager,
@@ -37,7 +37,7 @@ export class DehydrationConfigManager {
    * 最基础的webpack编译配置
    * **/
   public async getBasicConfig(sourceCodeFilePath: string) {
-    const { projectDirectoryPath } = this.$FrameworkConfigManager.getRuntimeConfig();
+    const { projectDirectoryPath } = this.$RuntimeConfigManager.getRuntimeConfig();
     return {
       entry: ["source-map-support/register", sourceCodeFilePath],
       target: "node",
@@ -76,7 +76,7 @@ export class DehydrationConfigManager {
    * **/
   public async getDevelopmentConfig(sourceCodeFilePath: string) {
     const basicConfig: any = await this.getBasicConfig(sourceCodeFilePath);
-    const { dehydrationResourceDirectoryPath } = this.$FrameworkConfigManager.getRuntimeConfig();
+    const { dehydrationResourceDirectoryPath } = this.$RuntimeConfigManager.getRuntimeConfig();
     return merge<Configuration>(basicConfig, {
       mode: "development",
       devtool: "source-map",
@@ -97,7 +97,7 @@ export class DehydrationConfigManager {
    * **/
   public async getProductionConfig(sourceCodeFilePath: string) {
     const basicConfig: any = await this.getBasicConfig(sourceCodeFilePath);
-    const { dehydrationResourceDirectoryPath } = this.$FrameworkConfigManager.getRuntimeConfig();
+    const { dehydrationResourceDirectoryPath } = this.$RuntimeConfigManager.getRuntimeConfig();
     return merge<Configuration>(basicConfig, {
       mode: "none",
       devtool: "source-map",

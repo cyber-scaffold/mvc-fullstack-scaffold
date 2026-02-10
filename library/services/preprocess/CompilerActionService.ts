@@ -4,20 +4,20 @@ import pathExists from "path-exists";
 import { injectable, inject } from "inversify";
 
 import { IOCContainer } from "@/library/commons/IOCContainer";
-import { FrameworkConfigManager } from "@/library/commons/FrameworkConfigManager";
+import { CompilationConfigManager } from "@/library/commons/CompilationConfigManager";
 
 @injectable()
 export class CompilerActionService {
 
   constructor(
-    @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager
+    @inject(CompilationConfigManager) private readonly $CompilationConfigManager: CompilationConfigManager
   ) { };
 
   /**
    * 清理编译目录
    * **/
   public async initialize() {
-    const { assetsDirectoryPath, standardizationHydrationTempDirectoryPath } = await this.$FrameworkConfigManager.getRuntimeConfig();
+    const { assetsDirectoryPath, standardizationHydrationTempDirectoryPath } = await this.$CompilationConfigManager.getRuntimeConfig();
     // if (await pathExists(assetsDirectoryPath)) {
     //   return false;
     // };

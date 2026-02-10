@@ -6,7 +6,7 @@ import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
 
 import { IOCContainer } from "@/library/commons/IOCContainer";
-import { FrameworkConfigManager } from "@/library/commons/FrameworkConfigManager";
+import { RuntimeConfigManager } from "@/library/commons/RuntimeConfigManager";
 
 import { CssLoaderConfigManager } from "@/library/configs/loaders/CssLoaderConfigManager";
 import { FileLoaderConfigManager } from "@/library/configs/loaders/FileLoaderConfigManager";
@@ -21,7 +21,7 @@ import { filePathContentHash } from "@/library/utils/filePathContentHash";
 export class HydrationConfigManager {
 
   constructor(
-    @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager,
+    @inject(RuntimeConfigManager) private readonly $RuntimeConfigManager: RuntimeConfigManager,
     @inject(TypeScriptLoaderConfigManger) private readonly $TypeScriptLoaderConfigManger: TypeScriptLoaderConfigManger,
     @inject(ESBuildLoaderConfigManger) private readonly $ESBuildLoaderConfigManger: ESBuildLoaderConfigManger,
     @inject(FileLoaderConfigManager) private readonly $FileLoaderConfigManager: FileLoaderConfigManager,
@@ -34,7 +34,7 @@ export class HydrationConfigManager {
    * 最基础的webpack编译配置
    * **/
   public async getBasicConfig(sourceCodeFilePath: string) {
-    const { hydrationResourceDirectoryPath, projectDirectoryPath } = await this.$FrameworkConfigManager.getRuntimeConfig();
+    const { hydrationResourceDirectoryPath, projectDirectoryPath } = await this.$RuntimeConfigManager.getRuntimeConfig();
     return {
       entry: sourceCodeFilePath,
       output: {

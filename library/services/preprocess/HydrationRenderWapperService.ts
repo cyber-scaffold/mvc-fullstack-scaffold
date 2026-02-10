@@ -5,14 +5,14 @@ import { promisify } from "util";
 import { injectable, inject } from "inversify";
 
 import { IOCContainer } from "@/library/commons/IOCContainer";
-import { FrameworkConfigManager } from "@/library/commons/FrameworkConfigManager";
+import { RuntimeConfigManager } from "@/library/commons/RuntimeConfigManager";
 import { filePathContentHash } from "@/library/utils/filePathContentHash";
 
 @injectable()
 export class HydrationRenderWapperService {
 
   constructor(
-    @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager
+    @inject(RuntimeConfigManager) private readonly $RuntimeConfigManager: RuntimeConfigManager
   ) { };
 
   /**
@@ -47,7 +47,7 @@ export class HydrationRenderWapperService {
    * 对export default的组件做一个渲染到document的wapper并生成临时文件,返回临时文件作为webpack的编译入口
    * **/
   public async generateStandardizationHydrationFile(sourceCodeFilePath: string): Promise<string> {
-    const { standardizationHydrationTempDirectoryPath } = await this.$FrameworkConfigManager.getRuntimeConfig();
+    const { standardizationHydrationTempDirectoryPath } = await this.$RuntimeConfigManager.getRuntimeConfig();
     const composeTemporaryRenderFilePath = path.join(standardizationHydrationTempDirectoryPath, `${filePathContentHash(sourceCodeFilePath)}.tsx`);
     await promisify(fs.writeFile)(composeTemporaryRenderFilePath, this.wapperTemplate(sourceCodeFilePath));
     return composeTemporaryRenderFilePath;

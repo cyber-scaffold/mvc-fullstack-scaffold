@@ -4,13 +4,13 @@ import { injectable, inject } from "inversify";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 
 import { IOCContainer } from "@/library/commons/IOCContainer";
-import { FrameworkConfigManager } from "@/library/commons/FrameworkConfigManager";
+import { RuntimeConfigManager } from "@/library/commons/RuntimeConfigManager";
 
 @injectable()
 export class CssLoaderConfigManager {
 
   constructor(
-    @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager
+    @inject(RuntimeConfigManager) private readonly $RuntimeConfigManager: RuntimeConfigManager
   ) { };
 
   public async getHydrationSiderLoaderConfig() {
@@ -50,7 +50,7 @@ export class CssLoaderConfigManager {
   };
 
   public async getDehydrationSiderLoaderConfig() {
-    const { projectDirectoryPath } = this.$FrameworkConfigManager.getRuntimeConfig();
+    const { projectDirectoryPath } = this.$RuntimeConfigManager.getRuntimeConfig();
     return [{
       test: /\.(css)$/,
       use: [
