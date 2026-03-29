@@ -8,7 +8,6 @@
     "baseUrl": "./",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "outDir": "./dist/",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": false,
