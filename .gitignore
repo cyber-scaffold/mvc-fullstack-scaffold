@@ -1,5 +1,7 @@
-/dist/
+.npmrc
 /logs/
+/dist/
+/types/
 /node_modules/
-**/.DS_Store
+**/.DS_Store/**
 package-lock.json
