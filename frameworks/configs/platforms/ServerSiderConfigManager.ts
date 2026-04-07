@@ -14,7 +14,7 @@ import { TypeScriptLoaderConfigManger } from "@/frameworks/configs/loaders/TypeS
 @injectable()
 export class ServerSiderConfigManager {
 
-  constructor(
+  constructor (
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager,
     @inject(ESBuildLoaderConfigManger) private readonly $ESBuildLoaderConfigManger: ESBuildLoaderConfigManger,
     @inject(TypeScriptLoaderConfigManger) private readonly $TypeScriptLoaderConfigManger: TypeScriptLoaderConfigManger

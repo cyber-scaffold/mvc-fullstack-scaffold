@@ -4,6 +4,7 @@ import { merge } from "webpack-merge";
 import { injectable, inject } from "inversify";
 import nodeExternals from "webpack-node-externals";
 import { DefinePlugin, Configuration } from "webpack";
+import VirtualModulesPlugin from "webpack-virtual-modules";
 
 import { IOCContainer } from "@/library/commons/IOCContainer";
 import { RuntimeConfigManager } from "@/library/commons/RuntimeConfigManager";
@@ -25,7 +26,7 @@ import { filePathContentHash } from "@/library/utils/filePathContentHash";
 @injectable()
 export class DehydrationConfigManager {
 
-  constructor(
+  constructor (
     @inject(MaterielResourceDatabaseManager) private readonly $MaterielResourceDatabaseManager: MaterielResourceDatabaseManager,
     @inject(TypeScriptLoaderConfigManger) private readonly $TypeScriptLoaderConfigManger: TypeScriptLoaderConfigManger,
     @inject(ESBuildLoaderConfigManger) private readonly $ESBuildLoaderConfigManger: ESBuildLoaderConfigManger,
@@ -43,7 +44,7 @@ export class DehydrationConfigManager {
     const { alias, sourceCodeFilePath } = params;
     const { projectDirectoryPath } = this.$RuntimeConfigManager.getRuntimeConfig();
     return {
-      entry: ["source-map-support/register", sourceCodeFilePath],
+      entry: ["source-map-support/register", "./main/dehydration/virtual/entry.js"],
       target: "node",
       resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx"],
@@ -51,12 +52,18 @@ export class DehydrationConfigManager {
           "@": projectDirectoryPath
         }
       },
+      output: {
+        globalObject: "global"
+      },
       externalsPresets: { node: true },
       externals: [nodeExternals({
         modulesFromFile: path.resolve(projectDirectoryPath, "./package.json")
       })],
       optimization: {
         nodeEnv: false
+      },
+      node: {
+        global: true
       },
       module: {
         rules: (await Promise.all([
@@ -73,6 +80,12 @@ export class DehydrationConfigManager {
           alias,
           type: "dehydration",
           materielResourceDatabaseManager: this.$MaterielResourceDatabaseManager
+        }),
+        new VirtualModulesPlugin({
+          "./main/dehydration/virtual/entry.js": `
+            import RenderElement from "${sourceCodeFilePath}";
+            export default RenderElement;
+          `
         }),
         new WebpackBar({ name: "制作脱水物料" }),
         new DefinePlugin({ "process.TYPE": JSON.stringify("dehydration") })

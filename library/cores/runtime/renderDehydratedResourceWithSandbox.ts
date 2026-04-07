@@ -5,6 +5,7 @@ import React from "react";
 import Module from "module";
 import { promisify } from "util";
 import { renderToString } from "react-dom/server";
+import { getWindow, getDocument } from "ssr-window";
 
 import { IOCContainer } from "@/library/commons/IOCContainer";
 import { RuntimeConfigManager } from "@/library/commons/RuntimeConfigManager";
@@ -23,6 +24,8 @@ export async function renderDehydratedResourceWithSandbox(resourceFilePath: stri
     module: { exports: {} },
     exports: {},
     process: process,
+    window: getWindow(),
+    document: getDocument(),
     require: requireProject,
     __dirname: path.dirname(realDehydratedResourceFilePath),
     __filename: realDehydratedResourceFilePath,

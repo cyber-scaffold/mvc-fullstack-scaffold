@@ -2,6 +2,7 @@ import WebpackBar from "webpackbar";
 import { merge } from "webpack-merge";
 import { injectable, inject } from "inversify";
 import { DefinePlugin, Configuration } from "webpack";
+import VirtualModulesPlugin from "webpack-virtual-modules";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
 
@@ -22,7 +23,7 @@ import { filePathContentHash } from "@/library/utils/filePathContentHash";
 @injectable()
 export class HydrationConfigManager {
 
-  constructor(
+  constructor (
     @inject(MaterielResourceDatabaseManager) private readonly $MaterielResourceDatabaseManager: MaterielResourceDatabaseManager,
     @inject(TypeScriptLoaderConfigManger) private readonly $TypeScriptLoaderConfigManger: TypeScriptLoaderConfigManger,
     @inject(ESBuildLoaderConfigManger) private readonly $ESBuildLoaderConfigManger: ESBuildLoaderConfigManger,
@@ -40,7 +41,7 @@ export class HydrationConfigManager {
     const { alias, sourceCodeFilePath } = params;
     const { hydrationResourceDirectoryPath, projectDirectoryPath } = await this.$RuntimeConfigManager.getRuntimeConfig();
     return {
-      entry: sourceCodeFilePath,
+      entry: "./main/hydration/virtual/entry.js",
       output: {
         path: hydrationResourceDirectoryPath,
         filename: () => `index-${filePathContentHash(sourceCodeFilePath)}-hydration-[contenthash].js`,
@@ -75,6 +76,21 @@ export class HydrationConfigManager {
           alias,
           type: "hydration",
           materielResourceDatabaseManager: this.$MaterielResourceDatabaseManager
+        }),
+        new VirtualModulesPlugin({
+          "./main/hydration/virtual/entry.js": `
+            import React from "react";
+            import {createRoot} from "react-dom/client";
+            import RenderElement from "${sourceCodeFilePath}";
+
+            const rootElement=document.getElementById("root");
+            const ApplicationElement=React.createElement(RenderElement,{
+              meta:window.meta,
+              process:window.process,
+              content:window.content
+            });
+            createRoot(rootElement).render(ApplicationElement);
+          `
         }),
         new WebpackBar({ name: "制作注水物料" }),
         new DefinePlugin({ "process.TYPE": JSON.stringify("hydration") }),

@@ -1,7 +1,5 @@
-import path from "path";
 import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
 import { ExpressHttpServer } from "@/main/server/commons/Application/ExpressHttpServer";
-
 
 declare global {
   namespace NodeJS {
@@ -17,8 +15,8 @@ declare global {
   }
 };
 
-const serverApplicationInstance = IOCContainer.get(ExpressHttpServer);
 setImmediate(async () => {
+  const serverApplicationInstance = IOCContainer.get(ExpressHttpServer);
   await serverApplicationInstance.beforeBootstrap();
   await serverApplicationInstance.bootstrap();
 });

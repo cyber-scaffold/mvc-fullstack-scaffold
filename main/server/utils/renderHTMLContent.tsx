@@ -54,7 +54,6 @@ export async function renderHTMLContent(params: IParmas) {
         {get(hydrationAssets, "javascript", []).map((javascriptResourceRelativePath: string) => (
           <script key={javascriptResourceRelativePath} src={path.join(hydrationResourceDirectoryPath, javascriptResourceRelativePath).replace(assetsDirectoryPath, "")}></script>
         ))}
-        <script dangerouslySetInnerHTML={{ __html: `window.renderHydration(document.getElementById("root"),{meta:window.meta,process:window.process,content:window.content})` }}></script>
       </body>
     </html>
   );
