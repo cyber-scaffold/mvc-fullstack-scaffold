@@ -4,13 +4,11 @@ import pretty from "pretty";
 import { get } from "dot-prop";
 import { renderToString } from "react-dom/server";
 
-import type { ICompileAssetsList } from "@/library/runtime";
-import { getRuntimeConfiguration, renderDehydratedResourceWithSandbox } from "@/library/runtime";
+import { getRuntimeConfiguration, getDehydratedResource, getHydrationResource, renderDehydratedResourceWithSandbox } from "@/library/runtime";
 
 
 interface IParmas {
-  hydrationAssets?: ICompileAssetsList,
-  dehydratedAssets?: ICompileAssetsList,
+  resourceAlias: string,
   meta: {
     title: string,
     keywords?: string[],
@@ -20,9 +18,13 @@ interface IParmas {
 };
 
 export async function renderHTMLContent(params: IParmas) {
+  const resourceAlias = params.resourceAlias;
   const { assetsDirectoryPath, hydrationResourceDirectoryPath } = await getRuntimeConfiguration();
-  const hydrationAssets = params.hydrationAssets;
-  const dehydratedAssets = params.dehydratedAssets;
+
+  const hydrationResourceTask = getHydrationResource({ alias: resourceAlias });
+  const dehydratedRenderMethodTask = getDehydratedResource({ alias: resourceAlias });
+  const [dehydratedAssets, hydrationAssets] = await Promise.all([dehydratedRenderMethodTask, hydrationResourceTask]);
+
   const content = params.content;
   const metaInfoFromParam = params.meta;
   const metaInfo = {
