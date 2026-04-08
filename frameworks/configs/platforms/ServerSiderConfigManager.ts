@@ -57,9 +57,6 @@ export class ServerSiderConfigManager {
         "redis": "commonjs redis",
         "knex": "commonjs knex"
       }],
-      optimization: {
-        nodeEnv: false
-      },
       module: {
         rules: (await Promise.all([
           this.$ESBuildLoaderConfigManger.getServerSiderLoaderConfig(),

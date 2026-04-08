@@ -52,19 +52,10 @@ export class DehydrationConfigManager {
           "@": projectDirectoryPath
         }
       },
-      output: {
-        globalObject: "global"
-      },
       externalsPresets: { node: true },
       externals: [nodeExternals({
         modulesFromFile: path.resolve(projectDirectoryPath, "./package.json")
       })],
-      optimization: {
-        nodeEnv: false
-      },
-      node: {
-        global: true
-      },
       module: {
         rules: (await Promise.all([
           this.$TypeScriptLoaderConfigManger.getDehydrationSiderLoaderConfig(),

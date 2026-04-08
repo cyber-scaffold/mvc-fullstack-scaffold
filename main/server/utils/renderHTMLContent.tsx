@@ -5,11 +5,12 @@ import { get } from "dot-prop";
 import { renderToString } from "react-dom/server";
 
 import type { ICompileAssetsList } from "@/library/runtime";
-import { getRuntimeConfiguration } from "@/library/runtime";
+import { getRuntimeConfiguration, renderDehydratedResourceWithSandbox } from "@/library/runtime";
+
 
 interface IParmas {
-  dehydrationViewContent: string
-  hydrationAssets?: ICompileAssetsList
+  hydrationAssets?: ICompileAssetsList,
+  dehydratedAssets?: ICompileAssetsList,
   meta: {
     title: string,
     keywords?: string[],
@@ -20,9 +21,9 @@ interface IParmas {
 
 export async function renderHTMLContent(params: IParmas) {
   const { assetsDirectoryPath, hydrationResourceDirectoryPath } = await getRuntimeConfiguration();
-  const dehydrationViewContent = params.dehydrationViewContent;
   const hydrationAssets = params.hydrationAssets;
-  const hydrationContent = params.content;
+  const dehydratedAssets = params.dehydratedAssets;
+  const content = params.content;
   const metaInfoFromParam = params.meta;
   const metaInfo = {
     /** title信息必须存在 **/
@@ -32,6 +33,7 @@ export async function renderHTMLContent(params: IParmas) {
     /** keyword信息需要进行合成操作 **/
     keywords: [get(metaInfoFromParam, "keywords", [])].join(",")
   };
+  const applicationInjectContent = { NODE_ENV: process.env.NODE_ENV, content, meta: metaInfo };
   const contentString = renderToString(
     <html lang="zh-CN">
       <head>
@@ -45,15 +47,22 @@ export async function renderHTMLContent(params: IParmas) {
         {get(hydrationAssets, "stylesheet", []).map((stylesheetResourceRelativePath: string) => (
           <link key={stylesheetResourceRelativePath} rel="stylesheet" href={path.join(hydrationResourceDirectoryPath, stylesheetResourceRelativePath).replace(assetsDirectoryPath, "")} />
         ))}
-        <script dangerouslySetInnerHTML={{ __html: `window.process=${JSON.stringify({ env: { NODE_ENV: process.env.NODE_ENV } })};` }}></script>
-        <script dangerouslySetInnerHTML={{ __html: `window.content=${JSON.stringify(hydrationContent, null, "")};` }}></script>
-        <script dangerouslySetInnerHTML={{ __html: `window.meta=${JSON.stringify(metaInfo, null, "")};` }}></script>
+        <script dangerouslySetInnerHTML={{ __html: `window.content=${JSON.stringify(applicationInjectContent, null, "")};` }}></script>
       </head>
       <body>
-        <div id="root" dangerouslySetInnerHTML={{ __html: dehydrationViewContent }} />
+        <div id="root"
+          dangerouslySetInnerHTML={{
+            __html: `${await renderDehydratedResourceWithSandbox(dehydratedAssets.javascript[0], applicationInjectContent)}`
+          }}
+        />
         {get(hydrationAssets, "javascript", []).map((javascriptResourceRelativePath: string) => (
-          <script key={javascriptResourceRelativePath} src={path.join(hydrationResourceDirectoryPath, javascriptResourceRelativePath).replace(assetsDirectoryPath, "")}></script>
+          <script key={javascriptResourceRelativePath} src={path.join(hydrationResourceDirectoryPath, javascriptResourceRelativePath).replace(assetsDirectoryPath, "")} />
         ))}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.renderHydration("root",${JSON.stringify(applicationInjectContent)});`
+          }}
+        />
       </body>
     </html>
   );

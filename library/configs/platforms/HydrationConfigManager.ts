@@ -57,9 +57,6 @@ export class HydrationConfigManager {
           "@": projectDirectoryPath
         }
       },
-      optimization: {
-        nodeEnv: false
-      },
       module: {
         rules: (await Promise.all([
           this.$TypeScriptLoaderConfigManger.getHydrationSiderLoaderConfig(),
@@ -83,17 +80,24 @@ export class HydrationConfigManager {
             import {createRoot} from "react-dom/client";
             import RenderElement from "${sourceCodeFilePath}";
 
-            const rootElement=document.getElementById("root");
-            const ApplicationElement=React.createElement(RenderElement,{
-              meta:window.meta,
-              process:window.process,
-              content:window.content
-            });
-            createRoot(rootElement).render(ApplicationElement);
+            export default function (target,content){
+              let rootElement;
+              if(typeof target == "string"){
+                rootElement=document.getElementById(target);
+              } else {
+                rootElement=target;
+              };
+              const ApplicationElement=React.createElement(RenderElement,content);
+              return createRoot(rootElement).render(ApplicationElement);
+              // createRoot(rootElement).render(<RenderElement {...content}/>);
+            };
           `
         }),
         new WebpackBar({ name: "制作注水物料" }),
-        new DefinePlugin({ "process.TYPE": JSON.stringify("hydration") }),
+        new DefinePlugin({
+          "process.TYPE": JSON.stringify("hydration"),
+          "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV)
+        }),
         new MiniCssExtractPlugin({
           linkType: "text/css",
           filename: () => `index-${filePathContentHash(sourceCodeFilePath)}-hydration-[contenthash].css`

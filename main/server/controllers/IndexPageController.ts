@@ -1,6 +1,6 @@
 import { Router, Request } from "express";
 import { injectable, inject } from "inversify";
-import { getDehydratedResource, getHydrationResource, renderDehydratedResourceWithSandbox } from "@/library/runtime";
+import { getDehydratedResource, getHydrationResource } from "@/library/runtime";
 
 import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
 import { responseHtmlWrapper } from "@/main/server/utils/responseHtmlWrapper";
@@ -29,10 +29,9 @@ export class IndexPageController {
   public async execute(request: Request): Promise<any> {
     const content = { list: Array(10).fill(1).map((fill, index) => fill + index) };
     const { dehydrated, hydration }: any = await this.getRenderResource();
-    const dehydratedViewContent = await renderDehydratedResourceWithSandbox(dehydrated.javascript[0], content);
     return await renderHTMLContent({
       hydrationAssets: hydration,
-      dehydrationViewContent: dehydratedViewContent,
+      dehydratedAssets: dehydrated,
       meta: {
         title: "主页",
         keywords: [],

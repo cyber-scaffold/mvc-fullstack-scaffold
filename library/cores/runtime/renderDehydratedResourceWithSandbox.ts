@@ -35,12 +35,7 @@ export async function renderDehydratedResourceWithSandbox(resourceFilePath: stri
   vm.runInContext(resourceFileCode, sandbox, { filename: realDehydratedResourceFilePath });
   const moduleExportInfo = (sandbox.module.exports as any);
   if (moduleExportInfo.default) {
-    return renderToString(React.createElement(moduleExportInfo.default, {
-      content,
-      process: {
-        env: { NODE_ENV: process.env.NODE_ENV }
-      }
-    }));
+    return renderToString(React.createElement(moduleExportInfo.default, content));
   };
-  return false;
+  throw new Error(`${resourceFilePath} 脱水资源模块错误没有export default出口`);
 };
