@@ -3,8 +3,11 @@ import React from "react";
 import { BasicLayout } from "@/main/views/layouts/BasicLayout";
 import hq2 from "./assets/hq2.jpg";
 
-export default function IndexPage({ NODE_ENV, content, meta }) {
-  console.log({ NODE_ENV, content, meta });
+console.log("倒入模块之前的NODE_ENV", process.env.NODE_ENV);
+
+export default function IndexPage({ content, meta }) {
+  console.log({ content, meta });
+  console.log("运行时的NODE_ENV", process.env.NODE_ENV);
   return (
     <BasicLayout>
       <div>这是主页</div>

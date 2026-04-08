@@ -20,6 +20,7 @@ import { TypeScriptLoaderConfigManger } from "@/library/configs/loaders/TypeScri
 import { CompilerProgressPlugin } from "@/library/utils/CompilerProgressPlugin";
 import { filePathContentHash } from "@/library/utils/filePathContentHash";
 
+
 @injectable()
 export class HydrationConfigManager {
 
@@ -45,17 +46,20 @@ export class HydrationConfigManager {
       output: {
         path: hydrationResourceDirectoryPath,
         filename: () => `index-${filePathContentHash(sourceCodeFilePath)}-hydration-[contenthash].js`,
-        library: {
-          name: "renderHydration",
-          type: "window",
-          export: "default"
-        }
+        // library: {
+        //   name: "renderHydration",
+        //   type: "window",
+        //   export: "default"
+        // }
       },
       resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx"],
         alias: {
           "@": projectDirectoryPath
         }
+      },
+      optimization: {
+        nodeEnv: false
       },
       module: {
         rules: (await Promise.all([
@@ -76,27 +80,28 @@ export class HydrationConfigManager {
         }),
         new VirtualModulesPlugin({
           "./main/hydration/virtual/entry.js": `
+
             import React from "react";
             import {createRoot} from "react-dom/client";
             import RenderElement from "${sourceCodeFilePath}";
 
-            export default function (target,content){
-              let rootElement;
-              if(typeof target == "string"){
-                rootElement=document.getElementById(target);
+
+            function bootstrap(){
+              var rootElement;
+              if(typeof window._ROOT_ELEMENT_ == "string"){
+                rootElement=document.getElementById(window._ROOT_ELEMENT_);
               } else {
-                rootElement=target;
+                rootElement=window._ROOT_ELEMENT_;
               };
-              const ApplicationElement=React.createElement(RenderElement,content);
-              return createRoot(rootElement).render(ApplicationElement);
-              // createRoot(rootElement).render(<RenderElement {...content}/>);
-            };
+              var ApplicationElement=React.createElement(RenderElement,window._CONTENT_FROM_SERVER_);
+              window._APPLICATION_MOUNT_ELEMENT_=createRoot(rootElement).render(ApplicationElement);
+            }; bootstrap();
           `
         }),
         new WebpackBar({ name: "制作注水物料" }),
         new DefinePlugin({
-          "process.TYPE": JSON.stringify("hydration"),
-          "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV)
+          "process.env.RESOURCE_TYPE": JSON.stringify("hydration"),
+          "process.env.NODE_ENV": "window._INJECT_FROM_SERVER_.env.NODE_ENV"
         }),
         new MiniCssExtractPlugin({
           linkType: "text/css",

@@ -33,7 +33,7 @@ export async function renderHTMLContent(params: IParmas) {
     /** keyword信息需要进行合成操作 **/
     keywords: [get(metaInfoFromParam, "keywords", [])].join(",")
   };
-  const applicationInjectContent = { NODE_ENV: process.env.NODE_ENV, content, meta: metaInfo };
+  const applicationInjectContent = { content, meta: metaInfo };
   const contentString = renderToString(
     <html lang="zh-CN">
       <head>
@@ -47,7 +47,6 @@ export async function renderHTMLContent(params: IParmas) {
         {get(hydrationAssets, "stylesheet", []).map((stylesheetResourceRelativePath: string) => (
           <link key={stylesheetResourceRelativePath} rel="stylesheet" href={path.join(hydrationResourceDirectoryPath, stylesheetResourceRelativePath).replace(assetsDirectoryPath, "")} />
         ))}
-        <script dangerouslySetInnerHTML={{ __html: `window.content=${JSON.stringify(applicationInjectContent, null, "")};` }}></script>
       </head>
       <body>
         <div id="root"
@@ -55,14 +54,22 @@ export async function renderHTMLContent(params: IParmas) {
             __html: `${await renderDehydratedResourceWithSandbox(dehydratedAssets.javascript[0], applicationInjectContent)}`
           }}
         />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window._INJECT_FROM_SERVER_={
+                env:{
+                  NODE_ENV:${JSON.stringify(process.env.NODE_ENV)}
+                }
+              };
+              window._ROOT_ELEMENT_=document.getElementById("root");
+              window._CONTENT_FROM_SERVER_=${JSON.stringify(applicationInjectContent)};
+            `
+          }}
+        />
         {get(hydrationAssets, "javascript", []).map((javascriptResourceRelativePath: string) => (
           <script key={javascriptResourceRelativePath} src={path.join(hydrationResourceDirectoryPath, javascriptResourceRelativePath).replace(assetsDirectoryPath, "")} />
         ))}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `window.renderHydration("root",${JSON.stringify(applicationInjectContent)});`
-          }}
-        />
       </body>
     </html>
   );
