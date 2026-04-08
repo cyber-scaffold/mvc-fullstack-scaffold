@@ -8,7 +8,6 @@ export interface IRuntimeConfig {
   assetsDirectoryPath: string
   hydrationResourceDirectoryPath: string
   dehydrationResourceDirectoryPath: string
-  standardizationHydrationTempDirectoryPath: string
 };
 
 export interface ICustmerRuntimeConfig {
@@ -16,7 +15,6 @@ export interface ICustmerRuntimeConfig {
   assetsDirectoryName?: string
   hydrationResourceDirectoryName?: string
   dehydrationResourceDirectoryName?: string
-  standardizationHydrationTempDirectoryName?: string
 };
 
 /** 
@@ -52,14 +50,6 @@ export class RuntimeConfigManager {
     return path.resolve(this.assetsDirectoryPath, this.dehydrationResourceDirectoryName);
   };
 
-  /** 标准化注水文件的输出目录(对原文件进行wapper处理后的文件) **/
-  private standardizationHydrationTempDirectoryName = ".hydration";
-
-  /** 标准化注水资源的临时生成目录(根据 文件输出的目录 计算得到) **/
-  get standardizationHydrationTempDirectoryPath() {
-    return path.resolve(this.assetsDirectoryPath, this.standardizationHydrationTempDirectoryName);
-  };
-
   /** 初始化配置并计算出剩余的属性 **/
   public async initialize(inputCustmerConfig: ICustmerRuntimeConfig) {
     if (!inputCustmerConfig) {
@@ -77,9 +67,6 @@ export class RuntimeConfigManager {
     if (inputCustmerConfig.dehydrationResourceDirectoryName) {
       this.dehydrationResourceDirectoryName = inputCustmerConfig.dehydrationResourceDirectoryName;
     };
-    if (inputCustmerConfig.standardizationHydrationTempDirectoryName) {
-      this.standardizationHydrationTempDirectoryName = inputCustmerConfig.standardizationHydrationTempDirectoryName;
-    };
   };
 
   /** 获取最终组合之后的运行时配置 **/
@@ -88,8 +75,7 @@ export class RuntimeConfigManager {
       projectDirectoryPath: this.projectDirectoryPath,
       assetsDirectoryPath: this.assetsDirectoryPath,
       hydrationResourceDirectoryPath: this.hydrationResourceDirectoryPath,
-      dehydrationResourceDirectoryPath: this.dehydrationResourceDirectoryPath,
-      standardizationHydrationTempDirectoryPath: this.standardizationHydrationTempDirectoryPath
+      dehydrationResourceDirectoryPath: this.dehydrationResourceDirectoryPath
     };
   };
 

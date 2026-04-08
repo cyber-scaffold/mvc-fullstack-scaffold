@@ -9,7 +9,7 @@ import { CompilationConfigManager } from "@/library/commons/CompilationConfigMan
 @injectable()
 export class CompilerActionService {
 
-  constructor(
+  constructor (
     @inject(CompilationConfigManager) private readonly $CompilationConfigManager: CompilationConfigManager
   ) { };
 
@@ -17,12 +17,11 @@ export class CompilerActionService {
    * 清理编译目录
    * **/
   public async initialize() {
-    const { assetsDirectoryPath, standardizationHydrationTempDirectoryPath } = await this.$CompilationConfigManager.getRuntimeConfig();
+    const { assetsDirectoryPath } = await this.$CompilationConfigManager.getRuntimeConfig();
     // if (await pathExists(assetsDirectoryPath)) {
     //   return false;
     // };
     await promisify(fs.mkdir)(assetsDirectoryPath, { recursive: true });
-    await promisify(fs.mkdir)(standardizationHydrationTempDirectoryPath, { recursive: true });
   };
 
 };

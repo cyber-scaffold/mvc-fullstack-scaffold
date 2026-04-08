@@ -9,7 +9,7 @@ export function BasicLayout(props) {
   const { children } = props;
   return (
     <div className={css.container}>
-      <ul>
+      <ul className={css.list}>
         <li>
           <a href="/">home</a>
         </li>

@@ -42,7 +42,10 @@ export class HydrationConfigManager {
     const { alias, sourceCodeFilePath } = params;
     const { hydrationResourceDirectoryPath, projectDirectoryPath } = await this.$RuntimeConfigManager.getRuntimeConfig();
     return {
-      entry: "./main/hydration/virtual/entry.js",
+      entry: [
+        "./main/hydration/virtual/initial.css",
+        "./main/hydration/virtual/entry.js"
+      ],
       output: {
         path: hydrationResourceDirectoryPath,
         filename: () => `index-${filePathContentHash(sourceCodeFilePath)}-hydration-[contenthash].js`,
@@ -79,12 +82,14 @@ export class HydrationConfigManager {
           materielResourceDatabaseManager: this.$MaterielResourceDatabaseManager
         }),
         new VirtualModulesPlugin({
+          "./main/hydration/virtual/initial.css": [
+            `* {padding:0;margin:0;}`
+          ].join(),
           "./main/hydration/virtual/entry.js": `
 
             import React from "react";
             import {createRoot} from "react-dom/client";
             import RenderElement from "${sourceCodeFilePath}";
-
 
             function bootstrap(){
               var rootElement;

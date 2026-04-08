@@ -10,9 +10,16 @@ export default function IndexPage({ content, meta }) {
   console.log({ content, meta });
   return (
     <BasicLayout>
-      <div>这是主页</div>
-      <pre>{JSON.stringify(content, null, 2)}</pre>
-      <img width={480} height={360} src={hq2} alt="test.png" />
+      <div style={{ textAlign: "center", color: "#FFFFFF" }}>
+        <div>这是主页</div>
+        <div>渲染注水数据</div>
+        <div style={{ textAlign: "center" }}>
+          <div>{JSON.stringify(content, null, 2)}</div>
+        </div>
+        <div style={{ textAlign: "center" }}>
+          <img width={480} height={360} src={hq2} alt="test.png" />
+        </div>
+      </div>
     </BasicLayout>
   )
 };

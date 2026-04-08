@@ -9,7 +9,7 @@ import { RuntimeConfigManager } from "@/library/commons/RuntimeConfigManager";
 @injectable()
 export class CssLoaderConfigManager {
 
-  constructor(
+  constructor (
     @inject(RuntimeConfigManager) private readonly $RuntimeConfigManager: RuntimeConfigManager
   ) { };
 
