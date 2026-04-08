@@ -33,6 +33,14 @@ export class ApplicationConfigManager {
     return path.join(this.projectDirectoryPath, this.assetsDirectoryName, "resources");
   };
 
+  /**
+   * DLL静态资源服务器
+   * 框架层的基准目录是根据 项目根目录的绝对路径 计算得到的
+   * **/
+  get DLLResourceDirectory() {
+    return path.join(this.projectDirectoryPath, this.assetsDirectoryName, "dll");
+  };
+
   private server = {
     port: 8190
   };
@@ -76,6 +84,7 @@ export class ApplicationConfigManager {
       assetsDirectoryName: this.assetsDirectoryName,
       projectDirectoryPath: this.projectDirectoryPath,
       staticResourceDirectory: this.staticResourceDirectory,
+      DLLResourceDirectory: this.DLLResourceDirectory,
       server: this.server,
       redis: this.redis,
       mysql: this.mysql,

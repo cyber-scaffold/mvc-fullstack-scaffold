@@ -71,6 +71,7 @@ export async function renderHTMLContent(params: IParmas) {
             `
           }}
         />
+        {/* <script src="/dll/hydration.dll.js"></script> */}
         {get(hydrationAssets, "javascript", []).map((javascriptResourceRelativePath: string) => (
           <script key={javascriptResourceRelativePath} src={path.join(hydrationResourceDirectoryPath, javascriptResourceRelativePath).replace(assetsDirectoryPath, "")} />
         ))}

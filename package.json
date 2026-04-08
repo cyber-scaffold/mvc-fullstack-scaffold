@@ -4,6 +4,7 @@
   "description": "基于mvc和视图层序言和标记智能化渲染的nodejs全栈编译器",
   "main": "index.js",
   "scripts": {
+    "dll": "node -r esbuild-register ./frameworks/dll.ts",
     "dev": "node -r esbuild-register ./frameworks/development.ts",
     "build": "node -r esbuild-register ./frameworks/build.ts"
   },

@@ -21,7 +21,7 @@ export class ExpressHttpServer {
 
   private expressInstance: Express = express();
 
-  constructor(
+  constructor (
     @inject(ApplicationConfigManager) private readonly $ApplicationConfigManager: ApplicationConfigManager,
     @inject(RegistryRouter) private readonly $RegistryRouter: RegistryRouter,
   ) { }
@@ -37,7 +37,7 @@ export class ExpressHttpServer {
   /** 服务启动时执行的代码 **/
   public async bootstrap() {
     const { hydrationResourceDirectoryPath } = await getRuntimeConfiguration();
-    const { staticResourceDirectory } = this.$ApplicationConfigManager.getRuntimeConfig();
+    const { staticResourceDirectory, DLLResourceDirectory } = this.$ApplicationConfigManager.getRuntimeConfig();
     /** 注册中间件 **/
     this.expressInstance.use(cookieParser());
     this.expressInstance.use(bodyParser.json());
@@ -50,6 +50,9 @@ export class ExpressHttpServer {
     this.expressInstance.use(express.static(staticResourceDirectory, {
       // maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)
     }));
+    // this.expressInstance.use("/dll/", express.static(DLLResourceDirectory, {
+    //   // maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)
+    // }));
     /** 提供注水javascript和静态资源的路由 */
     this.expressInstance.use("/hydration/", express.static(hydrationResourceDirectoryPath, {
       // maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)

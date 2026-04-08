@@ -1,10 +1,11 @@
+import path from "path";
 import WebpackBar from "webpackbar";
 import { merge } from "webpack-merge";
 import { injectable, inject } from "inversify";
-import { DefinePlugin, Configuration } from "webpack";
 import VirtualModulesPlugin from "webpack-virtual-modules";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
+import { DllReferencePlugin, DefinePlugin, Configuration } from "webpack";
 
 import { IOCContainer } from "@/library/commons/IOCContainer";
 import { RuntimeConfigManager } from "@/library/commons/RuntimeConfigManager";
@@ -40,7 +41,7 @@ export class HydrationConfigManager {
    * **/
   public async getBasicConfig(params) {
     const { alias, sourceCodeFilePath } = params;
-    const { hydrationResourceDirectoryPath, projectDirectoryPath } = await this.$RuntimeConfigManager.getRuntimeConfig();
+    const { hydrationResourceDirectoryPath, projectDirectoryPath, assetsDirectoryPath } = await this.$RuntimeConfigManager.getRuntimeConfig();
     return {
       entry: [
         "./main/hydration/virtual/initial.css",
@@ -76,6 +77,9 @@ export class HydrationConfigManager {
       },
       plugins: [
         new NodePolyfillPlugin(),
+        // new DllReferencePlugin({
+        //   manifest: path.resolve(assetsDirectoryPath, "./dll/hydration.dll.json")
+        // }),
         new CompilerProgressPlugin({
           alias,
           type: "hydration",
