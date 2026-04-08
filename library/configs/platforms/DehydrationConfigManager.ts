@@ -52,6 +52,11 @@ export class DehydrationConfigManager {
           "@": projectDirectoryPath
         }
       },
+      node: {
+        global: true,
+        __dirname: true,
+        __filename: true
+      },
       externalsPresets: { node: true },
       externals: [nodeExternals({
         modulesFromFile: path.resolve(projectDirectoryPath, "./package.json")

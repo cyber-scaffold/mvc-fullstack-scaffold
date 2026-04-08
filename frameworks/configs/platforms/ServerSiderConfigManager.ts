@@ -34,6 +34,11 @@ export class ServerSiderConfigManager {
           "@": process.cwd()
         }
       },
+      node: {
+        global: true,
+        __dirname: true,
+        __filename: true
+      },
       externalsPresets: { node: true },
       externals: [{
         "less": "commonjs less",

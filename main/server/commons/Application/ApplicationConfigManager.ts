@@ -22,7 +22,8 @@ export class ApplicationConfigManager {
    * 项目根目录的绝对路径
    * **/
   get projectDirectoryPath() {
-    return path.dirname(__filename).replace(/(dist)$/ig, "");
+    // return path.dirname(__filename).replace(/(dist)$/ig, "");
+    return path.resolve(__dirname, "../../../../");
   };
 
   /**

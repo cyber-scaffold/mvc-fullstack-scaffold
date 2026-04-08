@@ -18,6 +18,8 @@ interface IParmas {
   version?: string
 };
 
+console.log("__dirname", __dirname);
+
 export async function renderHTMLContent(params: IParmas) {
   const resource = params.resource;
   const { assetsDirectoryPath, hydrationResourceDirectoryPath } = await getRuntimeConfiguration();
