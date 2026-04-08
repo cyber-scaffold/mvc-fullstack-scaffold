@@ -20,12 +20,10 @@ export class IndexPageController {
   public async execute(request: Request): Promise<any> {
     const content = { list: Array(10).fill(1).map((fill, index) => fill + index) };
     return await renderHTMLContent({
-      resourceAlias: "IndexPage",
-      meta: {
-        title: "主页",
-        keywords: [],
-        description: "",
-      },
+      resource: "IndexPage",
+      title: "主页",
+      keywords: [],
+      description: "",
       content: content
     });
   };

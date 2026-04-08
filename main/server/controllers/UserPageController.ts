@@ -18,12 +18,10 @@ export class UserPageController {
   /** 路由的业务逻辑 **/
   public async execute(request: Request): Promise<any> {
     return await renderHTMLContent({
-      resourceAlias: "UserPage",
-      meta: {
-        title: "用户中心",
-        keywords: [],
-        description: "",
-      },
+      resource: "UserPage",
+      title: "用户中心",
+      keywords: [],
+      description: "",
       content: {}
     });
   };

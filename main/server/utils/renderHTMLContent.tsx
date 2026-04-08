@@ -8,32 +8,29 @@ import { getRuntimeConfiguration, getDehydratedResource, getHydrationResource, r
 
 
 interface IParmas {
-  resourceAlias: string,
-  meta: {
-    title: string,
-    keywords?: string[],
-    description?: string,
-  },
+  resource: string,
+  title: string,
+  keywords?: string[],
+  description?: string,
   content?: any
 };
 
 export async function renderHTMLContent(params: IParmas) {
-  const resourceAlias = params.resourceAlias;
+  const resource = params.resource;
   const { assetsDirectoryPath, hydrationResourceDirectoryPath } = await getRuntimeConfiguration();
 
-  const hydrationResourceTask = getHydrationResource({ alias: resourceAlias });
-  const dehydratedRenderMethodTask = getDehydratedResource({ alias: resourceAlias });
+  const hydrationResourceTask = getHydrationResource({ alias: resource });
+  const dehydratedRenderMethodTask = getDehydratedResource({ alias: resource });
   const [dehydratedAssets, hydrationAssets] = await Promise.all([dehydratedRenderMethodTask, hydrationResourceTask]);
 
   const content = params.content;
-  const metaInfoFromParam = params.meta;
   const metaInfo = {
     /** title信息必须存在 **/
-    title: metaInfoFromParam.title,
+    title: params.title,
     /** description信息如果不存在的话默认使用标题作为description **/
-    description: metaInfoFromParam.description || metaInfoFromParam.title,
+    description: params.description || params.title,
     /** keyword信息需要进行合成操作 **/
-    keywords: [get(metaInfoFromParam, "keywords", [])].join(",")
+    keywords: [get(params, "keywords", [])].join(",")
   };
   const applicationInjectContent = { content, meta: metaInfo };
   const contentString = renderToString(

@@ -19,12 +19,10 @@ export class DetailPageController {
   /** 路由的业务逻辑 **/
   public async execute(request: Request): Promise<any> {
     return await renderHTMLContent({
-      resourceAlias: "DetailPage",
-      meta: {
-        title: "详情页",
-        keywords: [],
-        description: "这是详情页",
-      },
+      resource: "DetailPage",
+      title: "详情页",
+      keywords: [],
+      description: "这是详情页",
       content: {}
     });
   };

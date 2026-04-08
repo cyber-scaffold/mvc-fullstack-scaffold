@@ -21,12 +21,10 @@ export class SearchController {
     console.log("request.body", request.body);
     const content = { list: Array(10).fill(1) };
     return await renderHTMLContent({
-      resourceAlias: "SearchPage",
-      meta: {
-        title: "搜索结果页",
-        keywords: [],
-        description: "",
-      },
+      resource: "SearchPage",
+      title: "搜索结果页",
+      keywords: [],
+      description: "",
       content: content
     });
   };
