@@ -59,13 +59,9 @@ export async function renderHTMLContent(params: IParmas) {
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              window._INJECT_FROM_SERVER_={
-                env:{
-                  NODE_ENV:${JSON.stringify(process.env.NODE_ENV)}
-                }
-              };
               window._ROOT_ELEMENT_=document.getElementById("root");
               window._CONTENT_FROM_SERVER_=${JSON.stringify(applicationInjectContent)};
+              window._INJECT_RUNTIME_FROM_SERVER_={env:{NODE_ENV:${JSON.stringify(process.env.NODE_ENV)}}};
             `
           }}
         />

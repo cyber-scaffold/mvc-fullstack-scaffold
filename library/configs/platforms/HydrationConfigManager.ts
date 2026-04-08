@@ -101,7 +101,7 @@ export class HydrationConfigManager {
         new WebpackBar({ name: "制作注水物料" }),
         new DefinePlugin({
           "process.env.RESOURCE_TYPE": JSON.stringify("hydration"),
-          "process.env.NODE_ENV": "window._INJECT_FROM_SERVER_.env.NODE_ENV"
+          "process.env.NODE_ENV": "window._INJECT_RUNTIME_FROM_SERVER_.env.NODE_ENV"
         }),
         new MiniCssExtractPlugin({
           linkType: "text/css",
