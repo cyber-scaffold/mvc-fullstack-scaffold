@@ -16,7 +16,7 @@ export class DehydrationResourceManagement implements ResourceManagementInterfac
 
   private sourceCodeFilePath: string;
 
-  constructor(
+  constructor (
     @inject(MaterielResourceDatabaseManager) private readonly $MaterielResourceDatabaseManager: MaterielResourceDatabaseManager,
     @inject(DehydrationCompileService) private readonly $DehydrationCompileService: DehydrationCompileService
   ) { }

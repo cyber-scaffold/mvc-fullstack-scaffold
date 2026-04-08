@@ -80,7 +80,7 @@ export class DehydrationConfigManager {
         }),
         new WebpackBar({ name: "制作脱水物料" }),
         new DefinePlugin({
-          "RESOURCE_TYPE": JSON.stringify("dehydration")
+          "process.env.RESOURCE_TYPE": JSON.stringify("dehydration")
         })
       ]
     };
@@ -116,8 +116,8 @@ export class DehydrationConfigManager {
     const basicConfig: any = await this.getBasicConfig({ alias, sourceCodeFilePath });
     const { dehydrationResourceDirectoryPath } = this.$RuntimeConfigManager.getRuntimeConfig();
     return merge<Configuration>(basicConfig, {
-      mode: "none",
       devtool: "source-map",
+      mode: "none",
       output: {
         path: dehydrationResourceDirectoryPath,
         filename: () => {

@@ -12,6 +12,7 @@ export function responseHtmlWrapper(callback: Function) {
       response.send(responseValue);
       return false;
     } catch (error) {
+      console.log("error", error);
       response.send(error.message);
     };
   };
