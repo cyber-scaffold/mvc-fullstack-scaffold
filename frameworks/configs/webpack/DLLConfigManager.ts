@@ -14,7 +14,7 @@ import { ESBuildLoaderConfigManger } from "@/frameworks/configs/loaders/ESBuildL
 
 
 @injectable()
-export class DLLGenerate {
+export class DLLConfigManager {
 
   constructor (
     @inject(TypeScriptLoaderConfigManger) private readonly $TypeScriptLoaderConfigManger: TypeScriptLoaderConfigManger,
@@ -91,4 +91,4 @@ export class DLLGenerate {
 
 };
 
-IOCContainer.bind(DLLGenerate).toSelf().inRequestScope();
+IOCContainer.bind(DLLConfigManager).toSelf().inRequestScope();
