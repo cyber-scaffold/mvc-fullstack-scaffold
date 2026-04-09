@@ -24,7 +24,13 @@ export class ServerSiderConfigManager {
    * 最基础的webpack编译配置
    * **/
   public async getBasicConfig() {
-    const { entryFile, staticSourceDirectoryPath, staticDestinationDirectoryPath } = this.$FrameworkConfigManager.getRuntimeConfig();
+    const {
+      entryFile,
+      staticResourceDirectorySourcePath,
+      staticResourceDirectoryDestinationPath,
+      swaggerResourceDirectorySourcePath,
+      swaggerResourceDirectoryDestinationPath
+    } = this.$FrameworkConfigManager.getRuntimeConfig();
     return {
       entry: ["source-map-support/register", entryFile],
       target: "node",
@@ -72,8 +78,11 @@ export class ServerSiderConfigManager {
         new WebpackBar({ name: "工程编译中" }),
         new CopyWebpackPlugin({
           patterns: [{
-            from: staticSourceDirectoryPath,
-            to: staticDestinationDirectoryPath
+            from: swaggerResourceDirectorySourcePath,
+            to: swaggerResourceDirectoryDestinationPath
+          }, {
+            from: staticResourceDirectorySourcePath,
+            to: staticResourceDirectoryDestinationPath
           }]
         })
       ]

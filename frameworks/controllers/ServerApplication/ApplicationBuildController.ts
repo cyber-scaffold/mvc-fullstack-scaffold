@@ -11,7 +11,7 @@ import { GenerateSwaggerDocsService } from "@/frameworks/services/preprocess/Gen
 @injectable()
 export class ApplicationBuildController {
 
-  constructor(
+  constructor (
     @inject(ServerSiderConfigManager) private readonly $ServerSiderConfigManager: ServerSiderConfigManager,
     @inject(GenerateSwaggerDocsService) private readonly $GenerateSwaggerDocsService: GenerateSwaggerDocsService
   ) { };

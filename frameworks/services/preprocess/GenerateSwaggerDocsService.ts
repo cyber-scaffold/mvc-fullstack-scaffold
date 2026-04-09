@@ -9,14 +9,14 @@ import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigMana
 @injectable()
 export class GenerateSwaggerDocsService {
 
-  constructor(
+  constructor (
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager
   ) { };
 
   public async execute() {
-    const { staticDestinationDirectoryPath, extractSwaggerGlobExpression } = this.$FrameworkConfigManager.getRuntimeConfig();
-    const destnationFilename = path.resolve(staticDestinationDirectoryPath, "./swagger.json");
-    const swagger_api_docs = swaggerJSDocGenerater({
+    const { swaggerResourceDirectoryDestinationPath, extractSwaggerGlobExpression } = this.$FrameworkConfigManager.getRuntimeConfig();
+    const destnationFilename = path.resolve(swaggerResourceDirectoryDestinationPath, "./swagger.json");
+    const swaggerApiDocContent = swaggerJSDocGenerater({
       definition: {
         openapi: "3.0.0",
         info: {
@@ -26,7 +26,7 @@ export class GenerateSwaggerDocsService {
       },
       apis: [extractSwaggerGlobExpression],
     });
-    await writeFile(destnationFilename, swagger_api_docs, { spaces: 2, EOL: "\r\n" });
+    await writeFile(destnationFilename, swaggerApiDocContent, { spaces: 2, EOL: "\r\n" });
   };
 
 };

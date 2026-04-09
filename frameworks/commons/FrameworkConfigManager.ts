@@ -17,11 +17,6 @@ export class FrameworkConfigManager {
   private entryFile = path.resolve(process.cwd(), "./main/server/index.ts");
 
   /**
-   * 提取Swagger文档的glob表达式
-   * **/
-  private extractSwaggerGlobExpression = path.resolve(process.cwd(), "./main/server/controllers/**/*.{ts,tsx,js,jsx}");
-
-  /**
    * 项目根目录的路径
    * **/
   private projectDirectoryPath = process.cwd();
@@ -39,23 +34,29 @@ export class FrameworkConfigManager {
   };
 
   /**
-   * 静态资源的原始目录
+   * 提取Swagger文档的glob表达式
    * **/
-  get staticSourceDirectoryPath() {
-    return path.resolve(this.projectDirectoryPath, "./frameworks/resources/");
-  };
+  private extractSwaggerGlobExpression = path.resolve(process.cwd(), "./main/server/controllers/**/*.{ts,tsx,js,jsx}");
 
   /**
-   * 静态资源的目标目录名称
+   * 项目中静态资源的原始目录
    * **/
-  private staticDestinationDirectoryName = "resources";
+  private staticResourceDirectorySourcePath = path.resolve(this.projectDirectoryPath, "./main/server/statics/");
 
   /**
-   * 静态资源的目标目录的路径
+   * 项目中静态资源的目标目录
    * **/
-  get staticDestinationDirectoryPath() {
-    return path.resolve(this.assetsDirectoryPath, this.staticDestinationDirectoryName);
-  };
+  private staticResourceDirectoryDestinationPath = path.resolve(this.assetsDirectoryPath, "./statics/");
+
+  /**
+   * Swagger静态资源的原始目录的路径
+   * **/
+  private swaggerResourceDirectorySourcePath = path.resolve(path.dirname(__filename), "../swagger/");
+
+  /**
+   * Swagger静态资源的目标目录的路径
+   * **/
+  private swaggerResourceDirectoryDestinationPath = path.resolve(this.assetsDirectoryPath, "./swagger/");
 
   /**
    * 服务端渲染物料的详细制作信息
@@ -104,11 +105,20 @@ export class FrameworkConfigManager {
     if (custmerConfig.assetsDirectoryName) {
       this.assetsDirectoryName = custmerConfig.assetsDirectoryName;
     };
+    if (custmerConfig.staticResourceDirectorySourcePath) {
+      this.staticResourceDirectorySourcePath = custmerConfig.staticResourceDirectorySourcePath;
+    };
+    if (custmerConfig.staticResourceDirectoryDestinationPath) {
+      this.staticResourceDirectoryDestinationPath = custmerConfig.staticResourceDirectoryDestinationPath
+    };
     if (custmerConfig.extractSwaggerGlobExpression) {
       this.extractSwaggerGlobExpression = custmerConfig.extractSwaggerGlobExpression;
     };
-    if (custmerConfig.staticDestinationDirectoryName) {
-      this.staticDestinationDirectoryName = custmerConfig.staticDestinationDirectoryName;
+    if (custmerConfig.swaggerResourceDirectorySourcePath) {
+      this.swaggerResourceDirectorySourcePath = custmerConfig.swaggerResourceDirectorySourcePath;
+    };
+    if (custmerConfig.swaggerResourceDirectoryDestinationPath) {
+      this.swaggerResourceDirectoryDestinationPath = custmerConfig.swaggerResourceDirectoryDestinationPath;
     };
     if (custmerConfig.materiels) {
       this.materiels = custmerConfig.materiels;
@@ -119,13 +129,14 @@ export class FrameworkConfigManager {
   public getRuntimeConfig() {
     return {
       entryFile: this.entryFile,
-      extractSwaggerGlobExpression: this.extractSwaggerGlobExpression,
       projectDirectoryPath: this.projectDirectoryPath,
       assetsDirectoryName: this.assetsDirectoryName,
       assetsDirectoryPath: this.assetsDirectoryPath,
-      staticSourceDirectoryPath: this.staticSourceDirectoryPath,
-      staticDestinationDirectoryName: this.staticDestinationDirectoryName,
-      staticDestinationDirectoryPath: this.staticDestinationDirectoryPath,
+      staticResourceDirectorySourcePath: this.staticResourceDirectorySourcePath,
+      staticResourceDirectoryDestinationPath: this.staticResourceDirectoryDestinationPath,
+      extractSwaggerGlobExpression: this.extractSwaggerGlobExpression,
+      swaggerResourceDirectorySourcePath: this.swaggerResourceDirectorySourcePath,
+      swaggerResourceDirectoryDestinationPath: this.swaggerResourceDirectoryDestinationPath,
       materiels: this.materiels
     };
   };

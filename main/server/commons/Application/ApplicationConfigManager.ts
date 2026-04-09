@@ -31,7 +31,14 @@ export class ApplicationConfigManager {
    * 框架层的基准目录是根据 项目根目录的绝对路径 计算得到的
    * **/
   get staticResourceDirectory() {
-    return path.join(this.projectDirectoryPath, this.assetsDirectoryName, "resources");
+    return path.join(this.projectDirectoryPath, this.assetsDirectoryName, "statics");
+  };
+
+  /**
+   * 跟swagger文档相关的静态资源
+   * **/
+  get swaggerResourceDirectory() {
+    return path.join(this.projectDirectoryPath, this.assetsDirectoryName, "swagger");
   };
 
   /**
@@ -85,6 +92,7 @@ export class ApplicationConfigManager {
       assetsDirectoryName: this.assetsDirectoryName,
       projectDirectoryPath: this.projectDirectoryPath,
       staticResourceDirectory: this.staticResourceDirectory,
+      swaggerResourceDirectory: this.swaggerResourceDirectory,
       DLLResourceDirectory: this.DLLResourceDirectory,
       server: this.server,
       redis: this.redis,
