@@ -1,5 +1,6 @@
 import path from "path";
 import { injectable } from "inversify";
+import { getRuntimeConfiguration } from "@/library/runtime";
 
 import { IOCContainer } from "@/main/server/cores/IOCContainer";
 
@@ -40,12 +41,6 @@ export class ApplicationConfigManager {
   };
 
   /**
-   * 用于确定其余资源
-   * 项目根目录的绝对路径
-   * **/
-  private projectDirectoryPath = path.resolve(__dirname, "../../../../");
-
-  /**
    * 编译后的资产对应的目录名
    * **/
   private assetsDirectoryName = "dist";
@@ -53,24 +48,36 @@ export class ApplicationConfigManager {
   /**
    * 编译资产对应的资源路径
    * **/
-  private assetsDirectoryPath = path.resolve(this.projectDirectoryPath, this.assetsDirectoryName);
+  private async getAssetsDirectoryPath() {
+    const { projectDirectoryPath } = await getRuntimeConfiguration();
+    return path.resolve(projectDirectoryPath, this.assetsDirectoryName)
+  };
 
   /**
    * 公共资源所在的目录比如要向前端浏览器提供的dll动态链接库文件
    * 框架层的基准目录是根据 项目根目录的绝对路径 计算得到的
    * **/
-  private publicResourceDirectory = path.resolve(this.assetsDirectoryPath, "public");
+  private async getPublicResourceDirectory() {
+    const { projectDirectoryPath } = await getRuntimeConfiguration();
+    return path.resolve(projectDirectoryPath, "public");
+  };
 
   /**
    * 用于启动静态资源服务器
    * 框架层的基准目录是根据 项目根目录的绝对路径 计算得到的
    * **/
-  private staticResourceDirectory = path.resolve(this.assetsDirectoryPath, "statics");
+  private async getStaticResourceDirectory() {
+    const { projectDirectoryPath } = await getRuntimeConfiguration();
+    return path.resolve(projectDirectoryPath, "statics");
+  };
 
   /**
    * Swagger静态资源所在的目录
    * **/
-  private swaggerResourceDirectory = path.resolve(this.assetsDirectoryPath, "swagger");
+  private async getSwaggerResourceDirectory() {
+    const { projectDirectoryPath } = await getRuntimeConfiguration();
+    return path.resolve(projectDirectoryPath, "swagger");
+  };
 
   /** 初始化并加载配置到运行时 **/
   public async initialize() {
@@ -78,18 +85,17 @@ export class ApplicationConfigManager {
   };
 
   /** 获取最终组合之后的运行时配置 **/
-  public getRuntimeConfig() {
+  public async getRuntimeConfig() {
     return {
       server: this.server,
       redis: this.redis,
       mysql: this.mysql,
       mongodb: this.mongodb,
       rabbitmq: this.rabbitmq,
-      assetsDirectoryName: this.assetsDirectoryName,
-      projectDirectoryPath: this.projectDirectoryPath,
-      staticResourceDirectory: this.staticResourceDirectory,
-      swaggerResourceDirectory: this.swaggerResourceDirectory,
-      publicResourceDirectory: this.publicResourceDirectory,
+      assetsDirectoryName: await this.getAssetsDirectoryPath(),
+      staticResourceDirectory: await this.getStaticResourceDirectory(),
+      swaggerResourceDirectory: await this.getSwaggerResourceDirectory(),
+      publicResourceDirectory: await this.getPublicResourceDirectory(),
     };
   };
 

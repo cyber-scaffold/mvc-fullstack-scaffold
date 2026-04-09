@@ -17,7 +17,7 @@ export class RedisConnectManager {
 
   /** 初始化Redis连接 **/
   public async initialize(): Promise<void> {
-    const { redis } = this.$ApplicationConfigManager.getRuntimeConfig();
+    const { redis } = await this.$ApplicationConfigManager.getRuntimeConfig();
     try {
       this.connection = createClient({
         url: `redis://${redis.host}:${redis.port}`,

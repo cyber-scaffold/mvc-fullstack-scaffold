@@ -17,7 +17,7 @@ export class QueryBuilderManager {
 
   /** 初始化knex**/
   public async initialize() {
-    const { mysql } = this.$ApplicationConfigManager.getRuntimeConfig();
+    const { mysql } = await this.$ApplicationConfigManager.getRuntimeConfig();
     this.knexQueryBuilder = knex({
       client: "mysql2",
       connection: {

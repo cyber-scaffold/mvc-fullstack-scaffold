@@ -2,7 +2,7 @@
  * 服务端运行时阶段需要使用的方法
  * **/
 export { renderDehydratedResourceWithSandbox } from "@/library/runtime/renderDehydratedResourceWithSandbox";
-export { setRuntimeConfiguration } from "@/library/runtime/setRuntimeConfiguration";
+export { setAndInitializeRuntimeConfig } from "@/library/runtime/setAndInitializeRuntimeConfig";
 export { getRuntimeConfiguration } from "@/library/runtime/getRuntimeConfiguration";
 export { getDehydratedResource } from "@/library/runtime/getDehydratedResource";
 export { getHydrationResource } from "@/library/runtime/getHydrationResource";

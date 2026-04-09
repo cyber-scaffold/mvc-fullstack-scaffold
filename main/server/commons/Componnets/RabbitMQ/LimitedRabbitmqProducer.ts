@@ -46,7 +46,7 @@ export class LimitedRabbitmqProducer {
       this.Exchange_DLX = `${exchangeName}_DLX`;
       this.Queue_DLX = `${queueName}_DLX`;
       this.RoutingKey_DLX = `${routerName}_DLX`;
-      const { rabbitmq } = this.$ApplicationConfigManager.getRuntimeConfig();
+      const { rabbitmq } = await this.$ApplicationConfigManager.getRuntimeConfig();
       const rabbitConfig = {
         hostname: rabbitmq.host,
         port: rabbitmq.port,

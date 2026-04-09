@@ -3,7 +3,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { injectable, inject } from "inversify";
-import { setRuntimeConfiguration, getRuntimeConfiguration } from "@/library/runtime";
+import { getRuntimeConfiguration } from "@/library/runtime";
 
 import type { Express } from "express";
 
@@ -34,18 +34,11 @@ export class ExpressHttpServer {
     @inject(SearchController) private readonly $SearchController: SearchController,
   ) { }
 
-  /** 在服务启动前需要执行的操作 **/
-  public async beforeBootstrap() {
-    /** 在运行时的时候需要基于当前的filename来确定项目的根目录 **/
-    const { projectDirectoryPath, assetsDirectoryName } = this.$ApplicationConfigManager.getRuntimeConfig();
-    await setRuntimeConfiguration({ projectDirectoryPath, assetsDirectoryName });
-  };
-
   /** 服务启动时执行的代码 **/
   public async bootstrap() {
-    const { server } = this.$ApplicationConfigManager.getRuntimeConfig();
+    const { server } = await this.$ApplicationConfigManager.getRuntimeConfig();
     const { hydrationResourceDirectoryPath } = await getRuntimeConfiguration();
-    const { staticResourceDirectory, swaggerResourceDirectory, publicResourceDirectory } = this.$ApplicationConfigManager.getRuntimeConfig();
+    const { staticResourceDirectory, swaggerResourceDirectory, publicResourceDirectory } = await this.$ApplicationConfigManager.getRuntimeConfig();
     /** 注册中间件 **/
     this.expressInstance.use(cookieParser());
     this.expressInstance.use(bodyParser.json());

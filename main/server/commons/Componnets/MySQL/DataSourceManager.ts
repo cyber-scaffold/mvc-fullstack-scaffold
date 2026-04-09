@@ -18,7 +18,7 @@ export class DataSourceManager {
 
   /** 初始化 **/
   public async initialize() {
-    const { mysql } = this.$ApplicationConfigManager.getRuntimeConfig();
+    const { mysql } = await this.$ApplicationConfigManager.getRuntimeConfig();
     this.appDataSource = new DataSource({
       type: "mysql",
       port: mysql.port,

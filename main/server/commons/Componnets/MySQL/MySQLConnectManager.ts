@@ -19,7 +19,7 @@ export class MySQLConnectManager {
 
   /** 初始化连接 **/
   public async initialize(): Promise<void> {
-    const { mysql } = this.$ApplicationConfigManager.getRuntimeConfig();
+    const { mysql } = await this.$ApplicationConfigManager.getRuntimeConfig();
     this.pool = createPool({
       host: mysql.host,
       port: mysql.port,
