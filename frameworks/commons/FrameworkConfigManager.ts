@@ -29,14 +29,7 @@ export class FrameworkConfigManager {
   /**
    * 计算后得到的编译资产输出目录
    * **/
-  get assetsDirectoryPath() {
-    return path.resolve(this.projectDirectoryPath, this.assetsDirectoryName);
-  };
-
-  /**
-   * 提取Swagger文档的glob表达式
-   * **/
-  private extractSwaggerGlobExpression = path.resolve(process.cwd(), "./main/server/controllers/**/*.{ts,tsx,js,jsx}");
+  private assetsDirectoryPath = path.resolve(this.projectDirectoryPath, this.assetsDirectoryName);
 
   /**
    * 项目中静态资源的原始目录
@@ -47,6 +40,11 @@ export class FrameworkConfigManager {
    * 项目中静态资源的目标目录
    * **/
   private staticResourceDirectoryDestinationPath = path.resolve(this.assetsDirectoryPath, "./statics/");
+
+  /**
+   * 扫描Swagger文档时使用的glob表达式默认扫描controllers文件夹下的内容
+   * **/
+  private extractSwaggerGlobExpression = path.resolve(process.cwd(), "./main/server/controllers/**/*.{ts,tsx,js,jsx}");
 
   /**
    * Swagger静态资源的原始目录的路径
@@ -64,14 +62,12 @@ export class FrameworkConfigManager {
   private materiels = [];
 
   /**
-   * 声明在$HOME目录下的配置文件路径
+   * 项目目录下的配置文件路径用于覆盖框架中的默认值
    * **/
-  get custmerConfigPath() {
-    return path.join(process.cwd(), "./.framework.js");
-  };
+  private custmerConfigPath = path.join(process.cwd(), "./.framework.js");
 
   /**
-   * 基于沙箱模式加载自定义配置
+   * 基于沙箱模式加载项目的自定义配置文件
    * **/
   private async loadCustmerConfigWithSandbox() {
     const resourceFileCode = await promisify(fs.readFile)(this.custmerConfigPath, "utf-8");

@@ -1,53 +1,11 @@
 import path from "path";
 import { injectable } from "inversify";
 
-
 import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
 
-// type CustmerConfigParamType = {
-//   server?: any
-//   redis?: any
-//   mysql?: any
-//   mongodb?: any
-//   rabbitmq?: any
-// };
 
 @injectable()
 export class ApplicationConfigManager {
-
-  private assetsDirectoryName = "dist";
-
-  /**
-   * 用于确定其余资源
-   * 项目根目录的绝对路径
-   * **/
-  get projectDirectoryPath() {
-    // return path.dirname(__filename).replace(/(dist)$/ig, "");
-    return path.resolve(__dirname, "../../../../");
-  };
-
-  /**
-   * 用于启动静态资源服务器
-   * 框架层的基准目录是根据 项目根目录的绝对路径 计算得到的
-   * **/
-  get staticResourceDirectory() {
-    return path.join(this.projectDirectoryPath, this.assetsDirectoryName, "statics");
-  };
-
-  /**
-   * 跟swagger文档相关的静态资源
-   * **/
-  get swaggerResourceDirectory() {
-    return path.join(this.projectDirectoryPath, this.assetsDirectoryName, "swagger");
-  };
-
-  /**
-   * DLL静态资源服务器
-   * 框架层的基准目录是根据 项目根目录的绝对路径 计算得到的
-   * **/
-  get DLLResourceDirectory() {
-    return path.join(this.projectDirectoryPath, this.assetsDirectoryName, "dll");
-  };
 
   private server = {
     port: 8190
@@ -81,6 +39,34 @@ export class ApplicationConfigManager {
     password: "gaea0571"
   };
 
+  /**
+   * 编译资产对应的资源目录名
+   * **/
+  private assetsDirectoryName = "dist";
+
+  /**
+   * 用于确定其余资源
+   * 项目根目录的绝对路径
+   * **/
+  private projectDirectoryPath = path.resolve(__dirname, "../../../../");
+
+  /**
+   * 用于启动静态资源服务器
+   * 框架层的基准目录是根据 项目根目录的绝对路径 计算得到的
+   * **/
+  private staticResourceDirectory = path.join(this.projectDirectoryPath, this.assetsDirectoryName, "statics");
+
+  /**
+   * Swagger静态资源所在的目录
+   * **/
+  private swaggerResourceDirectory = path.join(this.projectDirectoryPath, this.assetsDirectoryName, "swagger");
+
+  /**
+   * 公共资源所在的目录比如要向前端浏览器提供的dll动态链接库文件
+   * 框架层的基准目录是根据 项目根目录的绝对路径 计算得到的
+   * **/
+  private publicResourceDirectory = path.join(this.projectDirectoryPath, this.assetsDirectoryName, "public");
+
   /** 初始化并加载配置到运行时 **/
   public async initialize() {
 
@@ -89,16 +75,16 @@ export class ApplicationConfigManager {
   /** 获取最终组合之后的运行时配置 **/
   public getRuntimeConfig() {
     return {
-      assetsDirectoryName: this.assetsDirectoryName,
-      projectDirectoryPath: this.projectDirectoryPath,
-      staticResourceDirectory: this.staticResourceDirectory,
-      swaggerResourceDirectory: this.swaggerResourceDirectory,
-      DLLResourceDirectory: this.DLLResourceDirectory,
       server: this.server,
       redis: this.redis,
       mysql: this.mysql,
       mongodb: this.mongodb,
-      rabbitmq: this.rabbitmq
+      rabbitmq: this.rabbitmq,
+      assetsDirectoryName: this.assetsDirectoryName,
+      projectDirectoryPath: this.projectDirectoryPath,
+      staticResourceDirectory: this.staticResourceDirectory,
+      swaggerResourceDirectory: this.swaggerResourceDirectory,
+      publicResourceDirectory: this.publicResourceDirectory,
     };
   };
 

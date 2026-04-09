@@ -28,7 +28,6 @@ export class ExpressHttpServer {
 
   /** 在服务启动前需要执行的操作 **/
   public async beforeBootstrap() {
-    await this.$ApplicationConfigManager.initialize();
     /** 在运行时的时候需要基于当前的filename来确定项目的根目录 **/
     const { projectDirectoryPath, assetsDirectoryName } = this.$ApplicationConfigManager.getRuntimeConfig();
     await runtimeConfiguration({ projectDirectoryPath, assetsDirectoryName });
@@ -37,7 +36,7 @@ export class ExpressHttpServer {
   /** 服务启动时执行的代码 **/
   public async bootstrap() {
     const { hydrationResourceDirectoryPath } = await getRuntimeConfiguration();
-    const { staticResourceDirectory, swaggerResourceDirectory, DLLResourceDirectory } = this.$ApplicationConfigManager.getRuntimeConfig();
+    const { staticResourceDirectory, swaggerResourceDirectory, publicResourceDirectory } = this.$ApplicationConfigManager.getRuntimeConfig();
     /** 注册中间件 **/
     this.expressInstance.use(cookieParser());
     this.expressInstance.use(bodyParser.json());
@@ -46,14 +45,19 @@ export class ExpressHttpServer {
     this.expressInstance.use(requestMiddleware);
     /** 注册控制器 **/
     await this.$RegistryRouter.execute(this.expressInstance);
-    /** 提供开发框架静态资源比如swagger文档 **/
+    /** 公共文件的资源目录 比如dll动态链接库 **/
+    this.expressInstance.use("/public/", express.static(publicResourceDirectory, {
+      // maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)
+    }));
+    /** 其余静态文件的资源目录,比如网站的icon文件等 **/
     this.expressInstance.use("/statics/", express.static(staticResourceDirectory, {
       // maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)
     }));
+    /** Swagger文档的资源目录 **/
     this.expressInstance.use("/swagger/", express.static(swaggerResourceDirectory, {
       // maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)
     }));
-    /** 提供注水javascript和静态资源的路由 */
+    /** 前端渲染需要的注水资源的资源目录 */
     this.expressInstance.use("/hydration/", express.static(hydrationResourceDirectoryPath, {
       // maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)
     }));
