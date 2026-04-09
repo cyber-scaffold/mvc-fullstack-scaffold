@@ -2,18 +2,18 @@ import amqp, { Connection } from "amqplib";
 import { injectable, inject } from "inversify";
 
 import { ApplicationConfigManager } from "@/main/server/commons/Application/ApplicationConfigManager";
-import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
+import { IOCContainer } from "@/main/server/cores/IOCContainer";
 import { logger } from "@/main/server/utils/logger";
 
-export interface IListenerOption {
+export interface IPublishOption {
   exchangeName: string;
   routerName: string;
   queueName: string;
 };
 
-/** Rabbitmq消费者者的抽象基础类 **/
+/** Rabbitmq生产者的抽象基础类 **/
 @injectable()
-export class LimitedRabbitmqConsumer {
+export class LimitedRabbitmqProducer {
 
   public channel: any;
 
@@ -25,23 +25,26 @@ export class LimitedRabbitmqConsumer {
 
   private Exchange_DLX: string;
 
+  private Queue_DLX: string;
+
   private RoutingKey_DLX: string;
 
   /** 创建Rabbitmq之后的连接 **/
   private connection: Connection;
 
-  constructor(
+  constructor (
     @inject(ApplicationConfigManager) private readonly $ApplicationConfigManager: ApplicationConfigManager
   ) { };
 
   /** 消息队列初始化 **/
-  public async initialize(options: IListenerOption) {
+  public async initialize(options: IPublishOption) {
     try {
       const { exchangeName, routerName, queueName } = options;
       this.Exchange_TTL = `${exchangeName}_TTL`;
       this.Queue_TTL = `${queueName}_TTL`;
       this.RoutingKey_TTL = `${routerName}_TTL`;
       this.Exchange_DLX = `${exchangeName}_DLX`;
+      this.Queue_DLX = `${queueName}_DLX`;
       this.RoutingKey_DLX = `${routerName}_DLX`;
       const { rabbitmq } = this.$ApplicationConfigManager.getRuntimeConfig();
       const rabbitConfig = {
@@ -54,7 +57,7 @@ export class LimitedRabbitmqConsumer {
         protocol: "amqp",
         ...rabbitConfig
       });
-      logger.info("RabbitMQ-消费者-连接成功!");
+      logger.info("RabbitMQ-生产者-连接成功!");
       /** 处理断线重连 **/
       this.connection.on("close", (error) => {
         logger.error("RabbitMQ连接已关闭,2s后准备重新连接 %s", error);
@@ -72,31 +75,36 @@ export class LimitedRabbitmqConsumer {
     logger.warn("RabbitMQ 已断开连接!!!");
   };
 
-  /** 创建或加入一个频道 **/
-  public async createChannelWithExchange() {
-
+  /** 创建一个并行队列 **/
+  public async createQueueWithExchange() {
     this.channel = await this.connection.createChannel();
-    /** 生成频道的时候是使用交换机模式 **/
-    await this.channel.assertExchange(this.Exchange_TTL, "direct", { durable: true, autoDelete: true });
+    await this.channel.assertExchange(this.Exchange_DLX, "direct", { durable: true, autoDelete: true });
+    await this.channel.assertQueue(this.Queue_DLX, {
+      durable: true,
+      exclusive: false,
+    });
+    await this.channel.bindQueue(this.Queue_DLX, this.Exchange_DLX, this.RoutingKey_DLX);
+    //创建消息队列
+    await this.channel.assertExchange(this.Exchange_TTL, "direct", { durable: true, autoDelete: true, });
     await this.channel.assertQueue(this.Queue_TTL, {
       durable: true,
       deadLetterExchange: this.Exchange_DLX,
       deadLetterRoutingKey: this.RoutingKey_DLX
     });
-    /** 消费端限流,每次取有限个进行消费 **/
-    await this.channel.prefetch(20);
-    await this.channel.qos(20);
     await this.channel.bindQueue(this.Queue_TTL, this.Exchange_TTL, this.RoutingKey_TTL);
     return true;
   };
 
-  /** 增加一个监听器 **/
-  public async addListener(callback) {
-    this.channel.consume(this.Queue_TTL, (message: any) => callback(message, this.channel), { noAck: false });
+  /** 创建一个并行队列 **/
+  public async publishWithExchange(message: any) {
+    await this.channel.publish(this.Exchange_TTL, this.RoutingKey_TTL, Buffer.from(message), {
+      deliveryMode: 2,
+      persistent: true,
+    });
     return true;
   };
 
 };
 
+IOCContainer.bind(LimitedRabbitmqProducer).toSelf().inSingletonScope();
 
-IOCContainer.bind(LimitedRabbitmqConsumer).toSelf().inSingletonScope();

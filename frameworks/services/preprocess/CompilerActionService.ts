@@ -3,13 +3,13 @@ import pathExists from "path-exists";
 import { promisify } from "util";
 import { injectable, inject } from "inversify";
 
-import { IOCContainer } from "@/frameworks/commons/IOCContainer";
+import { IOCContainer } from "@/frameworks/cores/IOCContainer";
 import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
 
 @injectable()
 export class CompilerActionService {
 
-  constructor(
+  constructor (
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager
   ) { };
 

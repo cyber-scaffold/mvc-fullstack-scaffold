@@ -2,7 +2,7 @@ import os from "os";
 import path from "path";
 import { injectable, inject } from "inversify";
 
-import { IOCContainer } from "@/library/commons/IOCContainer";
+import { IOCContainer } from "@/library/cores/IOCContainer";
 
 @injectable()
 export class ESBuildLoaderConfigManger {

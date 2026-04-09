@@ -3,7 +3,7 @@ import type { Low } from "lowdb";
 import { JSONFilePreset } from "lowdb/node";
 import { injectable, inject } from "inversify";
 
-import { IOCContainer } from "@/library/commons/IOCContainer";
+import { IOCContainer } from "@/library/cores/IOCContainer";
 import { CompilationConfigManager } from "@/library/commons/CompilationConfigManager";
 
 @injectable()
@@ -13,7 +13,7 @@ export class MaterielResourceDatabaseManager {
 
   private dehydrationCompileDatabase: Low<{}>;
 
-  constructor(
+  constructor (
     @inject(CompilationConfigManager) private readonly $CompilationConfigManager: CompilationConfigManager
   ) { };
 

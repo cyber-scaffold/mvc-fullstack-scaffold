@@ -6,7 +6,7 @@ import nodeExternals from "webpack-node-externals";
 import { DefinePlugin, Configuration } from "webpack";
 import VirtualModulesPlugin from "webpack-virtual-modules";
 
-import { IOCContainer } from "@/library/commons/IOCContainer";
+import { IOCContainer } from "@/library/cores/IOCContainer";
 import { RuntimeConfigManager } from "@/library/commons/RuntimeConfigManager";
 
 import { MaterielResourceDatabaseManager } from "@/library/commons/MaterielResourceDatabaseManager";

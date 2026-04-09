@@ -1,6 +1,6 @@
 import { injectable, inject } from "inversify";
 
-import { IOCContainer } from "@/library/commons/IOCContainer";
+import { IOCContainer } from "@/library/cores/IOCContainer";
 import { filePathContentHash } from "@/library/utils/filePathContentHash";
 
 @injectable()

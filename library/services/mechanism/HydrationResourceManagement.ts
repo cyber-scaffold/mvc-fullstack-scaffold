@@ -1,7 +1,7 @@
 import pathExists from "path-exists";
 import { injectable, inject } from "inversify";
 
-import { IOCContainer } from "@/library/commons/IOCContainer";
+import { IOCContainer } from "@/library/cores/IOCContainer";
 import { HydrationCompileService } from "@/library/services/compile/HydrationCompileService";
 import { MaterielResourceDatabaseManager } from "@/library/commons/MaterielResourceDatabaseManager";
 
@@ -16,7 +16,7 @@ export class HydrationResourceManagement implements ResourceManagementInterface 
 
   private sourceCodeFilePath: string;
 
-  constructor(
+  constructor (
     @inject(MaterielResourceDatabaseManager) private readonly $MaterielResourceDatabaseManager: MaterielResourceDatabaseManager,
     @inject(HydrationCompileService) private readonly $HydrationCompileService: HydrationCompileService
   ) { }

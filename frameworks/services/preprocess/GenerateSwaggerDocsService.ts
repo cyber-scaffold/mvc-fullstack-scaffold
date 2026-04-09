@@ -3,7 +3,7 @@ import { writeFile } from "jsonfile";
 import { injectable, inject } from "inversify";
 import swaggerJSDocGenerater from "swagger-jsdoc";
 
-import { IOCContainer } from "@/frameworks/commons/IOCContainer";
+import { IOCContainer } from "@/frameworks/cores/IOCContainer";
 import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
 
 @injectable()

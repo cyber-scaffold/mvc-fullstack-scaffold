@@ -3,7 +3,7 @@ import { promisify } from "util";
 import pathExists from "path-exists";
 import { injectable, inject } from "inversify";
 
-import { IOCContainer } from "@/library/commons/IOCContainer";
+import { IOCContainer } from "@/library/cores/IOCContainer";
 import { CompilationConfigManager } from "@/library/commons/CompilationConfigManager";
 
 @injectable()

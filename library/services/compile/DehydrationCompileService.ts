@@ -1,7 +1,7 @@
 import { webpack } from "webpack";
 import { injectable, inject } from "inversify";
 
-import { IOCContainer } from "@/library/commons/IOCContainer";
+import { IOCContainer } from "@/library/cores/IOCContainer";
 
 import { MaterielResourceDatabaseManager } from "@/library/commons/MaterielResourceDatabaseManager";
 import { DehydrationConfigManager } from "@/library/configs/platforms/DehydrationConfigManager";
@@ -10,7 +10,7 @@ import { filterWebpackStats } from "@/library/utils/filterWebpackStats";
 @injectable()
 export class DehydrationCompileService {
 
-  constructor(
+  constructor (
     @inject(MaterielResourceDatabaseManager) private readonly $MaterielResourceDatabaseManager: MaterielResourceDatabaseManager,
     @inject(DehydrationConfigManager) private readonly $DehydrationConfigManager: DehydrationConfigManager
   ) { };

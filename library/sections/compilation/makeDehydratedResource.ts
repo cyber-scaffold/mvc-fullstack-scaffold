@@ -1,4 +1,4 @@
-import { IOCContainer } from "@/library/commons/IOCContainer";
+import { IOCContainer } from "@/library/cores/IOCContainer";
 import { DehydrationResourceManagement } from "@/library/services/mechanism/DehydrationResourceManagement";
 
 export type makeDehydratedResourceParamsType = {

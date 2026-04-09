@@ -1,13 +1,13 @@
 import path from "path";
 import { injectable, inject } from "inversify";
 
-import { IOCContainer } from "@/library/commons/IOCContainer";
+import { IOCContainer } from "@/library/cores/IOCContainer";
 import { RuntimeConfigManager } from "@/library/commons/RuntimeConfigManager";
 
 @injectable()
 export class TypeScriptLoaderConfigManger {
 
-  constructor(
+  constructor (
     @inject(RuntimeConfigManager) private readonly $RuntimeConfigManager: RuntimeConfigManager
   ) { };
 

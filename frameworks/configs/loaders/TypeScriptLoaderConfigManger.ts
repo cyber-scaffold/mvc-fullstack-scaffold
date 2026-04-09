@@ -1,7 +1,7 @@
 import path from "path";
 import { injectable, inject } from "inversify";
 
-import { IOCContainer } from "@/frameworks/commons/IOCContainer";
+import { IOCContainer } from "@/frameworks/cores/IOCContainer";
 
 @injectable()
 export class TypeScriptLoaderConfigManger {

@@ -4,7 +4,7 @@ import { Configuration } from "webpack";
 import { injectable, inject } from "inversify";
 import CopyWebpackPlugin from "copy-webpack-plugin";
 
-import { IOCContainer } from "@/frameworks/commons/IOCContainer";
+import { IOCContainer } from "@/frameworks/cores/IOCContainer";
 import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
 
 import { ESBuildLoaderConfigManger } from "@/frameworks/configs/loaders/ESBuildLoaderConfigManger";

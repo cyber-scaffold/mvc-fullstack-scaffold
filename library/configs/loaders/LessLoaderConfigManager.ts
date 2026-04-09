@@ -2,13 +2,13 @@ import path from "path";
 import { injectable, inject } from "inversify";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 
-import { IOCContainer } from "@/library/commons/IOCContainer";
+import { IOCContainer } from "@/library/cores/IOCContainer";
 import { RuntimeConfigManager } from "@/library/commons/RuntimeConfigManager";
 
 @injectable()
 export class LessLoaderConfigManager {
 
-  constructor(
+  constructor (
     @inject(RuntimeConfigManager) private readonly $RuntimeConfigManager: RuntimeConfigManager
   ) { };
 

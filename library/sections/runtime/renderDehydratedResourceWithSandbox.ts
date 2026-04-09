@@ -7,7 +7,7 @@ import { promisify } from "util";
 import { renderToString } from "react-dom/server";
 import { getWindow, getDocument } from "ssr-window";
 
-import { IOCContainer } from "@/library/commons/IOCContainer";
+import { IOCContainer } from "@/library/cores/IOCContainer";
 import { RuntimeConfigManager } from "@/library/commons/RuntimeConfigManager";
 
 /**

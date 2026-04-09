@@ -2,7 +2,7 @@ import { injectable, inject } from "inversify";
 import { createClient, RedisClientType } from "redis";
 
 import { ApplicationConfigManager } from "@/main/server/commons/Application/ApplicationConfigManager";
-import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
+import { IOCContainer } from "@/main/server/cores/IOCContainer";
 
 import { logger } from "@/main/server/utils/logger";
 
@@ -11,7 +11,7 @@ export class RedisConnectManager {
 
   private connection: RedisClientType;
 
-  constructor(
+  constructor (
     @inject(ApplicationConfigManager) private readonly $ApplicationConfigManager: ApplicationConfigManager
   ) { };
 

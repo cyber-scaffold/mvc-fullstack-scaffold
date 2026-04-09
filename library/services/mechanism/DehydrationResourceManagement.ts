@@ -1,7 +1,7 @@
 import pathExists from "path-exists";
 import { injectable, inject } from "inversify";
 
-import { IOCContainer } from "@/library/commons/IOCContainer";
+import { IOCContainer } from "@/library/cores/IOCContainer";
 import { MaterielResourceDatabaseManager } from "@/library/commons/MaterielResourceDatabaseManager";
 
 import { DehydrationCompileService } from "@/library/services/compile/DehydrationCompileService";

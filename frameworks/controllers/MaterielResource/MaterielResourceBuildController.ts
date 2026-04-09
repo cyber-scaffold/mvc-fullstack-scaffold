@@ -1,6 +1,6 @@
 import { injectable, inject } from "inversify";
 
-import { IOCContainer } from "@/frameworks/commons/IOCContainer";
+import { IOCContainer } from "@/frameworks/cores/IOCContainer";
 import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
 import { compileConfiguration, makeHydrationResource, makeDehydratedResource } from "@/library/compilation";
 
@@ -11,7 +11,7 @@ import { compileConfiguration, makeHydrationResource, makeDehydratedResource } f
 @injectable()
 export class MaterielResourceBuildController {
 
-  constructor(
+  constructor (
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager
   ) { };
 

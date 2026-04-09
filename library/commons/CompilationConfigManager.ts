@@ -1,7 +1,7 @@
 import path from "path";
 import { injectable } from "inversify";
 
-import { IOCContainer } from "@/library/commons/IOCContainer";
+import { IOCContainer } from "@/library/cores/IOCContainer";
 
 export interface ICompilationConfig {
   projectDirectoryPath: string,

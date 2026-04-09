@@ -2,7 +2,7 @@ import { DataSource } from "typeorm";
 import { injectable, inject } from "inversify";
 
 import { ApplicationConfigManager } from "@/main/server/commons/Application/ApplicationConfigManager";
-import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
+import { IOCContainer } from "@/main/server/cores/IOCContainer";
 
 import { logger } from "@/main/server/utils/logger";
 
@@ -12,7 +12,7 @@ export class DataSourceManager {
   /** DataSource对象的暂存池 **/
   private appDataSource: DataSource;
 
-  constructor(
+  constructor (
     @inject(ApplicationConfigManager) private readonly $ApplicationConfigManager: ApplicationConfigManager
   ) { };
 

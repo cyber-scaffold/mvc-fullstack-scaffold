@@ -3,7 +3,7 @@ import webpack from "webpack";
 import spawn from "cross-spawn";
 import { injectable, inject } from "inversify";
 
-import { IOCContainer } from "@/frameworks/commons/IOCContainer";
+import { IOCContainer } from "@/frameworks/cores/IOCContainer";
 import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
 import { ServerSiderConfigManager } from "@/frameworks/configs/platforms/ServerSiderConfigManager";
 import { GenerateSwaggerDocsService } from "@/frameworks/services/preprocess/GenerateSwaggerDocsService";
@@ -16,7 +16,7 @@ export class ApplicationDevelopmentController {
 
   private childProcess: spawn;
 
-  constructor(
+  constructor (
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager,
     @inject(ServerSiderConfigManager) private readonly $ServerSiderConfigManager: ServerSiderConfigManager,
     @inject(GenerateSwaggerDocsService) private readonly $GenerateSwaggerDocsService: GenerateSwaggerDocsService

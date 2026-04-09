@@ -1,7 +1,7 @@
 import webpack from "webpack";
 import { injectable, inject } from "inversify";
 
-import { IOCContainer } from "@/frameworks/commons/IOCContainer";
+import { IOCContainer } from "@/frameworks/cores/IOCContainer";
 import { ServerSiderConfigManager } from "@/frameworks/configs/platforms/ServerSiderConfigManager";
 import { GenerateSwaggerDocsService } from "@/frameworks/services/preprocess/GenerateSwaggerDocsService";
 

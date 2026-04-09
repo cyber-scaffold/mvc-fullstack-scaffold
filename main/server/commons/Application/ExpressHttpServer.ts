@@ -7,11 +7,16 @@ import { runtimeConfiguration, getRuntimeConfiguration } from "@/library/runtime
 
 import type { Express } from "express";
 
-import { IOCContainer } from "@/main/server/commons/Application/IOCContainer";
-import { RegistryRouter } from "@/main/server/commons/Application/RegistryRouter";
+import { IOCContainer } from "@/main/server/cores/IOCContainer";
 import { ApplicationConfigManager } from "@/main/server/commons/Application/ApplicationConfigManager";
 
 import { requestMiddleware } from "@/main/server/interceptors/requestMiddleware";
+
+import { DetailPageController } from "@/main/server/controllers/DetailPageController";
+import { IndexPageController } from "@/main/server/controllers/IndexPageController";
+import { UserPageController } from "@/main/server/controllers/UserPageController";
+import { SearchController } from "@/main/server/controllers/SearchController";
+
 import { logger } from "@/main/server/utils/logger";
 
 @injectable()
@@ -23,7 +28,10 @@ export class ExpressHttpServer {
 
   constructor (
     @inject(ApplicationConfigManager) private readonly $ApplicationConfigManager: ApplicationConfigManager,
-    @inject(RegistryRouter) private readonly $RegistryRouter: RegistryRouter,
+    @inject(DetailPageController) private readonly $DetailPageController: DetailPageController,
+    @inject(IndexPageController) private readonly $IndexPageController: IndexPageController,
+    @inject(UserPageController) private readonly $UserPageController: UserPageController,
+    @inject(SearchController) private readonly $SearchController: SearchController,
   ) { }
 
   /** 在服务启动前需要执行的操作 **/
@@ -35,16 +43,20 @@ export class ExpressHttpServer {
 
   /** 服务启动时执行的代码 **/
   public async bootstrap() {
+    const { server } = this.$ApplicationConfigManager.getRuntimeConfig();
     const { hydrationResourceDirectoryPath } = await getRuntimeConfiguration();
     const { staticResourceDirectory, swaggerResourceDirectory, publicResourceDirectory } = this.$ApplicationConfigManager.getRuntimeConfig();
     /** 注册中间件 **/
     this.expressInstance.use(cookieParser());
     this.expressInstance.use(bodyParser.json());
     this.expressInstance.use(bodyParser.urlencoded({ extended: true }));
-    /** 注册请求级容器中间件 **/
+    /** 注册项目中的自定义中间件 **/
     this.expressInstance.use(requestMiddleware);
-    /** 注册控制器 **/
-    await this.$RegistryRouter.execute(this.expressInstance);
+    /** 注册项目中的控制器 **/
+    this.expressInstance.use(this.$DetailPageController.getRouter());
+    this.expressInstance.use(this.$IndexPageController.getRouter());
+    this.expressInstance.use(this.$UserPageController.getRouter());
+    this.expressInstance.use(this.$SearchController.getRouter());
     /** 公共文件的资源目录 比如dll动态链接库 **/
     this.expressInstance.use("/public/", express.static(publicResourceDirectory, {
       // maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)
@@ -62,7 +74,6 @@ export class ExpressHttpServer {
       // maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)
     }));
     /** 启动服务器监听端口 **/
-    const { server } = this.$ApplicationConfigManager.getRuntimeConfig();
     this.serverInstance = this.expressInstance.listen(server.port, async () => {
       try {
         logger.info("Address %s", this.serverInstance.address());

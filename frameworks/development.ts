@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
-import { IOCContainer } from "@/frameworks/commons/IOCContainer";
+import { IOCContainer } from "@/frameworks/cores/IOCContainer";
 
 import { MaterielResourceDevelopmentController } from "@/frameworks/controllers/MaterielResource/MaterielResourceDevelopmentController";
 import { ApplicationDevelopmentController } from "@/frameworks/controllers/ServerApplication/ApplicationDevelopmentController";

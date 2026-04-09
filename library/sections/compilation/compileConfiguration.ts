@@ -1,4 +1,4 @@
-import { IOCContainer } from "@/library/commons/IOCContainer";
+import { IOCContainer } from "@/library/cores/IOCContainer";
 import { CompilationConfigManager } from "@/library/commons/CompilationConfigManager";
 import { MaterielResourceDatabaseManager } from "@/library/commons/MaterielResourceDatabaseManager";
 import { CompilerActionService } from "@/library/services/preprocess/CompilerActionService";
