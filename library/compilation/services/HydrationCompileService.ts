@@ -5,7 +5,7 @@ import { IOCContainer } from "@/library/compilation/cores/IOCContainer";
 
 import { CompilationMaterielResourceDatabaseManager } from "@/library/compilation/commons/CompilationMaterielResourceDatabaseManager";
 import { HydrationConfigManager } from "@/library/compilation/configs/platforms/HydrationConfigManager";
-import { filterWebpackStats } from "@/library/public//filterWebpackStats";
+import { filterWebpackStats } from "@/library/public/filterWebpackStats";
 
 
 @injectable()

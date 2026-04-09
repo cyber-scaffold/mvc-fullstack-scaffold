@@ -1,13 +1,13 @@
+import path from "path";
 import WebpackBar from "webpackbar";
 import { merge } from "webpack-merge";
 import { Configuration } from "webpack";
 import { injectable, inject } from "inversify";
+import nodeExternals from "webpack-node-externals";
 import CopyWebpackPlugin from "copy-webpack-plugin";
 
 import { IOCContainer } from "@/frameworks/cores/IOCContainer";
 import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
-
-import { ESBuildLoaderConfigManger } from "@/frameworks/configs/loaders/ESBuildLoaderConfigManger";
 import { TypeScriptLoaderConfigManger } from "@/frameworks/configs/loaders/TypeScriptLoaderConfigManger";
 
 
@@ -16,7 +16,6 @@ export class ServerSiderConfigManager {
 
   constructor (
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager,
-    @inject(ESBuildLoaderConfigManger) private readonly $ESBuildLoaderConfigManger: ESBuildLoaderConfigManger,
     @inject(TypeScriptLoaderConfigManger) private readonly $TypeScriptLoaderConfigManger: TypeScriptLoaderConfigManger
   ) { };
 
@@ -26,13 +25,14 @@ export class ServerSiderConfigManager {
   public async getBasicConfig() {
     const {
       entryFile,
+      projectDirectoryPath,
       staticResourceDirectorySourcePath,
       staticResourceDirectoryDestinationPath,
       swaggerResourceDirectorySourcePath,
       swaggerResourceDirectoryDestinationPath
     } = this.$FrameworkConfigManager.getRuntimeConfig();
     return {
-      entry: ["source-map-support/register", entryFile],
+      entry: ["esbuild-register", "source-map-support/register", entryFile],
       target: "node",
       resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx"],
@@ -40,37 +40,17 @@ export class ServerSiderConfigManager {
           "@": process.cwd()
         }
       },
-      node: {
-        global: true,
-        __dirname: true,
-        __filename: true
-      },
+      // node: {
+      //   global: true,
+      //   __dirname: true,
+      //   __filename: true
+      // },
       externalsPresets: { node: true },
-      externals: [{
-        "less": "commonjs less",
-        "express": "commonjs express",
-        "less-node": "commonjs less-node",
-        "webpack": "commonjs webpack",
-        "webpackbar": "commonjs webpackbar",
-        "webpack-merge": "commonjs webpack-merge",
-        "copy-webpack-plugin": "commonjs copy-webpack-plugin",
-        "terser-webpack-plugin": "commonjs terser-webpack-plugin",
-        "webpack-node-externals": "commonjs webpack-node-externals",
-        "webpack-assets-manifest": "commonjs webpack-assets-manifest",
-        "mini-css-extract-plugin": "commonjs mini-css-extract-plugin",
-        "node-polyfill-webpack-plugin": "commonjs node-polyfill-webpack-plugin",
-        "react": "commonjs react",
-        "react-dom": "commonjs react-dom",
-        "inversify": "commonjs inversify",
-        "typeorm": "commonjs typeorm",
-        "mongodb": "commonjs mongodb",
-        "amqplib": "commonjs amqplib",
-        "redis": "commonjs redis",
-        "knex": "commonjs knex"
-      }],
+      externals: [nodeExternals({
+        modulesFromFile: path.resolve(projectDirectoryPath, "./package.json")
+      })],
       module: {
         rules: (await Promise.all([
-          this.$ESBuildLoaderConfigManger.getServerSiderLoaderConfig(),
           this.$TypeScriptLoaderConfigManger.getServerSiderLoaderConfig()
         ])).flat()
       },
@@ -124,3 +104,28 @@ export class ServerSiderConfigManager {
 };
 
 IOCContainer.bind(ServerSiderConfigManager).toSelf().inSingletonScope();
+
+
+
+// externals: [{
+//   "less": "commonjs less",
+//   "express": "commonjs express",
+//   "less-node": "commonjs less-node",
+//   "webpack": "commonjs webpack",
+//   "webpackbar": "commonjs webpackbar",
+//   "webpack-merge": "commonjs webpack-merge",
+//   "copy-webpack-plugin": "commonjs copy-webpack-plugin",
+//   "terser-webpack-plugin": "commonjs terser-webpack-plugin",
+//   "webpack-node-externals": "commonjs webpack-node-externals",
+//   "webpack-assets-manifest": "commonjs webpack-assets-manifest",
+//   "mini-css-extract-plugin": "commonjs mini-css-extract-plugin",
+//   "node-polyfill-webpack-plugin": "commonjs node-polyfill-webpack-plugin",
+//   "react": "commonjs react",
+//   "react-dom": "commonjs react-dom",
+//   "inversify": "commonjs inversify",
+//   "typeorm": "commonjs typeorm",
+//   "mongodb": "commonjs mongodb",
+//   "amqplib": "commonjs amqplib",
+//   "redis": "commonjs redis",
+//   "knex": "commonjs knex"
+// }],

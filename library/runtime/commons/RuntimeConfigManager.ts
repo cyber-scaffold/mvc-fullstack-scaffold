@@ -26,7 +26,7 @@ export interface ICustmerRuntimeConfig {
 export class RuntimeConfigManager {
 
   /** 项目的根目录 **/
-  private projectDirectoryPath = path.resolve(path.dirname(process.argv[1]), "../");
+  private projectDirectoryPath = "";
 
   /** 物料资产的目录 **/
   private assetsDirectoryName = "dist";
@@ -73,6 +73,9 @@ export class RuntimeConfigManager {
 
   /** 获取最终组合之后的运行时配置 **/
   public getRuntimeConfig(): IRuntimeConfig {
+    if (!Boolean(this.projectDirectoryPath)) {
+      throw new Error("RuntimeConfigManager Not Initialize Please Call setAndInitializeRuntimeConfig({projectDirectoryPath:<you project absolute path>})")
+    };
     return {
       projectDirectoryPath: this.projectDirectoryPath,
       assetsDirectoryPath: this.getAssetsDirectoryPath(),
