@@ -5,7 +5,7 @@ import { injectable, inject } from "inversify";
 
 import { IOCContainer } from "@/frameworks/cores/IOCContainer";
 import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
-import { ServerSiderConfigManager } from "@/frameworks/configs/platforms/ServerSiderConfigManager";
+import { ServerSiderConfigManager } from "@/frameworks/configs/webpack/ServerSiderConfigManager";
 import { GenerateSwaggerDocsService } from "@/frameworks/services/preprocess/GenerateSwaggerDocsService";
 
 /**

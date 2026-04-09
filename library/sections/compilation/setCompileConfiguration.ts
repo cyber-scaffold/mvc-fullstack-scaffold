@@ -3,7 +3,7 @@ import { CompilationConfigManager } from "@/library/commons/CompilationConfigMan
 import { MaterielResourceDatabaseManager } from "@/library/commons/MaterielResourceDatabaseManager";
 import { CompilerActionService } from "@/library/services/preprocess/CompilerActionService";
 
-export async function compileConfiguration(inputCustmerConfig?: any): Promise<void> {
+export async function setCompileConfiguration(inputCustmerConfig?: any): Promise<void> {
   /** 初始化配置文件 **/
   const $CompilationConfigManager = IOCContainer.get(CompilationConfigManager);
   await $CompilationConfigManager.initialize(inputCustmerConfig);

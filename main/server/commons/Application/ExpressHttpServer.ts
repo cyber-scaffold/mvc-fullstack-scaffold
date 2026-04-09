@@ -3,7 +3,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { injectable, inject } from "inversify";
-import { runtimeConfiguration, getRuntimeConfiguration } from "@/library/runtime";
+import { setRuntimeConfiguration, getRuntimeConfiguration } from "@/library/runtime";
 
 import type { Express } from "express";
 
@@ -38,7 +38,7 @@ export class ExpressHttpServer {
   public async beforeBootstrap() {
     /** 在运行时的时候需要基于当前的filename来确定项目的根目录 **/
     const { projectDirectoryPath, assetsDirectoryName } = this.$ApplicationConfigManager.getRuntimeConfig();
-    await runtimeConfiguration({ projectDirectoryPath, assetsDirectoryName });
+    await setRuntimeConfiguration({ projectDirectoryPath, assetsDirectoryName });
   };
 
   /** 服务启动时执行的代码 **/

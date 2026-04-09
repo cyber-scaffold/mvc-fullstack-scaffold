@@ -2,7 +2,7 @@ import { IOCContainer } from "@/library/cores/IOCContainer";
 import { RuntimeConfigManager } from "@/library/commons/RuntimeConfigManager";
 import { MaterielResourceDatabaseManager } from "@/library/commons/MaterielResourceDatabaseManager";
 
-export async function runtimeConfiguration(inputCustmerConfig?: any): Promise<void> {
+export async function setRuntimeConfiguration(inputCustmerConfig?: any): Promise<void> {
   /** 初始化配置文件 **/
   const $RuntimeConfigManager = IOCContainer.get(RuntimeConfigManager);
   await $RuntimeConfigManager.initialize(inputCustmerConfig);

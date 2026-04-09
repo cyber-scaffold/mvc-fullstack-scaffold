@@ -1,7 +1,7 @@
 /**
  * 工程脚本编译和制作物料阶段使用的方法
  * **/
-export { compileConfiguration } from "@/library/sections/compilation/compileConfiguration";
+export { setCompileConfiguration } from "@/library/sections/compilation/setCompileConfiguration";
 export { makeHydrationResource } from "@/library/sections/compilation/makeHydrationResource";
 export { makeDehydratedResource } from "@/library/sections/compilation/makeDehydratedResource";
 

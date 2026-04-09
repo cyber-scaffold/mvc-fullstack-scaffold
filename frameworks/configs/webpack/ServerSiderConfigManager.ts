@@ -75,7 +75,7 @@ export class ServerSiderConfigManager {
         ])).flat()
       },
       plugins: [
-        new WebpackBar({ name: "工程编译中" }),
+        new WebpackBar({ name: "编译主服务项目" }),
         new CopyWebpackPlugin({
           patterns: [{
             from: swaggerResourceDirectorySourcePath,
