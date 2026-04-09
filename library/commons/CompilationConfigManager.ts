@@ -30,26 +30,22 @@ export class CompilationConfigManager {
   /** 物料资产的目录 **/
   private assetsDirectoryName = "dist";
 
-  /** 文件输出的目录(根据 项目的根目录 计算得到) **/
-  get assetsDirectoryPath() {
-    return path.resolve(this.projectDirectoryPath, this.assetsDirectoryName);
-  };
+  /** 物料资产输出的目录(根据 项目的根目录 和 物料资产的目录 计算得到) **/
+  private assetsDirectoryPath = path.resolve(this.projectDirectoryPath, this.assetsDirectoryName);
 
-  private hydrationResourceDirectoryName = "hydration";
-
-  /** 注水资源的输出位置(前端javascript和css)(根据 文件输出的目录 计算得到) **/
-  get hydrationResourceDirectoryPath() {
-    return path.resolve(this.assetsDirectoryPath, this.hydrationResourceDirectoryName);
-  };
-
+  /** 脱水资源的输出位置对应的文件夹名称 **/
   private dehydrationResourceDirectoryName = "dehydration";
 
-  /** 脱水资源的输出位置(服务端ssr渲染函数)(根据 文件输出的目录 计算得到) **/
-  get dehydrationResourceDirectoryPath() {
-    return path.resolve(this.assetsDirectoryPath, this.dehydrationResourceDirectoryName);
-  };
+  /** 脱水资源的输出位置(服务端ssr渲染函数)(根据 物料资产的目录 和 对应文件夹名称 计算得到) **/
+  private dehydrationResourceDirectoryPath = path.resolve(this.assetsDirectoryPath, this.dehydrationResourceDirectoryName);
 
-  /** 初始化配置并计算出剩余的属性 **/
+  /** 注水资源的输出位置对应的文件夹名称 **/
+  private hydrationResourceDirectoryName = "hydration";
+
+  /** 注水资源的输出位置(前端javascript和css)(根据 物料资产的目录 和 对应文件夹名称 计算得到) **/
+  private hydrationResourceDirectoryPath = path.resolve(this.assetsDirectoryPath, this.hydrationResourceDirectoryName);
+
+  /** 基于用户的配置合并覆盖掉原来的属性然后重新计算一遍 **/
   public async initialize(inputCustmerConfig: ICustmerCompilationConfig) {
     if (!inputCustmerConfig) {
       return false;

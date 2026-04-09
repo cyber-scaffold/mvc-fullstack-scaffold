@@ -40,32 +40,37 @@ export class ApplicationConfigManager {
   };
 
   /**
-   * 编译资产对应的资源目录名
-   * **/
-  private assetsDirectoryName = "dist";
-
-  /**
    * 用于确定其余资源
    * 项目根目录的绝对路径
    * **/
   private projectDirectoryPath = path.resolve(__dirname, "../../../../");
 
   /**
-   * 用于启动静态资源服务器
-   * 框架层的基准目录是根据 项目根目录的绝对路径 计算得到的
+   * 编译后的资产对应的目录名
    * **/
-  private staticResourceDirectory = path.join(this.projectDirectoryPath, this.assetsDirectoryName, "statics");
+  private assetsDirectoryName = "dist";
 
   /**
-   * Swagger静态资源所在的目录
+   * 编译资产对应的资源路径
    * **/
-  private swaggerResourceDirectory = path.join(this.projectDirectoryPath, this.assetsDirectoryName, "swagger");
+  private assetsDirectoryPath = path.resolve(this.projectDirectoryPath, this.assetsDirectoryName);
 
   /**
    * 公共资源所在的目录比如要向前端浏览器提供的dll动态链接库文件
    * 框架层的基准目录是根据 项目根目录的绝对路径 计算得到的
    * **/
-  private publicResourceDirectory = path.join(this.projectDirectoryPath, this.assetsDirectoryName, "public");
+  private publicResourceDirectory = path.resolve(this.assetsDirectoryPath, "public");
+
+  /**
+   * 用于启动静态资源服务器
+   * 框架层的基准目录是根据 项目根目录的绝对路径 计算得到的
+   * **/
+  private staticResourceDirectory = path.resolve(this.assetsDirectoryPath, "statics");
+
+  /**
+   * Swagger静态资源所在的目录
+   * **/
+  private swaggerResourceDirectory = path.resolve(this.assetsDirectoryPath, "swagger");
 
   /** 初始化并加载配置到运行时 **/
   public async initialize() {
