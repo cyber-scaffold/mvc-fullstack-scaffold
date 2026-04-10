@@ -1,12 +1,12 @@
 import path from "path";
-import webpack from "webpack";
 import spawn from "cross-spawn";
 import { injectable, inject } from "inversify";
 
 import { IOCContainer } from "@/frameworks/cores/IOCContainer";
 import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
 import { ServerSiderConfigManager } from "@/frameworks/configs/webpack/ServerSiderConfigManager";
-import { GenerateSwaggerDocsService } from "@/frameworks/services/preprocess/GenerateSwaggerDocsService";
+
+import { GenerateSwaggerDocsService } from "@/frameworks/services/GenerateSwaggerDocsService";
 
 /**
  * @description 运行开发命令,可以基于cluster同时开启服务端和客户端渲染服务
@@ -26,9 +26,8 @@ export class ApplicationDevelopmentController {
    * 启动应用服务的开发模式
    * **/
   public async startDevelopmentMode(callback) {
-    const serverSiderRenderConfig: any = await this.$ServerSiderConfigManager.getDevelopmentConfig();
-    const serverSiderCompiler = webpack(serverSiderRenderConfig);
-    serverSiderCompiler.watch({ ignored: "**/node_modules/**" }, (error, stats) => {
+    const webpackDevelopmentCompiler: any = await this.$ServerSiderConfigManager.getWebpackDevelopmentCompiler();
+    webpackDevelopmentCompiler.watch({ ignored: "**/node_modules/**" }, (error, stats) => {
       if (error) {
         console.log(error);
       } else {

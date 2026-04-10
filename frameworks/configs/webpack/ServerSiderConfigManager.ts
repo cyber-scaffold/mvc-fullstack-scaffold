@@ -1,7 +1,9 @@
+import fs from "fs";
 import path from "path";
+import webpack from "webpack";
+import { promisify } from "util";
 import WebpackBar from "webpackbar";
 import { merge } from "webpack-merge";
-import { Configuration } from "webpack";
 import { injectable, inject } from "inversify";
 import nodeExternals from "webpack-node-externals";
 import CopyWebpackPlugin from "copy-webpack-plugin";
@@ -10,29 +12,43 @@ import { IOCContainer } from "@/frameworks/cores/IOCContainer";
 import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
 import { TypeScriptLoaderConfigManger } from "@/frameworks/configs/loaders/TypeScriptLoaderConfigManger";
 
+import { VirtualFileWithUnionFileSystem } from "@/frameworks/services/VirtualFileWithUnionFileSystem";
+
+import type { Configuration, Compiler } from "webpack";
 
 @injectable()
 export class ServerSiderConfigManager {
 
+  private async getVirtualEntryFileAndReplaceContent() {
+    const { entryFile } = this.$FrameworkConfigManager.getRuntimeConfig();
+    const originContent = await promisify(fs.readFile)(path.resolve(__dirname, "../../templates/virtualEntryFile.template"), "utf-8");
+    const replacedContent = originContent.replace("$$REAL_ENTRY_FILE_FULL_PATH$$", entryFile);
+    return replacedContent;
+  };
+
   constructor (
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager,
-    @inject(TypeScriptLoaderConfigManger) private readonly $TypeScriptLoaderConfigManger: TypeScriptLoaderConfigManger
+    @inject(TypeScriptLoaderConfigManger) private readonly $TypeScriptLoaderConfigManger: TypeScriptLoaderConfigManger,
+    @inject(VirtualFileWithUnionFileSystem) private readonly $VirtualFileWithUnionFileSystem: VirtualFileWithUnionFileSystem
   ) { };
 
   /**
    * 最基础的webpack编译配置
    * **/
-  public async getBasicConfig() {
+  public async getBasicConfig(): Promise<Configuration> {
     const {
-      entryFile,
       projectDirectoryPath,
       staticResourceDirectorySourcePath,
       staticResourceDirectoryDestinationPath,
       swaggerResourceDirectorySourcePath,
-      swaggerResourceDirectoryDestinationPath
+      swaggerResourceDirectoryDestinationPath,
     } = this.$FrameworkConfigManager.getRuntimeConfig();
     return {
-      entry: ["esbuild-register", "source-map-support/register", entryFile],
+      entry: [
+        "esbuild-register",
+        "source-map-support/register",
+        this.$VirtualFileWithUnionFileSystem.getEntryFileVirtualPath()
+      ],
       target: "node",
       resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx"],
@@ -70,35 +86,43 @@ export class ServerSiderConfigManager {
   };
 
   /**
- * 开发模式下的webpack配置
- * **/
-  public async getDevelopmentConfig() {
+   * 开发模式下的webpack配置
+   * **/
+  public async getWebpackDevelopmentCompiler(): Promise<Compiler> {
     const basicConfig: any = await this.getBasicConfig();
     const { assetsDirectoryPath } = this.$FrameworkConfigManager.getRuntimeConfig();
-    return merge<Configuration>(basicConfig, {
+    const webpackCompiler = webpack(merge<Configuration>(basicConfig, {
       devtool: "source-map",
       mode: "development",
       output: {
         path: assetsDirectoryPath,
         filename: "server.js",
       },
-    });
+    }));
+    await this.$VirtualFileWithUnionFileSystem.initialize(webpackCompiler);
+    const content = await this.getVirtualEntryFileAndReplaceContent();
+    await this.$VirtualFileWithUnionFileSystem.generateEntryFileContent(content);
+    return webpackCompiler;
   };
 
   /**
    * 生产模式下的webpack配置
    * **/
-  public async getProductionConfig() {
+  public async getWebpackProductionCompiler(): Promise<Compiler> {
     const basicConfig: any = await this.getBasicConfig();
     const { assetsDirectoryPath } = this.$FrameworkConfigManager.getRuntimeConfig();
-    return merge<Configuration>(basicConfig, {
+    const webpackCompiler = webpack(merge<Configuration>(basicConfig, {
       mode: "none",
       devtool: "source-map",
       output: {
         path: assetsDirectoryPath,
         filename: "server.js",
       },
-    });
+    }));
+    await this.$VirtualFileWithUnionFileSystem.initialize(webpackCompiler);
+    const content = await this.getVirtualEntryFileAndReplaceContent();
+    await this.$VirtualFileWithUnionFileSystem.generateEntryFileContent(content);
+    return webpackCompiler;
   };
 
 };

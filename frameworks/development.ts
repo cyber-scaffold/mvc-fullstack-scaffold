@@ -5,7 +5,7 @@ import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigMana
 import { MakeMaterielResourceDevelopmentController } from "@/frameworks/controllers/MakeMaterielResource/MakeMaterielResourceDevelopmentController";
 import { ApplicationDevelopmentController } from "@/frameworks/controllers/MakeServerApplication/ApplicationDevelopmentController";
 // import { DLLBuildController } from "@/frameworks/controllers/ProjectOptimization/DLLBuildController";
-import { CompilerActionService } from "@/frameworks/services/preprocess/CompilerActionService";
+import { CompilerActionService } from "@/frameworks/services/CompilerActionService";
 
 setImmediate(async () => {
   try {

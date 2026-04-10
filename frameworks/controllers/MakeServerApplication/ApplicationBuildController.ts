@@ -3,7 +3,7 @@ import { injectable, inject } from "inversify";
 
 import { IOCContainer } from "@/frameworks/cores/IOCContainer";
 import { ServerSiderConfigManager } from "@/frameworks/configs/webpack/ServerSiderConfigManager";
-import { GenerateSwaggerDocsService } from "@/frameworks/services/preprocess/GenerateSwaggerDocsService";
+import { GenerateSwaggerDocsService } from "@/frameworks/services/GenerateSwaggerDocsService";
 
 /**
  * @description 运行开发命令,可以基于cluster同时开启服务端和客户端渲染服务
@@ -20,10 +20,9 @@ export class ApplicationBuildController {
    * 进行应用服务的编译
    * **/
   public async startBuild() {
-    const serverSiderRenderConfig: any = await this.$ServerSiderConfigManager.getProductionConfig();
-    const serverSiderCompiler = webpack(serverSiderRenderConfig);
+    const webpackProductionCompiler: any = await this.$ServerSiderConfigManager.getWebpackProductionCompiler();
     await new Promise((resolve, reject) => {
-      serverSiderCompiler.run((error, stats) => {
+      webpackProductionCompiler.run((error, stats) => {
         if (error) {
           reject(error);
         } else {

@@ -1,7 +1,6 @@
-import path from "path";
-import { setAndInitializeRuntimeConfig } from "@/library/runtime";
-import { IOCContainer } from "@/main/server/cores/IOCContainer";
+import { setAndInitializeRuntimeConfig, readProjectDirectoryAbsolutePathWithRuntime } from "@/library/runtime";
 
+import { IOCContainer } from "@/main/server/cores/IOCContainer";
 import { ApplicationConfigManager } from "@/main/server/commons/Application/ApplicationConfigManager";
 import { ExpressHttpServer } from "@/main/server/commons/Application/ExpressHttpServer";
 
@@ -11,7 +10,7 @@ setImmediate(async () => {
    * 项目目录的绝对路径是基于当前文件的绝对路径计算得到的
    * **/
   await setAndInitializeRuntimeConfig({
-    projectDirectoryPath: path.resolve(path.dirname(__filename), "../")
+    projectDirectoryPath: readProjectDirectoryAbsolutePathWithRuntime()
   });
   await IOCContainer.get(ApplicationConfigManager).initialize();
   const serverApplicationInstance = IOCContainer.get(ExpressHttpServer);

@@ -1,0 +1,10 @@
+import path from "path";
+import {
+  saveProjectDirectoryAbsolutePathWithRuntime,
+  saveProjectEntryFileAbsolutePathWithRuntime
+} from "@/library/runtime";
+
+saveProjectDirectoryAbsolutePathWithRuntime(path.resolve(path.dirname(__filename),"../"));
+saveProjectEntryFileAbsolutePathWithRuntime(__filename);
+
+import "$$REAL_ENTRY_FILE_FULL_PATH$$";

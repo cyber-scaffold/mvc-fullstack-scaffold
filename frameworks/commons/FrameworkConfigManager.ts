@@ -57,6 +57,12 @@ export class FrameworkConfigManager {
   private swaggerResourceDirectoryDestinationPath = path.resolve(this.assetsDirectoryPath, "./swagger/");
 
   /**
+   * @deprecated
+   * 虚拟入口文件最终输出的物理位置
+   * **/
+  // private frameworkEntryFileDestinationPath = path.resolve(this.assetsDirectoryPath, "./index.js");
+
+  /**
    * 服务端渲染物料的详细制作信息
    * **/
   private materiels = [];
@@ -133,6 +139,7 @@ export class FrameworkConfigManager {
       extractSwaggerGlobExpression: this.extractSwaggerGlobExpression,
       swaggerResourceDirectorySourcePath: this.swaggerResourceDirectorySourcePath,
       swaggerResourceDirectoryDestinationPath: this.swaggerResourceDirectoryDestinationPath,
+      // frameworkEntryFileDestinationPath: this.frameworkEntryFileDestinationPath,
       materiels: this.materiels
     };
   };
