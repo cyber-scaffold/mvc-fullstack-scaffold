@@ -7,11 +7,11 @@ export { getRuntimeConfiguration } from "@/library/runtime/getRuntimeConfigurati
 export { getDehydratedResource } from "@/library/runtime/getDehydratedResource";
 export { getHydrationResource } from "@/library/runtime/getHydrationResource";
 
-export { saveProjectDirectoryAbsolutePathWithRuntime } from "@/library/runtime/globalSingletonStorage";
-export { readProjectDirectoryAbsolutePathWithRuntime } from "@/library/runtime/globalSingletonStorage";
+export { saveProjectDirectoryAbsolutePath } from "@/library/runtime/globalSingletonStorage";
+export { readProjectDirectoryAbsolutePath } from "@/library/runtime/globalSingletonStorage";
 
-export { saveProjectEntryFileAbsolutePathWithRuntime } from "@/library/runtime/globalSingletonStorage";
-export { readProjectEntryFileAbsolutePathWithRuntime } from "@/library/runtime/globalSingletonStorage";
+export { saveProjectEntryFileAbsolutePath } from "@/library/runtime/globalSingletonStorage";
+export { readProjectEntryFileAbsolutePath } from "@/library/runtime/globalSingletonStorage";
 
 export type { ICompileAssetsList } from "@/library/public/filterWebpackStats";
 export type { IRuntimeConfig } from "@/library/runtime/commons/RuntimeConfigManager";

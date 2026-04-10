@@ -1,10 +1,10 @@
 import path from "path";
 import {
-  saveProjectDirectoryAbsolutePathWithRuntime,
-  saveProjectEntryFileAbsolutePathWithRuntime
+  saveProjectDirectoryAbsolutePath,
+  saveProjectEntryFileAbsolutePath
 } from "@/library/runtime";
 
-saveProjectDirectoryAbsolutePathWithRuntime(path.resolve(path.dirname(__filename),"../"));
-saveProjectEntryFileAbsolutePathWithRuntime(__filename);
+saveProjectDirectoryAbsolutePath(path.resolve(path.dirname(__filename),"../"));
+saveProjectEntryFileAbsolutePath(__filename);
 
 import "$$REAL_ENTRY_FILE_FULL_PATH$$";

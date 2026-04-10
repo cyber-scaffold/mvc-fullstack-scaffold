@@ -27,21 +27,21 @@ export class GlobalSingletonStorage {
 const globalSingletonStorage = new GlobalSingletonStorage();
 
 
-export function saveProjectDirectoryAbsolutePathWithRuntime(value: string) {
-  globalSingletonStorage.save("PROJECT_DIRECTORY_ABSOLUTE_PATH_WITH_RUNTIME", value);
+export function saveProjectDirectoryAbsolutePath(value: string) {
+  globalSingletonStorage.save("PROJECT_DIRECTORY_ABSOLUTE_PATH_AT_RUNTIME", value);
 };
 
 
-export function readProjectDirectoryAbsolutePathWithRuntime(): string {
-  return globalSingletonStorage.read("PROJECT_DIRECTORY_ABSOLUTE_PATH_WITH_RUNTIME");
+export function readProjectDirectoryAbsolutePath(): string {
+  return globalSingletonStorage.read("PROJECT_DIRECTORY_ABSOLUTE_PATH_AT_RUNTIME");
 };
 
 
-export function saveProjectEntryFileAbsolutePathWithRuntime(value: string) {
-  globalSingletonStorage.save("PROJECT_ENTRY_FILE_ABSOLUTE_PATH_WITH_RUNTIME", value);
+export function saveProjectEntryFileAbsolutePath(value: string) {
+  globalSingletonStorage.save("PROJECT_ENTRY_FILE_ABSOLUTE_PATH_AT_RUNTIME", value);
 };
 
 
-export function readProjectEntryFileAbsolutePathWithRuntime(): string {
-  return globalSingletonStorage.read("PROJECT_ENTRY_FILE_ABSOLUTE_PATH_WITH_RUNTIME");
+export function readProjectEntryFileAbsolutePath(): string {
+  return globalSingletonStorage.read("PROJECT_ENTRY_FILE_ABSOLUTE_PATH_AT_RUNTIME");
 };
