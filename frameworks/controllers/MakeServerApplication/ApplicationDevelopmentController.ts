@@ -43,20 +43,10 @@ export class ApplicationDevelopmentController {
     /** 开发模式下需要使用watch模式,启动服务端脚本应该在callback中执行 **/
     await this.startDevelopmentMode(async () => {
       if (this.childProcess) {
-        await new Promise((resolve) => {
-          const handleClose = () => {
-            resolve(true);
-            this.childProcess.removeAllListeners("close");
-          };
-          this.childProcess.on("close", handleClose);
-          this.childProcess.kill("SIGKILL");
-        });
-        this.childProcess = undefined;
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        this.childProcess.kill("SIGKILL");
       };
       await this.$GenerateSwaggerDocsService.execute();
       this.childProcess = await spawn("node", [path.resolve(assetsDirectoryPath, "./server.js")], {
-        // cwd: path.resolve(process.cwd(), "./dist/"),
         stdio: "inherit",
         stderr: "inherit"
       });

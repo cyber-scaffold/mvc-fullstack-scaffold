@@ -1,6 +1,6 @@
 import path from "path";
-import type { Low } from "lowdb";
-import { JSONFilePreset } from "lowdb/node";
+import { Low } from "lowdb";
+import { JSONFile } from "lowdb/node";
 import { injectable, inject } from "inversify";
 
 import { IOCContainer } from "@/library/runtime/cores/IOCContainer";
@@ -20,10 +20,8 @@ export class RuntimeMaterielResourceDatabaseManager {
   public async initialize() {
     try {
       const { assetsDirectoryPath } = await this.$RuntimeConfigManager.getRuntimeConfig();
-      this.hydrationCompileDatabase = await JSONFilePreset(path.resolve(assetsDirectoryPath, "./hydration-compile.json"), {});
-      await this.hydrationCompileDatabase.write();
-      this.dehydrationCompileDatabase = await JSONFilePreset(path.resolve(assetsDirectoryPath, "./dehydration-compile.json"), {});
-      await this.dehydrationCompileDatabase.write();
+      this.hydrationCompileDatabase = new Low(new JSONFile(path.resolve(assetsDirectoryPath, "./hydration-compile.json")), {});
+      this.dehydrationCompileDatabase = new Low(new JSONFile(path.resolve(assetsDirectoryPath, "./dehydration-compile.json")), {});
     } catch (error) {
       throw error;
     };
