@@ -6,7 +6,6 @@ import { IOCContainer } from "@/frameworks/cores/IOCContainer";
 import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
 import { ServerSiderConfigManager } from "@/frameworks/configs/webpack/ServerSiderConfigManager";
 
-import { VirtualFileWithUnionFileSystem } from "@/frameworks/services/VirtualFileWithUnionFileSystem";
 import { GenerateSwaggerDocsService } from "@/frameworks/services/GenerateSwaggerDocsService";
 
 import type { Compiler } from "webpack";
@@ -23,8 +22,7 @@ export class ApplicationDevelopmentController {
   constructor (
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager,
     @inject(ServerSiderConfigManager) private readonly $ServerSiderConfigManager: ServerSiderConfigManager,
-    @inject(GenerateSwaggerDocsService) private readonly $GenerateSwaggerDocsService: GenerateSwaggerDocsService,
-    @inject(VirtualFileWithUnionFileSystem) private readonly $VirtualFileWithUnionFileSystem: VirtualFileWithUnionFileSystem
+    @inject(GenerateSwaggerDocsService) private readonly $GenerateSwaggerDocsService: GenerateSwaggerDocsService
   ) { };
 
   /**
@@ -32,19 +30,13 @@ export class ApplicationDevelopmentController {
    * **/
   public async startDevelopmentMode(callback) {
     const webpackDevelopmentCompiler: Compiler = await this.$ServerSiderConfigManager.getWebpackDevelopmentCompiler();
-    webpackDevelopmentCompiler.watch({
-      ignored: [
-        path.resolve(process.cwd(), "./dist/**/*"),
-        path.resolve(process.cwd(), "./node_modules/**/*"),
-        this.$VirtualFileWithUnionFileSystem.getVirtualDirectoryPath()
-      ]
-    }, (error, stats) => {
-      const info = stats.toJson({
-        modules: true,
-        reasons: true
-      });
-      const changedModules = info.modules.filter(m => m.built);
-      console.log('重新构建的模块:', changedModules.map(m => m.name));
+    webpackDevelopmentCompiler.watch({ ignored: "**/node_modules/**" }, (error, stats) => {
+      // const info = stats.toJson({
+      //   modules: true,
+      //   reasons: true
+      // });
+      // const changedModules = info.modules.filter(m => m.built);
+      // console.log('重新构建的模块:', changedModules.map(m => m.name));
       if (error) {
         console.log(error);
       } else {
