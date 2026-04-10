@@ -1,22 +1,24 @@
 import { CompilationMaterielResourceDatabaseManager } from "@/library/compilation/commons/CompilationMaterielResourceDatabaseManager";
 
+import type { Compiler } from "webpack";
+
 type CompilerProgressPluginType = {
-  alias?: string
-  type?: "hydration" | "dehydration",
-  materielResourceDatabaseManager?: CompilationMaterielResourceDatabaseManager
+  alias: string
+  type: "hydration" | "dehydration",
+  materielResourceDatabaseManager: CompilationMaterielResourceDatabaseManager
 };
 
 export class CompilerProgressPlugin {
 
-  private params: CompilerProgressPluginType = {};
+  private params: CompilerProgressPluginType;
 
   constructor (params: CompilerProgressPluginType) {
     // 接收外部传入的参数
     this.params = params;
-  }
+  };
 
   // apply方法是Webpack插件的入口
-  apply(compiler) {
+  public apply(compiler: Compiler) {
     // 在编译开始时触发
     compiler.hooks.compile.tap("CompilerProgressPlugin", async (params) => {
       if (this.params.type === "hydration") {
@@ -53,11 +55,13 @@ export class CompilerProgressPlugin {
       if (this.params.type === "hydration") {
         const hydrationCompileDatabase = this.params.materielResourceDatabaseManager.getHydrationCompileDatabase();
         hydrationCompileDatabase.data[this.params.alias].status = "done";
+        // await this.clearHistoryResource(hydrationCompileDatabase.data[this.params.alias]);
         await hydrationCompileDatabase.write();
       };
       if (this.params.type === "dehydration") {
         const dehydrationCompileDatabase = this.params.materielResourceDatabaseManager.getDehydrationCompileDatabase();
         dehydrationCompileDatabase.data[this.params.alias].status = "done";
+        // await this.clearHistoryResource(dehydrationCompileDatabase.data[this.params.alias]);
         await dehydrationCompileDatabase.write();
       };
       // console.log(this.params.alias, "done");

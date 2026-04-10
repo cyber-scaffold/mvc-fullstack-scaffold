@@ -14,8 +14,6 @@ export class FileLoaderConfigManager {
         options: {
           emitFile: true,
           publicPath: "/hydration/",
-          // outputPath: "/hydration/",
-          // name: "[name]-[contenthash].[ext]"
           name: (resourcePath: string) => {
             return `[name]-${filePathContentHash(resourcePath)}-[contenthash].[ext]`;
           }
@@ -32,7 +30,6 @@ export class FileLoaderConfigManager {
         options: {
           emitFile: false,
           publicPath: "/hydration/",
-          // outputPath: "/hydration/",
           name: (resourcePath: string) => {
             return `[name]-${filePathContentHash(resourcePath)}-[contenthash].[ext]`;
           }

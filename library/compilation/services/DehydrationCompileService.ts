@@ -7,12 +7,15 @@ import { CompilationMaterielResourceDatabaseManager } from "@/library/compilatio
 import { DehydrationConfigManager } from "@/library/compilation/configs/platforms/DehydrationConfigManager";
 import { filterWebpackStats } from "@/library/public/filterWebpackStats";
 
+import { ClearHistoryService } from "@/library/compilation/services/ClearHistoryService";
+
 @injectable()
 export class DehydrationCompileService {
 
   constructor (
     @inject(CompilationMaterielResourceDatabaseManager) private readonly $CompilationMaterielResourceDatabaseManager: CompilationMaterielResourceDatabaseManager,
-    @inject(DehydrationConfigManager) private readonly $DehydrationConfigManager: DehydrationConfigManager
+    @inject(DehydrationConfigManager) private readonly $DehydrationConfigManager: DehydrationConfigManager,
+    @inject(ClearHistoryService) private readonly $ClearHistoryService: ClearHistoryService
   ) { };
 
   public async startWatch(params) {
@@ -30,10 +33,12 @@ export class DehydrationCompileService {
         console.log(error);
       } else {
         // console.log(stats.toString({ colors: true }));
-        const assetsFileList = filterWebpackStats(stats.toJson({ all: false, assets: true, outputPath: true }));
+        const latestAssetsFileList = filterWebpackStats(stats.toJson({ all: true, assets: true, source: true, outputPath: true }));
+        // console.log(alias, "脱水资源===>", currentAssetsFileList);
         /** 在json数据库中保存资源信息 **/
-        dehydrationCompileDatabase.data[alias].javascript = assetsFileList.javascript;
-        dehydrationCompileDatabase.data[alias].stylesheet = assetsFileList.stylesheet;
+        dehydrationCompileDatabase.data[alias].javascript = latestAssetsFileList.javascript;
+        dehydrationCompileDatabase.data[alias].stylesheet = latestAssetsFileList.stylesheet;
+        dehydrationCompileDatabase.data[alias].statics = latestAssetsFileList.statics;
         await dehydrationCompileDatabase.write();
       };
     });
@@ -54,10 +59,11 @@ export class DehydrationCompileService {
         console.log(error);
       } else {
         // console.log(stats.toString({ colors: true }));
-        const assetsFileList = filterWebpackStats(stats.toJson({ all: false, assets: true, outputPath: true }));
+        const assetsFileList = filterWebpackStats(stats.toJson({ all: true, assets: true, source: true, outputPath: true }));
         /** 在json数据库中保存资源信息 **/
         dehydrationCompileDatabase.data[alias].javascript = assetsFileList.javascript;
         dehydrationCompileDatabase.data[alias].stylesheet = assetsFileList.stylesheet;
+        dehydrationCompileDatabase.data[alias].statics = assetsFileList.statics;
         await dehydrationCompileDatabase.write();
       };
     });
