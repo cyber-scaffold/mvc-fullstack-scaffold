@@ -44,8 +44,12 @@ export class VirtualFileWithUnionFileSystem {
     await promisify(memfs.fs.writeFile)(this.getEntryFileVirtualPath(), entryFileContent);
   };
 
-  public getEntryFileVirtualPath() {
-    return path.join(this.virtualDirectoryPath, "./frameworkEntry.js");
+  public getVirtualDirectoryPath(): string {
+    return this.virtualDirectoryPath;
+  };
+
+  public getEntryFileVirtualPath(): string {
+    return path.join(this.getVirtualDirectoryPath(), "./frameworkEntry.js");
   };
 
 };
