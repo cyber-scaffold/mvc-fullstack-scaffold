@@ -58,8 +58,8 @@ export class ApplicationConfigManager {
    * 框架层的基准目录是根据 项目根目录的绝对路径 计算得到的
    * **/
   private async getPublicResourceDirectory() {
-    const { projectDirectoryPath } = await getRuntimeConfiguration();
-    return path.resolve(projectDirectoryPath, "public");
+    const assetsDirectoryPath = await this.getAssetsDirectoryPath();
+    return path.join(assetsDirectoryPath, "public");
   };
 
   /**
@@ -67,16 +67,16 @@ export class ApplicationConfigManager {
    * 框架层的基准目录是根据 项目根目录的绝对路径 计算得到的
    * **/
   private async getStaticResourceDirectory() {
-    const { projectDirectoryPath } = await getRuntimeConfiguration();
-    return path.resolve(projectDirectoryPath, "statics");
+    const assetsDirectoryPath = await this.getAssetsDirectoryPath();
+    return path.join(assetsDirectoryPath, "statics");
   };
 
   /**
    * Swagger静态资源所在的目录
    * **/
   private async getSwaggerResourceDirectory() {
-    const { projectDirectoryPath } = await getRuntimeConfiguration();
-    return path.resolve(projectDirectoryPath, "swagger");
+    const assetsDirectoryPath = await this.getAssetsDirectoryPath();
+    return path.join(assetsDirectoryPath, "swagger");
   };
 
   /** 初始化并加载配置到运行时 **/

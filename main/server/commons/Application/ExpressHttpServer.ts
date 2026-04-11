@@ -1,11 +1,8 @@
-import http from "http";
 import express from "express";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { injectable, inject } from "inversify";
 import { getRuntimeConfiguration } from "@/library/runtime";
-
-import type { Express } from "express";
 
 import { IOCContainer } from "@/main/server/cores/IOCContainer";
 import { ApplicationConfigManager } from "@/main/server/commons/Application/ApplicationConfigManager";
@@ -19,10 +16,13 @@ import { SearchController } from "@/main/server/controllers/SearchController";
 
 import { logger } from "@/main/server/utils/logger";
 
+import type { Server } from "http";
+import type { Express } from "express";
+
 @injectable()
 export class ExpressHttpServer {
 
-  private serverInstance: http.Server;
+  private serverInstance: Server;
 
   private expressInstance: Express = express();
 
