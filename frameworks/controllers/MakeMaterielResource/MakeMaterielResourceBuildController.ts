@@ -17,7 +17,7 @@ export class MakeMaterielResourceBuildController {
 
   public async buildMaterielResource() {
     const { projectDirectoryPath, assetsDirectoryName, materiels = [] } = await this.$FrameworkConfigManager.getRuntimeConfig();
-    await setCompileConfiguration({ projectDirectoryPath, assetsDirectoryName });
+    await setCompileConfiguration({ projectDirectoryPath, assetsDirectoryName, materiels });
     /** 对每一组物料的详细编译信息进行分析生成编译队列 **/
     const allMaterielsMakeTask = materiels.map((everyMaterielInfo) => {
       const everyMaterielMakeTask = [];
@@ -26,7 +26,7 @@ export class MakeMaterielResourceBuildController {
           alias: everyMaterielInfo.alias,
           source: everyMaterielInfo.source,
           mode: "production",
-          watch: false
+          watch: false,
         }));
       };
       if (everyMaterielInfo.dehydrated) {

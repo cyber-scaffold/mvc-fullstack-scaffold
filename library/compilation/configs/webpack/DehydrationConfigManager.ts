@@ -72,7 +72,7 @@ export class DehydrationConfigManager {
         rules: (await Promise.all([
           this.$TypeScriptLoaderConfigManger.getDehydrationSiderLoaderConfig(),
           this.$ESBuildLoaderConfigManger.getDehydrationSiderLoaderConfig(),
-          this.$FileLoaderConfigManager.getDehydrationSiderLoaderConfig(),
+          this.$FileLoaderConfigManager.getDehydrationSiderLoaderConfig(alias),
           this.$LessLoaderConfigManager.getDehydrationSiderLoaderConfig(),
           this.$SassLoaderConfigManager.getDehydrationSiderLoaderConfig(),
           this.$CssLoaderConfigManager.getDehydrationSiderLoaderConfig()

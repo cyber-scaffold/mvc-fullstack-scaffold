@@ -63,7 +63,7 @@ export class HydrationConfigManager {
         rules: (await Promise.all([
           this.$TypeScriptLoaderConfigManger.getHydrationSiderLoaderConfig(),
           this.$ESBuildLoaderConfigManger.getHydrationSiderLoaderConfig(),
-          this.$FileLoaderConfigManager.getHydrationSiderLoaderConfig(),
+          this.$FileLoaderConfigManager.getHydrationSiderLoaderConfig(alias),
           this.$LessLoaderConfigManager.getHydrationSiderLoaderConfig(),
           this.$SassLoaderConfigManager.getHydrationSiderLoaderConfig(),
           this.$CssLoaderConfigManager.getHydrationSiderLoaderConfig()

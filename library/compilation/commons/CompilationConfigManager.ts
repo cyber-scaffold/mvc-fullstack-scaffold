@@ -3,6 +3,13 @@ import { injectable } from "inversify";
 
 import { IOCContainer } from "@/library/compilation/cores/IOCContainer";
 
+export interface IMaterielInfo {
+  alias: string,
+  hydration: boolean
+  dehydrated: boolean
+  source: string
+};
+
 export interface ICompilationConfig {
   projectDirectoryPath: string
   assetsDirectoryPath: string
@@ -10,6 +17,7 @@ export interface ICompilationConfig {
   fileResourceDirectoryPath: string
   hydrationResourceDirectoryPath: string
   dehydrationResourceDirectoryPath: string
+  materiels: IMaterielInfo[]
 };
 
 export interface ICustmerCompilationConfig {
@@ -18,7 +26,7 @@ export interface ICustmerCompilationConfig {
   fileResourceDirectoryName?: string
   hydrationResourceDirectoryName?: string
   dehydrationResourceDirectoryName?: string
-  standardizationHydrationTempDirectoryName?: string
+  materiels?: IMaterielInfo[]
 };
 
 /** 
@@ -62,6 +70,11 @@ export class CompilationConfigManager {
     return path.resolve(this.getAssetsDirectoryPath(), this.hydrationResourceDirectoryName);
   };
 
+  /**
+   * 物料的编译信息
+   * **/
+  private materiels: IMaterielInfo[];
+
   /** 基于用户的配置合并覆盖掉原来的属性然后重新计算一遍 **/
   public async initialize(inputCustmerConfig: ICustmerCompilationConfig) {
     if (!inputCustmerConfig) {
@@ -79,6 +92,9 @@ export class CompilationConfigManager {
     if (inputCustmerConfig.dehydrationResourceDirectoryName) {
       this.dehydrationResourceDirectoryName = inputCustmerConfig.dehydrationResourceDirectoryName;
     };
+    if (inputCustmerConfig.materiels) {
+      this.materiels = inputCustmerConfig.materiels;
+    };
   };
 
   /** 获取最终组合之后的运行时配置 **/
@@ -89,7 +105,8 @@ export class CompilationConfigManager {
       fileResourceDirectoryName: this.fileResourceDirectoryName,
       fileResourceDirectoryPath: this.getFileResourceDirectoryPath(),
       hydrationResourceDirectoryPath: this.getHydrationResourceDirectoryPath(),
-      dehydrationResourceDirectoryPath: this.getDehydrationResourceDirectoryPath()
+      dehydrationResourceDirectoryPath: this.getDehydrationResourceDirectoryPath(),
+      materiels: this.materiels
     };
   };
 
