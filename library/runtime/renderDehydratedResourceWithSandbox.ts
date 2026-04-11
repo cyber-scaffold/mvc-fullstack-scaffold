@@ -35,5 +35,5 @@ export async function renderDehydratedResourceWithSandbox(resourceFilePath: stri
   if (moduleExportInfo.default) {
     return moduleExportInfo.default(content);
   };
-  throw new Error(`${resourceFilePath} 脱水资源模块错误没有export default出口`);
+  throw new Error(`module error ${resourceFilePath} "export default ..." statement not exist`);
 };
