@@ -16,12 +16,12 @@ export class MakeMaterielResourceBuildController {
   ) { };
 
   public async buildMaterielResource() {
-    const { projectDirectoryPath, assetsDirectoryName, materiels = [] } = await this.$FrameworkConfigManager.getRuntimeConfig();
+    const { projectDirectoryPath, assetsDirectoryName, materiels } = await this.$FrameworkConfigManager.getRuntimeConfig();
     await setCompileConfiguration({ projectDirectoryPath, assetsDirectoryName, materiels });
     /** 对每一组物料的详细编译信息进行分析生成编译队列 **/
     const allMaterielsMakeTask = materiels.map((everyMaterielInfo) => {
       const everyMaterielMakeTask = [];
-      if (everyMaterielInfo.hydration) {
+      if (everyMaterielInfo.hydrate) {
         everyMaterielMakeTask.push(makeHydrationResource({
           alias: everyMaterielInfo.alias,
           source: everyMaterielInfo.source,
@@ -29,7 +29,7 @@ export class MakeMaterielResourceBuildController {
           watch: false,
         }));
       };
-      if (everyMaterielInfo.dehydrated) {
+      if (everyMaterielInfo.dehydrate) {
         everyMaterielMakeTask.push(makeDehydratedResource({
           alias: everyMaterielInfo.alias,
           source: everyMaterielInfo.source,

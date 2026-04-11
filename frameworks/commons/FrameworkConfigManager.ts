@@ -7,6 +7,7 @@ import pathExists from "path-exists";
 import { injectable } from "inversify";
 
 import { IOCContainer } from "@/frameworks/cores/IOCContainer";
+import type { IMaterielInfo } from "@/library/compilation";
 
 @injectable()
 export class FrameworkConfigManager {
@@ -65,7 +66,7 @@ export class FrameworkConfigManager {
   /**
    * 服务端渲染物料的详细制作信息
    * **/
-  private materiels = [];
+  private materiels: IMaterielInfo[] = [];
 
   /**
    * 项目目录下的配置文件路径用于覆盖框架中的默认值

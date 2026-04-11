@@ -5,8 +5,8 @@ import { IOCContainer } from "@/library/compilation/cores/IOCContainer";
 
 export interface IMaterielInfo {
   alias: string,
-  hydration: boolean
-  dehydrated: boolean
+  hydrate: boolean
+  dehydrate: boolean
   source: string
 };
 
