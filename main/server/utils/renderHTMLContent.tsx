@@ -40,6 +40,14 @@ export async function renderHTMLContent(params: IParmas) {
     version: params.version || version
   };
   const applicationInjectContent = { content, meta: metaInfo };
+  /** 如果存在脱水渲染脚本的话就需要进行脱水视图的渲染 **/
+  const dehydratedContent = dehydratedAssets.javascript[0] ? (
+    <div id="root" style={{ height: "100%" }} dangerouslySetInnerHTML={{
+      __html: `${await renderDehydratedResourceWithSandbox(dehydratedAssets.javascript[0], applicationInjectContent)}`
+    }} />
+  ) : (
+    <div id="root" style={{ height: "100%" }} />
+  );
   const contentString = renderToString(
     <html lang="zh-CN">
       <head>
@@ -55,13 +63,7 @@ export async function renderHTMLContent(params: IParmas) {
         ))}
       </head>
       <body style={{ height: "100%" }}>
-        <div
-          id="root"
-          style={{ height: "100%" }}
-          dangerouslySetInnerHTML={{
-            __html: `${await renderDehydratedResourceWithSandbox(dehydratedAssets.javascript[0], applicationInjectContent)}`
-          }}
-        />
+        {dehydratedContent}
         <script
           dangerouslySetInnerHTML={{
             __html: `
