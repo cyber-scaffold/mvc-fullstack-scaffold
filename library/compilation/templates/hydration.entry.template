@@ -1,0 +1,17 @@
+import React from "react";
+import { createRoot } from "react-dom/client";
+//@ts-ignore 这里需要忽略因为这里的绝对路径可能含有后缀名,默认情况下typescript不允许后缀名,所以需要让typescript忽略
+import RenderElement from "$$sourceCodeFilePath$$";
+
+function bootstrap() {
+  let rootElement;
+  if (typeof (window as any)._ROOT_ELEMENT_ == "string") {
+    rootElement = document.getElementById((window as any)._ROOT_ELEMENT_);
+  } else {
+    rootElement = (window as any)._ROOT_ELEMENT_;
+  };
+  //var ApplicationElement=React.createElement(RenderElement,window._CONTENT_FROM_SERVER_);
+  //window._APPLICATION_MOUNT_ELEMENT_=createRoot(rootElement).render(ApplicationElement);
+
+  (window as any)._APPLICATION_MOUNT_ELEMENT_ = createRoot(rootElement).render(<RenderElement { ...(window as any)._CONTENT_FROM_SERVER_ } />);
+}; bootstrap();

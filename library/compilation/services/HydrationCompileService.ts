@@ -1,13 +1,13 @@
-import { webpack } from "webpack";
 import { injectable, inject } from "inversify";
 
 import { IOCContainer } from "@/library/compilation/cores/IOCContainer";
-
 import { CompilationMaterielResourceDatabaseManager } from "@/library/compilation/commons/CompilationMaterielResourceDatabaseManager";
-import { HydrationConfigManager } from "@/library/compilation/configs/platforms/HydrationConfigManager";
+import { HydrationConfigManager } from "@/library/compilation/configs/webpack/HydrationConfigManager";
 import { filterWebpackStats } from "@/library/public/filterWebpackStats";
 
 import { ClearHistoryService } from "@/library/compilation/services/ClearHistoryService";
+
+import type { Compiler } from "webpack";
 
 @injectable()
 export class HydrationCompileService {
@@ -24,12 +24,10 @@ export class HydrationCompileService {
     const hydrationCompileDatabase = this.$CompilationMaterielResourceDatabaseManager.getHydrationCompileDatabase();
     hydrationCompileDatabase.data[alias] = {};
     await hydrationCompileDatabase.write();
-    /** 需要对原始的tsx文件进行额外加工使其的引用变成标准化的引用 **/
-    /** 获取开发环境下的编译配置 **/
-    const hydrationRenderConfig: any = await this.$HydrationConfigManager.getDevelopmentConfig({ alias, sourceCodeFilePath });
+    /** 生成编译对象 **/
+    const webpackCompiler: Compiler = await this.$HydrationConfigManager.getWebpackDevelopmentCompiler({ alias, sourceCodeFilePath });
     /** 开启一个编译对象 **/
-    const hydrationCompiler = webpack(hydrationRenderConfig);
-    hydrationCompiler.watch({ ignored: "**/node_modules/**" }, async (error, stats) => {
+    webpackCompiler.watch({ ignored: "**/node_modules/**" }, async (error, stats) => {
       if (error) {
         console.log(error);
       } else {
@@ -51,12 +49,10 @@ export class HydrationCompileService {
     const hydrationCompileDatabase = this.$CompilationMaterielResourceDatabaseManager.getHydrationCompileDatabase();
     hydrationCompileDatabase.data[alias] = {};
     await hydrationCompileDatabase.write();
-    /** 生成编译配置 **/
-    const hydrationRenderConfig: any = await this.$HydrationConfigManager.getProductionConfig({ alias, sourceCodeFilePath });
     /** 生成编译对象 **/
-    const hydrationCompiler = webpack(hydrationRenderConfig);
-    /**  执行编译并记录结果 **/
-    hydrationCompiler.run(async (error, stats) => {
+    const webpackCompiler: any = await this.$HydrationConfigManager.getWebpackProductionCompiler({ alias, sourceCodeFilePath });
+    /** 执行编译并记录结果 **/
+    webpackCompiler.run(async (error, stats) => {
       if (error) {
         console.log(error);
       } else {

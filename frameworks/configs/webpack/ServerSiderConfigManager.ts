@@ -12,24 +12,17 @@ import { IOCContainer } from "@/frameworks/cores/IOCContainer";
 import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
 import { TypeScriptLoaderConfigManger } from "@/frameworks/configs/loaders/TypeScriptLoaderConfigManger";
 
-import { VirtualFileWithUnionFileSystem } from "@/frameworks/services/VirtualFileWithUnionFileSystem";
+import { ServerProjectVirtualFile } from "@/frameworks/services/ServerProjectVirtualFile";
 
 import type { Configuration, Compiler } from "webpack";
 
 @injectable()
 export class ServerSiderConfigManager {
 
-  private async getVirtualEntryFileAndReplaceContent() {
-    const { entryFile } = this.$FrameworkConfigManager.getRuntimeConfig();
-    const originContent = await promisify(fs.readFile)(path.resolve(__dirname, "../../templates/virtualEntryFile.template"), "utf-8");
-    const replacedContent = originContent.replace("$$REAL_ENTRY_FILE_FULL_PATH$$", entryFile);
-    return replacedContent;
-  };
-
   constructor (
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager,
     @inject(TypeScriptLoaderConfigManger) private readonly $TypeScriptLoaderConfigManger: TypeScriptLoaderConfigManger,
-    @inject(VirtualFileWithUnionFileSystem) private readonly $VirtualFileWithUnionFileSystem: VirtualFileWithUnionFileSystem
+    @inject(ServerProjectVirtualFile) private readonly $ServerProjectVirtualFile: ServerProjectVirtualFile
   ) { };
 
   /**
@@ -47,7 +40,7 @@ export class ServerSiderConfigManager {
       entry: [
         "esbuild-register",
         "source-map-support/register",
-        this.$VirtualFileWithUnionFileSystem.getEntryFileVirtualPath()
+        ...this.$ServerProjectVirtualFile.getVirtualFilePathList()
       ],
       target: "node",
       resolve: {
@@ -71,7 +64,7 @@ export class ServerSiderConfigManager {
         ])).flat()
       },
       plugins: [
-        // new WebpackBar({ name: "编译主服务项目" }),
+        new WebpackBar({ name: "编译主服务项目" }),
         new CopyWebpackPlugin({
           patterns: [{
             from: swaggerResourceDirectorySourcePath,
@@ -89,7 +82,7 @@ export class ServerSiderConfigManager {
    * 开发模式下的webpack配置
    * **/
   public async getWebpackDevelopmentCompiler(): Promise<Compiler> {
-    const basicConfig: any = await this.getBasicConfig();
+    const basicConfig: Configuration = await this.getBasicConfig();
     const { assetsDirectoryPath } = this.$FrameworkConfigManager.getRuntimeConfig();
     const webpackCompiler = webpack(merge<Configuration>(basicConfig, {
       devtool: "source-map",
@@ -99,9 +92,8 @@ export class ServerSiderConfigManager {
         filename: "server.js",
       },
     }));
-    await this.$VirtualFileWithUnionFileSystem.initialize(webpackCompiler);
-    const content = await this.getVirtualEntryFileAndReplaceContent();
-    await this.$VirtualFileWithUnionFileSystem.generateEntryFileContent(content);
+    await this.$ServerProjectVirtualFile.initialize(webpackCompiler);
+    await this.$ServerProjectVirtualFile.generateEntryFileContent();
     return webpackCompiler;
   };
 
@@ -109,7 +101,7 @@ export class ServerSiderConfigManager {
    * 生产模式下的webpack配置
    * **/
   public async getWebpackProductionCompiler(): Promise<Compiler> {
-    const basicConfig: any = await this.getBasicConfig();
+    const basicConfig: Configuration = await this.getBasicConfig();
     const { assetsDirectoryPath } = this.$FrameworkConfigManager.getRuntimeConfig();
     const webpackCompiler = webpack(merge<Configuration>(basicConfig, {
       mode: "none",
@@ -119,9 +111,8 @@ export class ServerSiderConfigManager {
         filename: "server.js",
       },
     }));
-    await this.$VirtualFileWithUnionFileSystem.initialize(webpackCompiler);
-    const content = await this.getVirtualEntryFileAndReplaceContent();
-    await this.$VirtualFileWithUnionFileSystem.generateEntryFileContent(content);
+    await this.$ServerProjectVirtualFile.initialize(webpackCompiler);
+    await this.$ServerProjectVirtualFile.generateEntryFileContent();
     return webpackCompiler;
   };
 

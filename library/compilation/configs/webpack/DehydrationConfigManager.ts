@@ -1,10 +1,10 @@
 import path from "path";
+import { webpack } from "webpack";
 import WebpackBar from "webpackbar";
 import { merge } from "webpack-merge";
 import { injectable, inject } from "inversify";
 import nodeExternals from "webpack-node-externals";
 import { DefinePlugin, Configuration } from "webpack";
-import VirtualModulesPlugin from "webpack-virtual-modules";
 
 import { IOCContainer } from "@/library/compilation/cores/IOCContainer";
 import { CompilationConfigManager } from "@/library/compilation/commons/CompilationConfigManager";
@@ -17,8 +17,11 @@ import { LessLoaderConfigManager } from "@/library/compilation/configs/loaders/L
 import { SassLoaderConfigManager } from "@/library/compilation/configs/loaders/SassLoaderConfigManager";
 import { CssLoaderConfigManager } from "@/library/compilation/configs/loaders/CssLoaderConfigManager";
 
+import { DehydrationEntryVirtualFile } from "@/library/compilation/services/DehydrationEntryVirtualFile";
 import { CompilerProgressPlugin } from "@/library/compilation/utils/CompilerProgressPlugin";
 import { filePathContentHash } from "@/library/public/filePathContentHash";
+
+import type { Compiler } from "webpack";
 
 /**
  * 脱水化资源的编译选项管理器
@@ -28,6 +31,7 @@ export class DehydrationConfigManager {
 
   constructor (
     @inject(CompilationMaterielResourceDatabaseManager) private readonly $CompilationMaterielResourceDatabaseManager: CompilationMaterielResourceDatabaseManager,
+    @inject(DehydrationEntryVirtualFile) private readonly $DehydrationEntryVirtualFile: DehydrationEntryVirtualFile,
     @inject(TypeScriptLoaderConfigManger) private readonly $TypeScriptLoaderConfigManger: TypeScriptLoaderConfigManger,
     @inject(ESBuildLoaderConfigManger) private readonly $ESBuildLoaderConfigManger: ESBuildLoaderConfigManger,
     @inject(FileLoaderConfigManager) private readonly $FileLoaderConfigManager: FileLoaderConfigManager,
@@ -41,10 +45,13 @@ export class DehydrationConfigManager {
    * 最基础的webpack编译配置
    * **/
   public async getBasicConfig(params) {
-    const { alias, sourceCodeFilePath } = params;
+    const { alias } = params;
     const { projectDirectoryPath } = this.$CompilationConfigManager.getRuntimeConfig();
     return {
-      entry: ["source-map-support/register", "./main/dehydration/virtual/entry.js"],
+      entry: [
+        "source-map-support/register",
+        ...this.$DehydrationEntryVirtualFile.getVirtualFilePathList()
+      ],
       target: "node",
       resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx"],
@@ -52,11 +59,11 @@ export class DehydrationConfigManager {
           "@": projectDirectoryPath
         }
       },
-      node: {
-        global: true,
-        __dirname: true,
-        __filename: true
-      },
+      // node: {
+      //   global: true,
+      //   __dirname: true,
+      //   __filename: true
+      // },
       externalsPresets: { node: true },
       externals: [nodeExternals({
         modulesFromFile: path.resolve(projectDirectoryPath, "./package.json")
@@ -72,18 +79,12 @@ export class DehydrationConfigManager {
         ])).flat()
       },
       plugins: [
+        new WebpackBar({ name: "制作脱水物料" }),
         new CompilerProgressPlugin({
           alias,
           type: "dehydration",
           materielResourceDatabaseManager: this.$CompilationMaterielResourceDatabaseManager
         }),
-        new VirtualModulesPlugin({
-          "./main/dehydration/virtual/entry.js": `
-            import RenderElement from "${sourceCodeFilePath}";
-            export default RenderElement;
-          `
-        }),
-        new WebpackBar({ name: "制作脱水物料" }),
         new DefinePlugin({
           "process.env.RESOURCE_TYPE": JSON.stringify("dehydration")
         })
@@ -94,11 +95,11 @@ export class DehydrationConfigManager {
   /**
    * 开发模式下的webpack配置
    * **/
-  public async getDevelopmentConfig(params) {
+  public async getWebpackDevelopmentCompiler(params): Promise<Compiler> {
     const { alias, sourceCodeFilePath } = params;
-    const basicConfig: any = await this.getBasicConfig({ alias, sourceCodeFilePath });
+    const basicConfig: Configuration = await this.getBasicConfig({ alias, sourceCodeFilePath });
     const { dehydrationResourceDirectoryPath } = this.$CompilationConfigManager.getRuntimeConfig();
-    return merge<Configuration>(basicConfig, {
+    const webpackCompiler = webpack(merge<Configuration>(basicConfig, {
       mode: "development",
       devtool: "source-map",
       output: {
@@ -110,17 +111,20 @@ export class DehydrationConfigManager {
           type: "commonjs2"
         }
       },
-    });
+    }));
+    await this.$DehydrationEntryVirtualFile.initialize(webpackCompiler);
+    await this.$DehydrationEntryVirtualFile.generateEntryFileContent(sourceCodeFilePath);
+    return webpackCompiler;
   };
 
   /**
    * 生产模式下的webpack配置
    * **/
-  public async getProductionConfig(params) {
+  public async getWebpackProductionCompiler(params): Promise<Compiler> {
     const { alias, sourceCodeFilePath } = params;
-    const basicConfig: any = await this.getBasicConfig({ alias, sourceCodeFilePath });
+    const basicConfig: Configuration = await this.getBasicConfig({ alias, sourceCodeFilePath });
     const { dehydrationResourceDirectoryPath } = this.$CompilationConfigManager.getRuntimeConfig();
-    return merge<Configuration>(basicConfig, {
+    const webpackCompiler = webpack(merge<Configuration>(basicConfig, {
       devtool: "source-map",
       mode: "none",
       output: {
@@ -132,7 +136,10 @@ export class DehydrationConfigManager {
           type: "commonjs2"
         }
       },
-    });
+    }));
+    await this.$DehydrationEntryVirtualFile.initialize(webpackCompiler);
+    await this.$DehydrationEntryVirtualFile.generateEntryFileContent(sourceCodeFilePath);
+    return webpackCompiler;
   };
 
 };

@@ -2,10 +2,9 @@ import path from "path";
 import WebpackBar from "webpackbar";
 import { merge } from "webpack-merge";
 import { injectable, inject } from "inversify";
-import VirtualModulesPlugin from "webpack-virtual-modules";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
-import { DllReferencePlugin, DefinePlugin, Configuration } from "webpack";
+import { webpack, DllReferencePlugin, DefinePlugin } from "webpack";
 
 import { IOCContainer } from "@/library/compilation/cores/IOCContainer";
 import { CompilationConfigManager } from "@/library/compilation/commons/CompilationConfigManager";
@@ -18,15 +17,18 @@ import { SassLoaderConfigManager } from "@/library/compilation/configs/loaders/S
 import { ESBuildLoaderConfigManger } from "@/library/compilation/configs/loaders/ESBuildLoaderConfigManger";
 import { TypeScriptLoaderConfigManger } from "@/library/compilation/configs/loaders/TypeScriptLoaderConfigManger";
 
+import { HydrationEntryVirtualFile } from "@/library/compilation/services/HydrationEntryVirtualFile";
 import { CompilerProgressPlugin } from "@/library/compilation/utils/CompilerProgressPlugin";
 import { filePathContentHash } from "@/library/public/filePathContentHash";
 
+import type { Compiler, Configuration } from "webpack";
 
 @injectable()
 export class HydrationConfigManager {
 
   constructor (
     @inject(CompilationMaterielResourceDatabaseManager) private readonly $CompilationMaterielResourceDatabaseManager: CompilationMaterielResourceDatabaseManager,
+    @inject(HydrationEntryVirtualFile) private readonly $HydrationEntryVirtualFile: HydrationEntryVirtualFile,
     @inject(TypeScriptLoaderConfigManger) private readonly $TypeScriptLoaderConfigManger: TypeScriptLoaderConfigManger,
     @inject(ESBuildLoaderConfigManger) private readonly $ESBuildLoaderConfigManger: ESBuildLoaderConfigManger,
     @inject(FileLoaderConfigManager) private readonly $FileLoaderConfigManager: FileLoaderConfigManager,
@@ -39,22 +41,14 @@ export class HydrationConfigManager {
   /**
    * 最基础的webpack编译配置
    * **/
-  public async getBasicConfig(params) {
+  public async getBasicConfig(params): Promise<Configuration> {
     const { alias, sourceCodeFilePath } = params;
     const { hydrationResourceDirectoryPath, projectDirectoryPath, assetsDirectoryPath } = await this.$CompilationConfigManager.getRuntimeConfig();
     return {
-      entry: [
-        "./main/hydration/virtual/initial.css",
-        "./main/hydration/virtual/entry.js"
-      ],
+      entry: this.$HydrationEntryVirtualFile.getVirtualFilePathList(),
       output: {
         path: hydrationResourceDirectoryPath,
         filename: () => `index-${filePathContentHash(sourceCodeFilePath)}-hydration-[contenthash].js`,
-        // library: {
-        //   name: "renderHydration",
-        //   type: "window",
-        //   export: "default"
-        // }
       },
       resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx"],
@@ -76,6 +70,7 @@ export class HydrationConfigManager {
         ])).flat()
       },
       plugins: [
+        new WebpackBar({ name: "制作注水物料" }),
         new NodePolyfillPlugin(),
         // new DllReferencePlugin({
         //   manifest: path.resolve(assetsDirectoryPath, "./dll/hydration.dll.json")
@@ -85,29 +80,6 @@ export class HydrationConfigManager {
           type: "hydration",
           materielResourceDatabaseManager: this.$CompilationMaterielResourceDatabaseManager
         }),
-        new VirtualModulesPlugin({
-          "./main/hydration/virtual/initial.css": [
-            `* {padding:0;margin:0;}`
-          ].join(),
-          "./main/hydration/virtual/entry.js": `
-
-            import React from "react";
-            import {createRoot} from "react-dom/client";
-            import RenderElement from "${sourceCodeFilePath}";
-
-            function bootstrap(){
-              var rootElement;
-              if(typeof window._ROOT_ELEMENT_ == "string"){
-                rootElement=document.getElementById(window._ROOT_ELEMENT_);
-              } else {
-                rootElement=window._ROOT_ELEMENT_;
-              };
-              var ApplicationElement=React.createElement(RenderElement,window._CONTENT_FROM_SERVER_);
-              window._APPLICATION_MOUNT_ELEMENT_=createRoot(rootElement).render(ApplicationElement);
-            }; bootstrap();
-          `
-        }),
-        new WebpackBar({ name: "制作注水物料" }),
         new DefinePlugin({
           "process.env.RESOURCE_TYPE": JSON.stringify("hydration"),
           "process.env.NODE_ENV": "window._INJECT_RUNTIME_FROM_SERVER_.env.NODE_ENV"
@@ -123,25 +95,31 @@ export class HydrationConfigManager {
   /**
    * 开发模式下的webpack配置
    * **/
-  public async getDevelopmentConfig(params) {
+  public async getWebpackDevelopmentCompiler(params): Promise<Compiler> {
     const { alias, sourceCodeFilePath } = params;
-    const basicConfig: any = await this.getBasicConfig({ alias, sourceCodeFilePath });
-    return merge<Configuration>(basicConfig, {
+    const basicConfig: Configuration = await this.getBasicConfig({ alias, sourceCodeFilePath });
+    const webpackCompiler = webpack(merge<Configuration>(basicConfig, {
       mode: "development",
       devtool: "source-map"
-    });
+    }));
+    await this.$HydrationEntryVirtualFile.initialize(webpackCompiler);
+    await this.$HydrationEntryVirtualFile.generateEntryFileContent(sourceCodeFilePath);
+    return webpackCompiler;
   };
 
   /**
    * 生产模式下的webpack配置
    * **/
-  public async getProductionConfig(params) {
+  public async getWebpackProductionCompiler(params): Promise<Compiler> {
     const { alias, sourceCodeFilePath } = params;
-    const basicConfig: any = await this.getBasicConfig({ alias, sourceCodeFilePath });
-    return merge<Configuration>(basicConfig, {
+    const basicConfig: Configuration = await this.getBasicConfig({ alias, sourceCodeFilePath });
+    const webpackCompiler = webpack(merge<Configuration>(basicConfig, {
       mode: "none",
       devtool: false
-    });
+    }));
+    await this.$HydrationEntryVirtualFile.initialize(webpackCompiler);
+    await this.$HydrationEntryVirtualFile.generateEntryFileContent(sourceCodeFilePath);
+    return webpackCompiler;
   };
 
 };
