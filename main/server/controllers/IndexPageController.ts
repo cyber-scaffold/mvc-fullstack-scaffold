@@ -2,12 +2,16 @@ import { Router, Request } from "express";
 import { injectable, inject } from "inversify";
 
 import { IOCContainer } from "@/main/server/cores/IOCContainer";
-import { responseHtmlWrapper } from "@/main/server/utils/responseHtmlWrapper";
-import { renderHTMLContent } from "@/main/server/utils/renderHTMLContent";
+import { ServerSiderRenderService } from "@/main/server/services/ServerSiderRenderService";
 
+import { responseHtmlWrapper } from "@/main/server/utils/responseHtmlWrapper";
 
 @injectable()
 export class IndexPageController {
+
+  constructor (
+    @inject(ServerSiderRenderService) private readonly $ServerSiderRenderService: ServerSiderRenderService
+  ) { };
 
   /** 注册路由的方法 **/
   public getRouter() {
@@ -17,10 +21,10 @@ export class IndexPageController {
   };
 
   /** 路由的业务逻辑 **/
-  public async execute(request: Request): Promise<any> {
+  public async execute(request: Request): Promise<string> {
     const content = { list: Array(10).fill(1).map((fill, index) => fill + index) };
-    return await renderHTMLContent({
-      resource: "IndexPage",
+    return await this.$ServerSiderRenderService.computedHTMLContent({
+      alias: "IndexPage",
       title: "主页",
       keywords: [],
       description: "",

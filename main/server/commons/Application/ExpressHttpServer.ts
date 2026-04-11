@@ -45,31 +45,31 @@ export class ExpressHttpServer {
     this.expressInstance.use(bodyParser.urlencoded({ extended: true }));
     /** 注册项目中的自定义中间件 **/
     this.expressInstance.use(requestMiddleware);
-    /** 注册项目中的控制器 **/
-    this.expressInstance.use(this.$DetailPageController.getRouter());
-    this.expressInstance.use(this.$IndexPageController.getRouter());
-    this.expressInstance.use(this.$UserPageController.getRouter());
-    this.expressInstance.use(this.$SearchController.getRouter());
-    /** 组件中的静态文件 **/
-    this.expressInstance.use("/resource/", express.static(fileResourceDirectory, {
-      // maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)
-    }));
     /** 公共文件的资源目录 比如dll动态链接库 **/
     this.expressInstance.use("/public/", express.static(publicResourceDirectory, {
-      // maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)
-    }));
-    /** 其余静态文件的资源目录,比如网站的icon文件等 **/
-    this.expressInstance.use("/statics/", express.static(staticResourceDirectory, {
       // maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)
     }));
     /** Swagger文档的资源目录 **/
     this.expressInstance.use("/swagger/", express.static(swaggerResourceDirectory, {
       // maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)
     }));
+    /** 组件中的静态文件 **/
+    this.expressInstance.use("/resource/", express.static(fileResourceDirectory, {
+      // maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)
+    }));
     /** 前端渲染需要的注水资源的资源目录 */
     this.expressInstance.use("/hydration/", express.static(hydrationResourceDirectoryPath, {
       // maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)
     }));
+    /** 其余静态文件的资源目录,比如网站的icon文件等(为所有资源兜底,但是必须放在控制器之前) **/
+    this.expressInstance.use(express.static(staticResourceDirectory, {
+      // maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)
+    }));
+    /** 注册项目中的控制器 **/
+    this.expressInstance.use(this.$DetailPageController.getRouter());
+    this.expressInstance.use(this.$IndexPageController.getRouter());
+    this.expressInstance.use(this.$UserPageController.getRouter());
+    this.expressInstance.use(this.$SearchController.getRouter());
     /** 启动服务器监听端口 **/
     this.serverInstance = this.expressInstance.listen(server.port, async () => {
       try {

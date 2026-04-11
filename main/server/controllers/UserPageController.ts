@@ -2,11 +2,16 @@ import { Router, Request } from "express";
 import { injectable, inject } from "inversify";
 
 import { IOCContainer } from "@/main/server/cores/IOCContainer";
+import { ServerSiderRenderService } from "@/main/server/services/ServerSiderRenderService";
+
 import { responseHtmlWrapper } from "@/main/server/utils/responseHtmlWrapper";
-import { renderHTMLContent } from "@/main/server/utils/renderHTMLContent";
 
 @injectable()
 export class UserPageController {
+
+  constructor (
+    @inject(ServerSiderRenderService) private readonly $ServerSiderRenderService: ServerSiderRenderService
+  ) { };
 
   /** 注册路由的方法 **/
   public getRouter() {
@@ -16,9 +21,9 @@ export class UserPageController {
   };
 
   /** 路由的业务逻辑 **/
-  public async execute(request: Request): Promise<any> {
-    return await renderHTMLContent({
-      resource: "UserPage",
+  public async execute(request: Request): Promise<string> {
+    return await this.$ServerSiderRenderService.computedHTMLContent({
+      alias: "UserPage",
       title: "用户中心",
       keywords: [],
       description: "",
