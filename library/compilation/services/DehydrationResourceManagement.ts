@@ -26,7 +26,7 @@ export class DehydrationResourceManagement implements ResourceManagementInterfac
    * **/
   public async checkSourceCodeAndRelation(sourceCodeFilePath: string) {
     if (!await pathExists(sourceCodeFilePath)) {
-      throw new Error(`源代码文件${sourceCodeFilePath}不存在`);
+      throw new Error(`source code file ${sourceCodeFilePath} not exist`);
     };
     this.sourceCodeFilePath = sourceCodeFilePath;
   };

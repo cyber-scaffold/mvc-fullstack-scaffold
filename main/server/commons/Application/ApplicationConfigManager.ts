@@ -57,6 +57,15 @@ export class ApplicationConfigManager {
    * 公共资源所在的目录比如要向前端浏览器提供的dll动态链接库文件
    * 框架层的基准目录是根据 项目根目录的绝对路径 计算得到的
    * **/
+  private async getFileResourceDirectory() {
+    const assetsDirectoryPath = await this.getAssetsDirectoryPath();
+    return path.join(assetsDirectoryPath, "resource");
+  };
+
+  /**
+   * 公共资源所在的目录比如要向前端浏览器提供的dll动态链接库文件
+   * 框架层的基准目录是根据 项目根目录的绝对路径 计算得到的
+   * **/
   private async getPublicResourceDirectory() {
     const assetsDirectoryPath = await this.getAssetsDirectoryPath();
     return path.join(assetsDirectoryPath, "public");
@@ -93,6 +102,7 @@ export class ApplicationConfigManager {
       mongodb: this.mongodb,
       rabbitmq: this.rabbitmq,
       assetsDirectoryName: await this.getAssetsDirectoryPath(),
+      fileResourceDirectory: await this.getFileResourceDirectory(),
       staticResourceDirectory: await this.getStaticResourceDirectory(),
       swaggerResourceDirectory: await this.getSwaggerResourceDirectory(),
       publicResourceDirectory: await this.getPublicResourceDirectory(),

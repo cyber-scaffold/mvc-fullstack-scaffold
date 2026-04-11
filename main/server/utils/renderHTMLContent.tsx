@@ -3,7 +3,6 @@ import React from "react";
 import pretty from "pretty";
 import { get } from "dot-prop";
 import { renderToString } from "react-dom/server";
-
 import { getRuntimeConfiguration, getDehydratedResource, getHydrationResource, renderDehydratedResourceWithSandbox } from "@/library/runtime";
 
 import { version } from "@/package.json";
@@ -41,13 +40,33 @@ export async function renderHTMLContent(params: IParmas) {
   };
   const applicationInjectContent = { content, meta: metaInfo };
   /** 如果存在脱水渲染脚本的话就需要进行脱水视图的渲染 **/
-  const dehydratedContent = dehydratedAssets.javascript[0] ? (
-    <div id="root" style={{ height: "100%" }} dangerouslySetInnerHTML={{
-      __html: `${await renderDehydratedResourceWithSandbox(dehydratedAssets.javascript[0], applicationInjectContent)}`
-    }} />
-  ) : (
-    <div id="root" style={{ height: "100%" }} />
-  );
+  let dehydratedContent = null;
+  if (dehydratedAssets) {
+    dehydratedContent = dehydratedAssets.javascript && (dehydratedAssets.javascript[0] ? (
+      <div id="root" style={{ height: "100%" }} dangerouslySetInnerHTML={{
+        __html: `${await renderDehydratedResourceWithSandbox(dehydratedAssets.javascript[0], applicationInjectContent)}`
+      }} />
+    ) : (
+      <div id="root" style={{ height: "100%" }} />
+    ));
+  } else {
+    dehydratedContent = (<div id="root" style={{ height: "100%" }} />);
+  };
+
+  let hydrationStyleSheetTags = null;
+  if (hydrationAssets) {
+    hydrationStyleSheetTags = get(hydrationAssets, "stylesheet", []).map((stylesheetResourceRelativePath: string) => (
+      <link key={stylesheetResourceRelativePath} rel="stylesheet" href={path.join(hydrationResourceDirectoryPath, stylesheetResourceRelativePath).replace(assetsDirectoryPath, "")} />
+    ));
+  };
+
+  let hydrationScriptTags = null;
+  if (hydrationAssets) {
+    hydrationScriptTags = get(hydrationAssets, "javascript", []).map((javascriptResourceRelativePath: string) => (
+      <script key={javascriptResourceRelativePath} src={path.join(hydrationResourceDirectoryPath, javascriptResourceRelativePath).replace(assetsDirectoryPath, "")} />
+    ));
+  };
+
   const contentString = renderToString(
     <html lang="zh-CN">
       <head>
@@ -58,9 +77,7 @@ export async function renderHTMLContent(params: IParmas) {
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
         <link href="/statics/favicon.ico" rel="icon" type="image/x-icon" />
-        {get(hydrationAssets, "stylesheet", []).map((stylesheetResourceRelativePath: string) => (
-          <link key={stylesheetResourceRelativePath} rel="stylesheet" href={path.join(hydrationResourceDirectoryPath, stylesheetResourceRelativePath).replace(assetsDirectoryPath, "")} />
-        ))}
+        {hydrationStyleSheetTags}
       </head>
       <body style={{ height: "100%" }}>
         {dehydratedContent}
@@ -74,9 +91,7 @@ export async function renderHTMLContent(params: IParmas) {
           }}
         />
         {/* <script src="/dll/hydration.dll.js"></script> */}
-        {get(hydrationAssets, "javascript", []).map((javascriptResourceRelativePath: string) => (
-          <script key={javascriptResourceRelativePath} src={path.join(hydrationResourceDirectoryPath, javascriptResourceRelativePath).replace(assetsDirectoryPath, "")} />
-        ))}
+        {hydrationScriptTags}
       </body>
     </html>
   );

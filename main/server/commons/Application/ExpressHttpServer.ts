@@ -38,7 +38,7 @@ export class ExpressHttpServer {
   public async bootstrap() {
     const { server } = await this.$ApplicationConfigManager.getRuntimeConfig();
     const { hydrationResourceDirectoryPath } = await getRuntimeConfiguration();
-    const { staticResourceDirectory, swaggerResourceDirectory, publicResourceDirectory } = await this.$ApplicationConfigManager.getRuntimeConfig();
+    const { fileResourceDirectory, staticResourceDirectory, swaggerResourceDirectory, publicResourceDirectory } = await this.$ApplicationConfigManager.getRuntimeConfig();
     /** 注册中间件 **/
     this.expressInstance.use(cookieParser());
     this.expressInstance.use(bodyParser.json());
@@ -50,6 +50,10 @@ export class ExpressHttpServer {
     this.expressInstance.use(this.$IndexPageController.getRouter());
     this.expressInstance.use(this.$UserPageController.getRouter());
     this.expressInstance.use(this.$SearchController.getRouter());
+    /** 组件中的静态文件 **/
+    this.expressInstance.use("/resource/", express.static(fileResourceDirectory, {
+      // maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)
+    }));
     /** 公共文件的资源目录 比如dll动态链接库 **/
     this.expressInstance.use("/public/", express.static(publicResourceDirectory, {
       // maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)

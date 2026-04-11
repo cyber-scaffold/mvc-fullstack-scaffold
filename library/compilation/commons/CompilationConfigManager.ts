@@ -4,15 +4,18 @@ import { injectable } from "inversify";
 import { IOCContainer } from "@/library/compilation/cores/IOCContainer";
 
 export interface ICompilationConfig {
-  projectDirectoryPath: string,
+  projectDirectoryPath: string
   assetsDirectoryPath: string
+  fileResourceDirectoryName: string
+  fileResourceDirectoryPath: string
   hydrationResourceDirectoryPath: string
   dehydrationResourceDirectoryPath: string
 };
 
 export interface ICustmerCompilationConfig {
-  projectDirectoryPath?: string,
+  projectDirectoryPath?: string
   assetsDirectoryName?: string
+  fileResourceDirectoryName?: string
   hydrationResourceDirectoryName?: string
   dehydrationResourceDirectoryName?: string
   standardizationHydrationTempDirectoryName?: string
@@ -33,6 +36,14 @@ export class CompilationConfigManager {
   /** 物料资产输出的目录(根据 项目的根目录 和 物料资产的目录 计算得到) **/
   private getAssetsDirectoryPath() {
     return path.resolve(this.projectDirectoryPath, this.assetsDirectoryName);
+  };
+
+  /** 文件资源的输出位置对应的文件夹名称 **/
+  private fileResourceDirectoryName = "resource";
+
+  /** 文件资源的输出位置(服务端ssr渲染函数)(根据 物料资产的目录 和 对应文件夹名称 计算得到) **/
+  private getFileResourceDirectoryPath() {
+    return path.resolve(this.getAssetsDirectoryPath(), this.fileResourceDirectoryName);
   };
 
   /** 脱水资源的输出位置对应的文件夹名称 **/
@@ -75,6 +86,8 @@ export class CompilationConfigManager {
     return {
       projectDirectoryPath: this.projectDirectoryPath,
       assetsDirectoryPath: this.getAssetsDirectoryPath(),
+      fileResourceDirectoryName: this.fileResourceDirectoryName,
+      fileResourceDirectoryPath: this.getFileResourceDirectoryPath(),
       hydrationResourceDirectoryPath: this.getHydrationResourceDirectoryPath(),
       dehydrationResourceDirectoryPath: this.getDehydrationResourceDirectoryPath()
     };
