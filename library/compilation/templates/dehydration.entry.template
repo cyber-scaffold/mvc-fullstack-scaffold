@@ -1,2 +1,9 @@
+import React from "react";
+import { renderToString } from "react-dom/server";
+
+//@ts-ignore 这里需要忽略因为这里的绝对路径可能含有后缀名,默认情况下typescript不允许后缀名,所以需要让typescript忽略
 import RenderElement from "$$sourceCodeFilePath$$";
-export default RenderElement;
+
+export default function renderDehydration(content: any) {
+  return renderToString(<RenderElement {...content}/>);
+};

@@ -35,7 +35,7 @@ export class DehydrationEntryVirtualFile {
    * **/
   public async initialize(webpackCompiler: Compiler) {
     /** 在虚拟文件系统中生成一个空白的架构临时文件 **/
-    memfs.vol.fromJSON({ "./dehydration.entry.js": "" }, this.virtualDirectoryPath);
+    memfs.vol.fromJSON({ "./dehydration.entry.tsx": "" }, this.virtualDirectoryPath);
     /** 改变webpack编译对象上使用的 文件系统 接口为 联合文件系统 **/
     webpackCompiler.inputFileSystem = this.custmerFileSystem;
   };
@@ -47,7 +47,7 @@ export class DehydrationEntryVirtualFile {
   public async generateEntryFileContent(sourceCodeFilePath: string) {
     const templateFileContent = await this.getDehydrationEntryTemplateContent();
     const replacedContent = templateFileContent.replace("$$sourceCodeFilePath$$", sourceCodeFilePath);
-    await promisify(memfs.fs.writeFile)(path.join(this.getVirtualDirectoryPath(), "./dehydration.entry.js"), replacedContent);
+    await promisify(memfs.fs.writeFile)(path.join(this.getVirtualDirectoryPath(), "./dehydration.entry.tsx"), replacedContent);
   };
 
   public getVirtualDirectoryPath(): string {
@@ -55,7 +55,7 @@ export class DehydrationEntryVirtualFile {
   };
 
   public getVirtualFilePathList(): string[] {
-    return [path.join(this.getVirtualDirectoryPath(), "./dehydration.entry.js")];
+    return [path.join(this.getVirtualDirectoryPath(), "./dehydration.entry.tsx")];
   };
 
 };

@@ -1,10 +1,8 @@
 import vm from "vm";
 import fs from "fs";
 import path from "path";
-import React from "react";
 import Module from "module";
 import { promisify } from "util";
-import { renderToString } from "react-dom/server";
 import { getWindow, getDocument } from "ssr-window";
 
 import { IOCContainer } from "@/library/runtime/cores/IOCContainer";
@@ -35,7 +33,7 @@ export async function renderDehydratedResourceWithSandbox(resourceFilePath: stri
   vm.runInContext(resourceFileCode, sandbox, { filename: realDehydratedResourceFilePath });
   const moduleExportInfo = (sandbox.module.exports as any);
   if (moduleExportInfo.default) {
-    return renderToString(React.createElement(moduleExportInfo.default, content));
+    return moduleExportInfo.default(content);
   };
   throw new Error(`${resourceFilePath} 脱水资源模块错误没有export default出口`);
 };
