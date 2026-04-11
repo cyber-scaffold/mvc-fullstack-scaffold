@@ -20,7 +20,7 @@ import type { IUnionFs, IFS } from "unionfs";
 @injectable()
 export class HydrationEntryVirtualFile {
 
-  private virtualDirectoryPath = path.resolve(process.cwd(), `./main/__virtual__/${uuid()}/hydration/`);
+  private virtualDirectoryPath = path.resolve(process.cwd(), `./${uuid()}/__virtual__/hydration/`);
 
   private custmerFileSystem: IUnionFs = ufs.use((memfs.fs as unknown as IFS)).use(fs);
 

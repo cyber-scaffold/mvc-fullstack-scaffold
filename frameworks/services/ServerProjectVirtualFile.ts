@@ -21,7 +21,7 @@ import type { IUnionFs, IFS } from "unionfs";
 @injectable()
 export class ServerProjectVirtualFile {
 
-  private virtualDirectoryPath = path.resolve(process.cwd(), `./__virtual__/${uuid()}/`);
+  private virtualDirectoryPath = path.resolve(process.cwd(), `./${uuid()}/__virtual__/project/`);
 
   private custmerFileSystem: IUnionFs = ufs.use((memfs.fs as unknown as IFS)).use(fs);
 

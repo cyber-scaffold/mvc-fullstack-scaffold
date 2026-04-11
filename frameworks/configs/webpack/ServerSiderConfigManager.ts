@@ -1,7 +1,5 @@
-import fs from "fs";
 import path from "path";
 import webpack from "webpack";
-import { promisify } from "util";
 import WebpackBar from "webpackbar";
 import { merge } from "webpack-merge";
 import { injectable, inject } from "inversify";
