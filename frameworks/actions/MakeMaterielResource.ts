@@ -4,11 +4,12 @@ import { IOCContainer } from "@/frameworks/cores/IOCContainer";
 import { FrameworkConfigManager } from "@/frameworks/commons/FrameworkConfigManager";
 import { setCompileConfiguration, makeHydrationResource, makeDehydratedResource } from "@/library/compilation";
 
+
 /**
- * 在开发模式下制作脱水和注水物料的控制器
+ * 在构建模式下制作脱水和注水物料的控制器
  * **/
 @injectable()
-export class MakeMaterielResourceDevelopmentController {
+export class MakeMaterielResource {
 
   constructor (
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager
@@ -20,6 +21,12 @@ export class MakeMaterielResourceDevelopmentController {
     await Promise.all([makeHydrationResource({ mode: "development", watch: true }), makeDehydratedResource({ mode: "development", watch: true })]);
   };
 
+  public async buildMaterielResource() {
+    const { projectDirectoryPath, assetsDirectoryName, materiels } = await this.$FrameworkConfigManager.getRuntimeConfig();
+    await setCompileConfiguration({ projectDirectoryPath, assetsDirectoryName, materiels });
+    await Promise.all([makeHydrationResource({ mode: "production", watch: false }), makeDehydratedResource({ mode: "production", watch: false })]);
+  };
+
 };
 
-IOCContainer.bind(MakeMaterielResourceDevelopmentController).toSelf().inRequestScope();
+IOCContainer.bind(MakeMaterielResource).toSelf().inRequestScope();

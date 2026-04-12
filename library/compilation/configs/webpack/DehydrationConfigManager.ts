@@ -82,11 +82,10 @@ export class DehydrationConfigManager {
       },
       plugins: [
         new WebpackBar({ name: "制作脱水物料" }),
-        // new CompilerProgressPlugin({
-        //   alias,
-        //   type: "dehydration",
-        //   materielResourceDatabaseManager: this.$CompilationMaterielResourceDatabaseManager
-        // }),
+        new CompilerProgressPlugin({
+          type: "dehydration",
+          materielResourceDatabaseManager: this.$CompilationMaterielResourceDatabaseManager
+        }),
         new DefinePlugin({
           "process.env.RESOURCE_TYPE": JSON.stringify("dehydration")
         })

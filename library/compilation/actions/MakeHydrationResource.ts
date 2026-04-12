@@ -58,7 +58,7 @@ export class MakeHydrationResource {
         console.log(stats.toString({ colors: true }));
         const latestAssetsFileList = filterWebpackStats(stats.toJson({ all: false, assets: true, source: false, outputPath: true }));
         /** 在json数据库中保存资源信息 **/
-        hydrationCompileDatabase.data = latestAssetsFileList;
+        hydrationCompileDatabase.data["assets"] = latestAssetsFileList;
         await hydrationCompileDatabase.write();
       };
     });
@@ -80,7 +80,7 @@ export class MakeHydrationResource {
         console.log(stats.toString({ colors: true }));
         const latestAssetsFileList = filterWebpackStats(stats.toJson({ all: false, assets: true, source: false, outputPath: true }));
         /** 在json数据库中保存资源信息 **/
-        hydrationCompileDatabase.data = latestAssetsFileList;
+        hydrationCompileDatabase.data["assets"] = latestAssetsFileList;
         await hydrationCompileDatabase.write();
       };
     });

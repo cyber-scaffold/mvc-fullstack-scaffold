@@ -57,7 +57,7 @@ export class MakeDehydrationResource {
         console.log(stats.toString({ colors: true }));
         const latestAssetsFileList = filterWebpackStats(stats.toJson({ all: false, assets: true, source: false, outputPath: true }));
         /** 在json数据库中保存资源信息 **/
-        dehydrationCompileDatabase.data = latestAssetsFileList;
+        dehydrationCompileDatabase.data["assets"] = latestAssetsFileList;
         await dehydrationCompileDatabase.write();
       };
     });
@@ -79,7 +79,7 @@ export class MakeDehydrationResource {
         console.log(stats.toString({ colors: true }));
         const latestAssetsFileList = filterWebpackStats(stats.toJson({ all: false, assets: true, source: false, outputPath: true }));
         /** 在json数据库中保存资源信息 **/
-        dehydrationCompileDatabase.data = latestAssetsFileList;
+        dehydrationCompileDatabase.data["assets"] = latestAssetsFileList;
         await dehydrationCompileDatabase.write();
       };
     });

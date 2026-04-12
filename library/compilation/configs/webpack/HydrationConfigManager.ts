@@ -73,11 +73,10 @@ export class HydrationConfigManager {
         // new DllReferencePlugin({
         //   manifest: path.resolve(assetsDirectoryPath, "./dll/hydration.dll.json")
         // }),
-        // new CompilerProgressPlugin({
-        //   alias,
-        //   type: "hydration",
-        //   materielResourceDatabaseManager: this.$CompilationMaterielResourceDatabaseManager
-        // }),
+        new CompilerProgressPlugin({
+          type: "hydration",
+          materielResourceDatabaseManager: this.$CompilationMaterielResourceDatabaseManager
+        }),
         new DefinePlugin({
           "process.env.RESOURCE_TYPE": JSON.stringify("hydration"),
           "process.env.NODE_ENV": "window._INJECT_RUNTIME_FROM_SERVER_.env.NODE_ENV"

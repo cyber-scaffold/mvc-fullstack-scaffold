@@ -8,7 +8,7 @@ import { DLLConfigManager } from "@/frameworks/configs/webpack/DLLConfigManager"
  * @description 运行开发命令,可以基于cluster同时开启服务端和客户端渲染服务
  * **/
 @injectable()
-export class DLLBuildController {
+export class MakePublicDLLFile {
 
   constructor (
     @inject(DLLConfigManager) private readonly $DLLConfigManager: DLLConfigManager
@@ -38,4 +38,4 @@ export class DLLBuildController {
 
 };
 
-IOCContainer.bind(DLLBuildController).toSelf().inSingletonScope();
+IOCContainer.bind(MakePublicDLLFile).toSelf().inSingletonScope();
