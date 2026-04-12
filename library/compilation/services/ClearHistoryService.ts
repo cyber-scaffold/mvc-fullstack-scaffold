@@ -8,7 +8,7 @@ import { IOCContainer } from "@/library/compilation/cores/IOCContainer";
 import { CompilationConfigManager } from "@/library/compilation/commons/CompilationConfigManager";
 import { CompilationMaterielResourceDatabaseManager } from "@/library/compilation/commons/CompilationMaterielResourceDatabaseManager";
 
-import type { ICompileAssetsList } from "@/library/public/filterWebpackStats";
+import type { CompileAssetsDictionaryType } from "@/library/public/filterWebpackStats";
 
 /**
  * 在webpack的watch模式下清理掉旧的编译产物
@@ -39,17 +39,17 @@ export class ClearHistoryService {
   };
 
   /** 让新的资源清单和资源管理器中的清单进行比较 **/
-  async diff(alias: string, type: "hydration" | "dehydration", latestAssetsFileList: ICompileAssetsList) {
+  async diff(alias: string, type: "hydration" | "dehydration", latestAssetsFileList: CompileAssetsDictionaryType) {
     if (type === "hydration") {
       const database = this.$CompilationMaterielResourceDatabaseManager.getHydrationCompileDatabase();
       await database.read();
-      const legacyAssetsFileList: ICompileAssetsList = database.data[alias];
+      const legacyAssetsFileList: CompileAssetsDictionaryType = database.data[alias];
 
     };
   };
 
   /** 清理遗留文件 **/
-  public async execute(type: "hydration" | "dehydration", resources: ICompileAssetsList) {
+  public async execute(type: "hydration" | "dehydration", resources: CompileAssetsDictionaryType) {
     if (resources.javascript instanceof Array) {
       await Promise.all(resources.javascript.map(async (everyFileName) => {
         const javaScriptRealFilePath = await this.getFileRealPathWithContext(type, everyFileName);

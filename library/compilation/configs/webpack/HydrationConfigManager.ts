@@ -17,18 +17,17 @@ import { SassLoaderConfigManager } from "@/library/compilation/configs/loaders/S
 import { ESBuildLoaderConfigManger } from "@/library/compilation/configs/loaders/ESBuildLoaderConfigManger";
 import { TypeScriptLoaderConfigManger } from "@/library/compilation/configs/loaders/TypeScriptLoaderConfigManger";
 
-import { HydrationEntryVirtualFile } from "@/library/compilation/services/HydrationEntryVirtualFile";
+import { ConvertHydrationEntryFile } from "@/library/compilation/services/ConvertHydrationEntryFile";
 import { CompilerProgressPlugin } from "@/library/compilation/utils/CompilerProgressPlugin";
-import { filePathContentHash } from "@/library/public/filePathContentHash";
 
-import type { Compiler, Configuration } from "webpack";
+import type { PathData, Compiler, Configuration } from "webpack";
 
 @injectable()
 export class HydrationConfigManager {
 
   constructor (
     @inject(CompilationMaterielResourceDatabaseManager) private readonly $CompilationMaterielResourceDatabaseManager: CompilationMaterielResourceDatabaseManager,
-    @inject(HydrationEntryVirtualFile) private readonly $HydrationEntryVirtualFile: HydrationEntryVirtualFile,
+    @inject(ConvertHydrationEntryFile) private readonly $ConvertHydrationEntryFile: ConvertHydrationEntryFile,
     @inject(TypeScriptLoaderConfigManger) private readonly $TypeScriptLoaderConfigManger: TypeScriptLoaderConfigManger,
     @inject(ESBuildLoaderConfigManger) private readonly $ESBuildLoaderConfigManger: ESBuildLoaderConfigManger,
     @inject(FileLoaderConfigManager) private readonly $FileLoaderConfigManager: FileLoaderConfigManager,
@@ -41,14 +40,13 @@ export class HydrationConfigManager {
   /**
    * 最基础的webpack编译配置
    * **/
-  public async getBasicConfig(params): Promise<Configuration> {
-    const { alias, sourceCodeFilePath } = params;
-    const { hydrationResourceDirectoryPath, projectDirectoryPath, assetsDirectoryPath } = await this.$CompilationConfigManager.getRuntimeConfig();
+  public async getBasicConfig(): Promise<Configuration> {
+    const { hydrationResourceDirectoryPath, projectDirectoryPath } = await this.$CompilationConfigManager.getRuntimeConfig();
     return {
-      entry: this.$HydrationEntryVirtualFile.getVirtualFilePathList(),
+      entry: this.$ConvertHydrationEntryFile.getWebpackEntryPoints(),
       output: {
         path: hydrationResourceDirectoryPath,
-        filename: () => `index-${filePathContentHash(sourceCodeFilePath)}-hydration-[contenthash].js`,
+        filename: (pathData: PathData) => `index-${pathData.chunk.name}-hydration-[contenthash].js`,
       },
       resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx"],
@@ -63,7 +61,7 @@ export class HydrationConfigManager {
         rules: (await Promise.all([
           this.$TypeScriptLoaderConfigManger.getHydrationSiderLoaderConfig(),
           this.$ESBuildLoaderConfigManger.getHydrationSiderLoaderConfig(),
-          this.$FileLoaderConfigManager.getHydrationSiderLoaderConfig(alias),
+          this.$FileLoaderConfigManager.getHydrationSiderLoaderConfig(),
           this.$LessLoaderConfigManager.getHydrationSiderLoaderConfig(),
           this.$SassLoaderConfigManager.getHydrationSiderLoaderConfig(),
           this.$CssLoaderConfigManager.getHydrationSiderLoaderConfig()
@@ -75,18 +73,18 @@ export class HydrationConfigManager {
         // new DllReferencePlugin({
         //   manifest: path.resolve(assetsDirectoryPath, "./dll/hydration.dll.json")
         // }),
-        new CompilerProgressPlugin({
-          alias,
-          type: "hydration",
-          materielResourceDatabaseManager: this.$CompilationMaterielResourceDatabaseManager
-        }),
+        // new CompilerProgressPlugin({
+        //   alias,
+        //   type: "hydration",
+        //   materielResourceDatabaseManager: this.$CompilationMaterielResourceDatabaseManager
+        // }),
         new DefinePlugin({
           "process.env.RESOURCE_TYPE": JSON.stringify("hydration"),
           "process.env.NODE_ENV": "window._INJECT_RUNTIME_FROM_SERVER_.env.NODE_ENV"
         }),
         new MiniCssExtractPlugin({
           linkType: "text/css",
-          filename: () => `index-${filePathContentHash(sourceCodeFilePath)}-hydration-[contenthash].css`
+          filename: (pathData: PathData) => `index-${pathData.chunk.name}-hydration-[contenthash].css`
         })
       ]
     };
@@ -95,30 +93,26 @@ export class HydrationConfigManager {
   /**
    * 开发模式下的webpack配置
    * **/
-  public async getWebpackDevelopmentCompiler(params): Promise<Compiler> {
-    const { alias, sourceCodeFilePath } = params;
-    const basicConfig: Configuration = await this.getBasicConfig({ alias, sourceCodeFilePath });
+  public async getWebpackDevelopmentCompiler(): Promise<Compiler> {
+    const basicConfig: Configuration = await this.getBasicConfig();
     const webpackCompiler = webpack(merge<Configuration>(basicConfig, {
       mode: "development",
       devtool: "source-map"
     }));
-    await this.$HydrationEntryVirtualFile.initialize(webpackCompiler);
-    await this.$HydrationEntryVirtualFile.generateEntryFileContent(sourceCodeFilePath);
+    await this.$ConvertHydrationEntryFile.mountWithWebpackCompiler(webpackCompiler);
     return webpackCompiler;
   };
 
   /**
    * 生产模式下的webpack配置
    * **/
-  public async getWebpackProductionCompiler(params): Promise<Compiler> {
-    const { alias, sourceCodeFilePath } = params;
-    const basicConfig: Configuration = await this.getBasicConfig({ alias, sourceCodeFilePath });
+  public async getWebpackProductionCompiler(): Promise<Compiler> {
+    const basicConfig: Configuration = await this.getBasicConfig();
     const webpackCompiler = webpack(merge<Configuration>(basicConfig, {
       mode: "none",
       devtool: false
     }));
-    await this.$HydrationEntryVirtualFile.initialize(webpackCompiler);
-    await this.$HydrationEntryVirtualFile.generateEntryFileContent(sourceCodeFilePath);
+    await this.$ConvertHydrationEntryFile.mountWithWebpackCompiler(webpackCompiler);
     return webpackCompiler;
   };
 

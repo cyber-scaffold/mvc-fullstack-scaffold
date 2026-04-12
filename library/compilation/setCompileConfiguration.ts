@@ -1,9 +1,13 @@
 import { IOCContainer } from "@/library/compilation/cores/IOCContainer";
+
 import { CompilationConfigManager } from "@/library/compilation/commons/CompilationConfigManager";
 import { CompilationMaterielResourceDatabaseManager } from "@/library/compilation/commons/CompilationMaterielResourceDatabaseManager";
-import { CompilerActionService } from "@/library/compilation/services/CompilerActionService";
 
-export async function setCompileConfiguration(inputCustmerConfig?: any): Promise<void> {
+import { CompilerActionService } from "@/library/compilation/actions/CompilerActionService";
+
+import type { CustmerInputCompilationConfigType } from "@/library/compilation/commons/CompilationConfigManager";
+
+export async function setCompileConfiguration(inputCustmerConfig?: CustmerInputCompilationConfigType): Promise<void> {
   /** 初始化配置文件 **/
   const $CompilationConfigManager = IOCContainer.get(CompilationConfigManager);
   await $CompilationConfigManager.initialize(inputCustmerConfig);

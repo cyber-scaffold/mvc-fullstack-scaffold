@@ -10,7 +10,7 @@ import { ResourceManagementInterface, CompileAssetsListQueryResult } from "@/lib
  * 如果源代码发生改变,并且不是开发模式的情况下,获取脱水资源的时候就要重新编译
  * **/
 @injectable()
-export class DehydrationResourceManagement implements ResourceManagementInterface {
+export class DehydrationResourceManagement {
 
   constructor (
     @inject(RuntimeMaterielResourceDatabaseManager) private readonly $RuntimeMaterielResourceDatabaseManager: RuntimeMaterielResourceDatabaseManager,

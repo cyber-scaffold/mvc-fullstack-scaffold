@@ -16,7 +16,7 @@ setImmediate(async () => {
     /** 开发模式SSR物料编译 **/
     await IOCContainer.get(MakeMaterielResourceDevelopmentController).startDevelopmentMode();
     /** 开发模式Express主服务应用编译 **/
-    await IOCContainer.get(ApplicationDevelopmentController).execute();
+    // await IOCContainer.get(ApplicationDevelopmentController).execute();
   } catch (error) {
     console.log("error", error);
     process.exit(0);

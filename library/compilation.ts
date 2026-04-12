@@ -5,6 +5,6 @@ export { setCompileConfiguration } from "@/library/compilation/setCompileConfigu
 export { makeDehydratedResource } from "@/library/compilation/makeDehydratedResource";
 export { makeHydrationResource } from "@/library/compilation/makeHydrationResource";
 
-export type { IMaterielInfo } from "@/library/compilation/commons/CompilationConfigManager";
-export type { ICompilationConfig, ICustmerCompilationConfig } from "@/library/compilation/commons/CompilationConfigManager";
-export type { ICompileAssetsList } from "@/library/public/filterWebpackStats";
+export type { MaterielCompilationInfoType } from "@/library/compilation/commons/CompilationConfigManager";
+export type { CompilationConfigType, CustmerInputCompilationConfigType } from "@/library/compilation/commons/CompilationConfigManager";
+export type { CompileAssetsDictionaryType } from "@/library/public/filterWebpackStats";

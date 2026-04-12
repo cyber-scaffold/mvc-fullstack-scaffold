@@ -2,31 +2,41 @@ import path from "path";
 import { injectable } from "inversify";
 
 import { IOCContainer } from "@/library/compilation/cores/IOCContainer";
+import { materielsConfigTransformer } from "@/library/compilation/utils/materielsConfigTransformer";
 
-export interface IMaterielInfo {
-  alias: string,
+import type { MaterielInfoByAliasDictionaryType } from "@/library/compilation/utils/materielsConfigTransformer";
+
+export type MaterielRenderType = {
   hydrate: boolean
   dehydrate: boolean
+};
+
+export type MaterielDetailInfoType = {
+  alias: string
   source: string
 };
 
-export interface ICompilationConfig {
+export type MaterielCompilationInfoType = MaterielRenderType & MaterielDetailInfoType;
+
+export interface CompilationConfigType {
   projectDirectoryPath: string
   assetsDirectoryPath: string
   fileResourceDirectoryName: string
   fileResourceDirectoryPath: string
   hydrationResourceDirectoryPath: string
   dehydrationResourceDirectoryPath: string
-  materiels: IMaterielInfo[]
+  dehydrateDictionary: MaterielInfoByAliasDictionaryType
+  hydrateDictionary: MaterielInfoByAliasDictionaryType
+  materielArrayList: MaterielCompilationInfoType[]
 };
 
-export interface ICustmerCompilationConfig {
+export interface CustmerInputCompilationConfigType {
   projectDirectoryPath?: string
   assetsDirectoryName?: string
   fileResourceDirectoryName?: string
   hydrationResourceDirectoryName?: string
   dehydrationResourceDirectoryName?: string
-  materiels?: IMaterielInfo[]
+  materiels?: MaterielCompilationInfoType[]
 };
 
 /** 
@@ -71,12 +81,23 @@ export class CompilationConfigManager {
   };
 
   /**
-   * 物料的编译信息
+   * 数组形式的物料清单信息
    * **/
-  private materiels: IMaterielInfo[];
+  private materielArrayList: MaterielCompilationInfoType[];
+
+  /**
+   * 需要编译的注水物料的字典
+   * **/
+  private hydrateDictionary: MaterielInfoByAliasDictionaryType;
+
+  /**
+   * 需要编译的脱水物料的字典
+   * **/
+  private dehydrateDictionary: MaterielInfoByAliasDictionaryType;
+
 
   /** 基于用户的配置合并覆盖掉原来的属性然后重新计算一遍 **/
-  public async initialize(inputCustmerConfig: ICustmerCompilationConfig) {
+  public async initialize(inputCustmerConfig: CustmerInputCompilationConfigType) {
     if (!inputCustmerConfig) {
       return false;
     };
@@ -93,12 +114,15 @@ export class CompilationConfigManager {
       this.dehydrationResourceDirectoryName = inputCustmerConfig.dehydrationResourceDirectoryName;
     };
     if (inputCustmerConfig.materiels) {
-      this.materiels = inputCustmerConfig.materiels;
+      const { hydrate, dehydrate } = materielsConfigTransformer(inputCustmerConfig.materiels);
+      this.dehydrateDictionary = dehydrate;
+      this.hydrateDictionary = hydrate;
+      this.materielArrayList = inputCustmerConfig.materiels;
     };
   };
 
   /** 获取最终组合之后的运行时配置 **/
-  public getRuntimeConfig(): ICompilationConfig {
+  public getRuntimeConfig(): CompilationConfigType {
     return {
       projectDirectoryPath: this.projectDirectoryPath,
       assetsDirectoryPath: this.getAssetsDirectoryPath(),
@@ -106,7 +130,9 @@ export class CompilationConfigManager {
       fileResourceDirectoryPath: this.getFileResourceDirectoryPath(),
       hydrationResourceDirectoryPath: this.getHydrationResourceDirectoryPath(),
       dehydrationResourceDirectoryPath: this.getDehydrationResourceDirectoryPath(),
-      materiels: this.materiels
+      dehydrateDictionary: this.dehydrateDictionary,
+      hydrateDictionary: this.hydrateDictionary,
+      materielArrayList: this.materielArrayList
     };
   };
 

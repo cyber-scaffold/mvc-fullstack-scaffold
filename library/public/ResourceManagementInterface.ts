@@ -1,7 +1,7 @@
 
-import type { ICompileAssetsList } from "@/library/public/filterWebpackStats";
+import type { CompileAssetsDictionaryType } from "@/library/public/filterWebpackStats";
 
-export type CompileAssetsListQueryResult = ICompileAssetsList | false
+export type CompileAssetsListQueryResult = CompileAssetsDictionaryType | false
 
 type BuildResourceWithUniqueAliasType = {
   alias: string
@@ -15,6 +15,6 @@ export interface ResourceManagementInterface {
 
   buildResourceWithUniqueAlias?(alias: BuildResourceWithUniqueAliasType): Promise<void | boolean>;
 
-  getResourceListWithAlias(alias: string): Promise<ICompileAssetsList | boolean>;
+  getResourceListWithAlias(alias: string): Promise<CompileAssetsDictionaryType | boolean>;
 
 };
