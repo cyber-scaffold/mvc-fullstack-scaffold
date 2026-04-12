@@ -1,4 +1,3 @@
-
 import path from "path";
 import { injectable, inject } from "inversify";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
