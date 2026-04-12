@@ -49,6 +49,7 @@ export class DehydrationConfigManager {
       entry: this.$ConvertDehydrationEntryFile.getWebpackEntryPoints(),
       target: "node",
       output: {
+        // clean: true,
         path: dehydrationResourceDirectoryPath,
         filename: (pathData: PathData) => `index-${pathData.chunk.name}-dehydration-[contenthash].js`,
         library: {

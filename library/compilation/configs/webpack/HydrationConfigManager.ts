@@ -45,6 +45,7 @@ export class HydrationConfigManager {
     return {
       entry: this.$ConvertHydrationEntryFile.getWebpackEntryPoints(),
       output: {
+        // clean: true,
         path: hydrationResourceDirectoryPath,
         filename: (pathData: PathData) => `index-${pathData.chunk.name}-hydration-[contenthash].js`,
       },
@@ -109,7 +110,7 @@ export class HydrationConfigManager {
     const basicConfig: Configuration = await this.getBasicConfig();
     const webpackCompiler = webpack(merge<Configuration>(basicConfig, {
       mode: "none",
-      devtool: false
+      devtool: "source-map"
     }));
     await this.$ConvertHydrationEntryFile.mountWithWebpackCompiler(webpackCompiler);
     return webpackCompiler;
