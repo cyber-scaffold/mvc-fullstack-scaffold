@@ -74,13 +74,13 @@ export class ServerSiderRenderService {
 
   /** 生成前端的注水标签 **/
   private async generateHydrationTags({ alias }): Promise<void | false> {
-    const { assetsDirectoryPath, hydrationResourceDirectoryPath } = await getRuntimeConfiguration();
+    const { assetsDirectoryPath, fileResourceDirectoryPath, hydrationResourceDirectoryPath } = await getRuntimeConfiguration();
     const hydrateAssets = await getHydrationResource({ alias });
     if (!hydrateAssets) {
       return false;
     };
     this.hydrateStyleSheetTags = get(hydrateAssets, "stylesheet", []).map((stylesheetResourceRelativePath: string) => (
-      <link key={stylesheetResourceRelativePath} rel="stylesheet" href={path.join(hydrationResourceDirectoryPath, stylesheetResourceRelativePath).replace(assetsDirectoryPath, "")} />
+      <link key={stylesheetResourceRelativePath} rel="stylesheet" href={path.join(fileResourceDirectoryPath, stylesheetResourceRelativePath).replace(assetsDirectoryPath, "")} />
     ));
     this.hydrateScriptTags = get(hydrateAssets, "javascript", []).map((javascriptResourceRelativePath: string) => (
       <script key={javascriptResourceRelativePath} src={path.join(hydrationResourceDirectoryPath, javascriptResourceRelativePath).replace(assetsDirectoryPath, "")} />

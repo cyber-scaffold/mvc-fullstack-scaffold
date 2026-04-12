@@ -3,7 +3,7 @@ import WebpackBar from "webpackbar";
 import { merge } from "webpack-merge";
 import { injectable, inject } from "inversify";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
-import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
+// import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
 import { webpack, DllReferencePlugin, DefinePlugin } from "webpack";
 
 import { IOCContainer } from "@/library/compilation/cores/IOCContainer";
@@ -41,7 +41,7 @@ export class HydrationConfigManager {
    * 最基础的webpack编译配置
    * **/
   public async getBasicConfig(): Promise<Configuration> {
-    const { hydrationResourceDirectoryPath, projectDirectoryPath } = await this.$CompilationConfigManager.getRuntimeConfig();
+    const { projectDirectoryPath, fileResourceDirectoryName, hydrationResourceDirectoryPath } = await this.$CompilationConfigManager.getRuntimeConfig();
     return {
       entry: this.$ConvertHydrationEntryFile.getWebpackEntryPoints(),
       output: {
@@ -69,7 +69,7 @@ export class HydrationConfigManager {
       },
       plugins: [
         new WebpackBar({ name: "制作注水物料" }),
-        new NodePolyfillPlugin(),
+        // new NodePolyfillPlugin(),
         // new DllReferencePlugin({
         //   manifest: path.resolve(assetsDirectoryPath, "./dll/hydration.dll.json")
         // }),
@@ -83,7 +83,7 @@ export class HydrationConfigManager {
         }),
         new MiniCssExtractPlugin({
           linkType: "text/css",
-          filename: (pathData: PathData) => `index-${pathData.chunk.name}-hydration-[contenthash].css`
+          filename: (pathData: PathData) => `../${fileResourceDirectoryName}/index-${pathData.chunk.name}-hydration-[contenthash].css`
         })
       ]
     };

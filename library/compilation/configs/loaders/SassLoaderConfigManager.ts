@@ -13,10 +13,16 @@ export class SassLoaderConfigManager {
   ) { };
 
   public async getHydrationSiderLoaderConfig() {
+    const { fileResourceDirectoryName } = this.$CompilationConfigManager.getRuntimeConfig();
     return [{
       test: /\.(scss|sass)$/,
       use: [
-        { loader: MiniCssExtractPlugin.loader },
+        {
+          loader: MiniCssExtractPlugin.loader,
+          options: {
+            publicPath: `/${fileResourceDirectoryName}/`
+          }
+        },
         {
           loader: "css-loader",
           options: {
