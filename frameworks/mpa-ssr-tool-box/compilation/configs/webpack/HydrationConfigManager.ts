@@ -45,7 +45,7 @@ export class HydrationConfigManager {
     return {
       entry: this.$ConvertHydrationEntryFile.getWebpackEntryPoints(),
       output: {
-        // clean: true,
+        clean: true,
         path: hydrationResourceDirectoryPath,
         filename: (pathData: PathData) => `index-${pathData.chunk.name}-hydration-[contenthash].js`,
       },
@@ -84,7 +84,7 @@ export class HydrationConfigManager {
         }),
         new MiniCssExtractPlugin({
           linkType: "text/css",
-          filename: (pathData: PathData) => `../${fileResourceDirectoryName}/index-${pathData.chunk.name}-hydration-[contenthash].css`
+          filename: (pathData: PathData) => `../${fileResourceDirectoryName}/index-${pathData.chunk.name}-[contenthash].css`
         })
       ]
     };

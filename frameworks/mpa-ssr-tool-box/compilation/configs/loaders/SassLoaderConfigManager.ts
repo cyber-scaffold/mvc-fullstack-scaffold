@@ -1,4 +1,3 @@
-import path from "path";
 import { injectable, inject } from "inversify";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 
@@ -20,6 +19,7 @@ export class SassLoaderConfigManager {
         {
           loader: MiniCssExtractPlugin.loader,
           options: {
+            defaultExport: true,
             publicPath: `/${fileResourceDirectoryName}/`
           }
         },
@@ -27,6 +27,7 @@ export class SassLoaderConfigManager {
           loader: "css-loader",
           options: {
             modules: {
+              namedExport: true,
               exportOnlyLocals: false,
               mode: (resourcePath) => {
                 if (/\.(global)/.test(resourcePath)) {
@@ -59,15 +60,22 @@ export class SassLoaderConfigManager {
   };
 
   public async getDehydrationSiderLoaderConfig() {
-    const { projectDirectoryPath } = this.$CompilationConfigManager.getRuntimeConfig();
+    const { fileResourceDirectoryName } = this.$CompilationConfigManager.getRuntimeConfig();
     return [{
       test: /\.(scss|sass)$/,
       use: [
-        { loader: path.resolve(projectDirectoryPath, "./frameworks/mpa-ssr-tool-box/compilation/utils/DehydrationSideCssModuleLoader.js") },
+        {
+          loader: MiniCssExtractPlugin.loader,
+          options: {
+            defaultExport: true,
+            publicPath: `/${fileResourceDirectoryName}/`
+          }
+        },
         {
           loader: "css-loader",
           options: {
             modules: {
+              namedExport: true,
               exportOnlyLocals: true,
               mode: (resourcePath) => {
                 if (/\.(global)/.test(resourcePath)) {

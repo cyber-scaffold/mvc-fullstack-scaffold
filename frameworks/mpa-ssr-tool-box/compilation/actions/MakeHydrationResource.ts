@@ -30,9 +30,9 @@ export class MakeHydrationResource {
    * 并转换成webpack可以识别的内容清单
    * **/
   public async checkSourceCodeAndTransformer() {
-    const { materielArrayList } = this.$CompilationConfigManager.getRuntimeConfig();
-    /** 检查物料对应的源文件是否存在 **/
-    const materielPairs: [string, string][] = await Promise.all(materielArrayList.map(async (everyMaterielInfo) => {
+    const { hydrateDictionary } = this.$CompilationConfigManager.getRuntimeConfig();
+    /** 根据 hydrateDictionary 来计算需要编译的注水物料 **/
+    const materielPairs: [string, string][] = await Promise.all(Object.values(hydrateDictionary).map(async (everyMaterielInfo) => {
       if (!await pathExists(everyMaterielInfo.source)) {
         throw new Error(`source code file ${everyMaterielInfo.alias} ==> ${everyMaterielInfo.source} not exist`);
       };

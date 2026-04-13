@@ -1,10 +1,10 @@
 import path from "path";
-import { webpack } from "webpack";
 import WebpackBar from "webpackbar";
 import { merge } from "webpack-merge";
 import { injectable, inject } from "inversify";
 import nodeExternals from "webpack-node-externals";
-import { DefinePlugin, Configuration } from "webpack";
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
+import { webpack, DefinePlugin, Configuration } from "webpack";
 
 import { IOCContainer } from "@/frameworks/mpa-ssr-tool-box/compilation/cores/IOCContainer";
 import { CompilationConfigManager } from "@/frameworks/mpa-ssr-tool-box/compilation/commons/CompilationConfigManager";
@@ -44,12 +44,12 @@ export class DehydrationConfigManager {
    * 最基础的webpack编译配置
    * **/
   public async getBasicConfig() {
-    const { projectDirectoryPath, dehydrationResourceDirectoryPath } = this.$CompilationConfigManager.getRuntimeConfig();
+    const { projectDirectoryPath, fileResourceDirectoryName, dehydrationResourceDirectoryPath } = this.$CompilationConfigManager.getRuntimeConfig();
     return {
       entry: this.$ConvertDehydrationEntryFile.getWebpackEntryPoints(),
       target: "node",
       output: {
-        // clean: true,
+        clean: true,
         path: dehydrationResourceDirectoryPath,
         filename: (pathData: PathData) => `index-${pathData.chunk.name}-dehydration-[contenthash].js`,
         library: {
@@ -89,6 +89,11 @@ export class DehydrationConfigManager {
         }),
         new DefinePlugin({
           "process.env.RESOURCE_TYPE": JSON.stringify("dehydration")
+        }),
+        new MiniCssExtractPlugin({
+          linkType: "text/css",
+          runtime: false,
+          filename: (pathData: PathData) => `../${fileResourceDirectoryName}/index-${pathData.chunk.name}-[contenthash].css`
         })
       ]
     };
