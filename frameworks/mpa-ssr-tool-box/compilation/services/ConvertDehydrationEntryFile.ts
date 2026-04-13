@@ -44,7 +44,7 @@ export class ConvertDehydrationEntryFile {
    * 并生成webpack可以识别的entry-points对象
    * **/
   public async initialize(materielPairs: [alias: string, detail: MaterielCompilationInfoType][]) {
-    const initialStyleTemplateContent = await this.getInitialStyleTemplateContent();
+    // const initialStyleTemplateContent = await this.getInitialStyleTemplateContent();
     const hydrationTemplateFileContent = await this.getDehydrationEntryTemplateContent();
     /** 基于alias生成新的入口文件内容 **/
     const virtualFileVolumePairs = await Promise.all(materielPairs.map(async ([alias, materielDetailInfo]) => {
@@ -56,14 +56,14 @@ export class ConvertDehydrationEntryFile {
     }));
     /** 在内存中写入这些新入口文件的内容 **/
     memfs.vol.fromJSON({
-      "./initial.less": initialStyleTemplateContent,
+      // "./initial.less": initialStyleTemplateContent,
       ...fromPairs(virtualFileVolumePairs)
     }, this.virtualDirectoryPath);
     /** 生成详细的webpackEntryPoints **/
     this.webpackEntryPoints = fromPairs(materielPairs.map(([alias]) => {
       return [alias, [
         "source-map-support/register",
-        path.join(this.getVirtualDirectoryPath(), "./initial.less"),
+        // path.join(this.getVirtualDirectoryPath(), "./initial.less"),
         path.join(this.getVirtualDirectoryPath(), `./${alias}.entry.tsx`)
       ]];
     }));
