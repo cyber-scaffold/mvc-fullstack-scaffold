@@ -43,6 +43,11 @@ export class FrameworkConfigManager {
   private staticResourceDirectoryDestinationPath = path.resolve(this.assetsDirectoryPath, "./statics/");
 
   /**
+   * Swagger在前端初始化时使用的文件
+   * **/
+  private swaggerInitializer = path.resolve(process.cwd(), "./main/server/cores/swagger-initializer.js");
+
+  /**
    * 扫描Swagger文档时使用的glob表达式默认扫描controllers文件夹下的内容
    * **/
   private extractSwaggerGlobExpression = path.resolve(process.cwd(), "./main/server/controllers/**/*.{ts,tsx,js,jsx}");
@@ -117,6 +122,9 @@ export class FrameworkConfigManager {
     if (custmerConfig.extractSwaggerGlobExpression) {
       this.extractSwaggerGlobExpression = custmerConfig.extractSwaggerGlobExpression;
     };
+    if (custmerConfig.swaggerInitializer) {
+      this.swaggerInitializer = custmerConfig.swaggerInitializer;
+    };
     if (custmerConfig.swaggerResourceDirectorySourcePath) {
       this.swaggerResourceDirectorySourcePath = custmerConfig.swaggerResourceDirectorySourcePath;
     };
@@ -137,6 +145,7 @@ export class FrameworkConfigManager {
       assetsDirectoryPath: this.assetsDirectoryPath,
       staticResourceDirectorySourcePath: this.staticResourceDirectorySourcePath,
       staticResourceDirectoryDestinationPath: this.staticResourceDirectoryDestinationPath,
+      swaggerInitializer: this.swaggerInitializer,
       extractSwaggerGlobExpression: this.extractSwaggerGlobExpression,
       swaggerResourceDirectorySourcePath: this.swaggerResourceDirectorySourcePath,
       swaggerResourceDirectoryDestinationPath: this.swaggerResourceDirectoryDestinationPath,

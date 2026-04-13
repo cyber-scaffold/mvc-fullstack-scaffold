@@ -31,6 +31,7 @@ export class ServerSiderConfigManager {
       projectDirectoryPath,
       staticResourceDirectorySourcePath,
       staticResourceDirectoryDestinationPath,
+      swaggerInitializer,
       swaggerResourceDirectorySourcePath,
       swaggerResourceDirectoryDestinationPath,
     } = this.$FrameworkConfigManager.getRuntimeConfig();
@@ -66,6 +67,9 @@ export class ServerSiderConfigManager {
         new CopyWebpackPlugin({
           patterns: [{
             from: swaggerResourceDirectorySourcePath,
+            to: swaggerResourceDirectoryDestinationPath
+          }, {
+            from: swaggerInitializer,
             to: swaggerResourceDirectoryDestinationPath
           }, {
             from: staticResourceDirectorySourcePath,

@@ -3,6 +3,7 @@ const path = require("path");
 module.exports = {
   projectDirectoryPath: process.cwd(),
   assetsDirectoryName: "dist",
+  swaggerInitializer: path.resolve(process.cwd(), "./main/server/cores/swagger-initializer.js"),
   materiels: [
     {
       alias: "IndexPage",
