@@ -1,7 +1,7 @@
 {
-  "name": "mvc-fullstack-scaffold",
+  "name": "mpa-react-ssr-server-project",
   "version": "1.0.0",
-  "description": "基于mvc和视图层序言和标记智能化渲染的nodejs全栈编译器",
+  "description": "基于React的能进行SSR的传统多页网站项目",
   "main": "index.js",
   "scripts": {
     "dll": "node -r esbuild-register ./frameworks/mpa-ssr-build-tool/dll.ts",
