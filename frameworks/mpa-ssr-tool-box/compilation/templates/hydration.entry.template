@@ -1,3 +1,13 @@
+//@ts-ignore
+__webpack_public_path__="$$webpackPublicPathWithRuntime$$";
+
+
+// window.process={
+//  "env":{
+//    "NODE_ENV":"aaaaa"
+//  }
+// };
+
 import React from "react";
 import { createRoot } from "react-dom/client";
 

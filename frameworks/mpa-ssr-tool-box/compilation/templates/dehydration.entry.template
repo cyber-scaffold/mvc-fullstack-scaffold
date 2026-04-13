@@ -1,3 +1,6 @@
+//@ts-ignore
+__webpack_public_path__="$$webpackPublicPathWithRuntime$$";
+
 import React from "react";
 import { renderToString } from "react-dom/server";
 

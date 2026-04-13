@@ -37,7 +37,7 @@ export class ServerSiderConfigManager {
       swaggerResourceDirectoryDestinationPath,
     } = this.$FrameworkConfigManager.getRuntimeConfig();
     return {
-      entry: this.$ServerProjectVirtualFile.getVirtualFilePathList(),
+      entry: this.$ServerProjectVirtualFile.getWebpackEntryPoints(),
       target: "node",
       output: {
         path: assetsDirectoryPath,

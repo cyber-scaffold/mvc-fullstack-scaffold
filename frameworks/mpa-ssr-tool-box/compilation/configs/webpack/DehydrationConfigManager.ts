@@ -43,8 +43,8 @@ export class DehydrationConfigManager {
   /**
    * 最基础的webpack编译配置
    * **/
-  public async getBasicConfig() {
-    const { projectDirectoryPath, fileResourceDirectoryName, dehydrationResourceDirectoryPath } = this.$CompilationConfigManager.getRuntimeConfig();
+  public async getBasicConfig(): Promise<Configuration> {
+    const { projectDirectoryPath, dehydrationResourceDirectoryPath } = this.$CompilationConfigManager.getRuntimeConfig();
     return {
       entry: this.$ConvertDehydrationEntryFile.getWebpackEntryPoints(),
       target: "node",
@@ -91,9 +91,9 @@ export class DehydrationConfigManager {
           "process.env.RESOURCE_TYPE": JSON.stringify("dehydration")
         }),
         new MiniCssExtractPlugin({
-          linkType: "text/css",
           runtime: false,
-          filename: (pathData: PathData) => `../${fileResourceDirectoryName}/index-${pathData.chunk.name}-[contenthash].css`
+          linkType: false,
+          filename: (pathData: PathData) => `index-${pathData.chunk.name}-dehydration-[contenthash].css`
         })
       ]
     };
@@ -118,8 +118,8 @@ export class DehydrationConfigManager {
   public async getWebpackProductionCompiler(): Promise<Compiler> {
     const basicConfig: Configuration = await this.getBasicConfig();
     const webpackCompiler = webpack(merge<Configuration>(basicConfig, {
-      devtool: "source-map",
-      mode: "none"
+      mode: "none",
+      devtool: "source-map"
     }));
     await this.$ConvertDehydrationEntryFile.mountWithWebpackCompiler(webpackCompiler);
     return webpackCompiler;

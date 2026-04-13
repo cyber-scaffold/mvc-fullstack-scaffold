@@ -15,7 +15,7 @@ export class FileLoaderConfigManager {
   ) { };
 
   public async getHydrationSiderLoaderConfig() {
-    const { fileResourceDirectoryName, materielArrayList } = this.$CompilationConfigManager.getRuntimeConfig();
+    const { hydrationResourceDirectoryName, materielArrayList } = this.$CompilationConfigManager.getRuntimeConfig();
     // const hydrationInfoByAlias = get(flatMaterielInfo(materielArrayList), [alias, "hydrate"].join("."));
     // let emitFile = true;
     // /** 除非没有注水渲染需求,否则必须生成文件 **/
@@ -28,8 +28,9 @@ export class FileLoaderConfigManager {
         loader: "file-loader",
         options: {
           emitFile: true,
-          outputPath: `../${fileResourceDirectoryName}/`,
-          publicPath: `/${fileResourceDirectoryName}/`,
+          // publicPath: (url, resourcePath, context) => {
+          //   return `/${hydrationResourceDirectoryName}/${url}`;
+          // },
           name: (resourcePath: string) => {
             return `[name]-${filePathContentHash(resourcePath)}-[contenthash].[ext]`;
           }
@@ -39,7 +40,7 @@ export class FileLoaderConfigManager {
   };
 
   public async getDehydrationSiderLoaderConfig() {
-    const { fileResourceDirectoryName, materielArrayList } = this.$CompilationConfigManager.getRuntimeConfig();
+    const { dehydrationResourceDirectoryName, materielArrayList } = this.$CompilationConfigManager.getRuntimeConfig();
     // const hydrationInfoByAlias = get(flatMaterielInfo(materielArrayList), [alias, "hydrate"].join("."));
     // const dehydrateInfoByAlias = get(flatMaterielInfo(materielArrayList), [alias, "dehydrate"].join("."));
     // let emitFile = true;
@@ -55,8 +56,9 @@ export class FileLoaderConfigManager {
         loader: "file-loader",
         options: {
           emitFile: true,
-          outputPath: `../${fileResourceDirectoryName}/`,
-          publicPath: `/${fileResourceDirectoryName}/`,
+          // publicPath: (url, resourcePath, context) => {
+          //   return `/${dehydrationResourceDirectoryName}/${url}`;
+          // },
           name: (resourcePath: string) => {
             return `[name]-${filePathContentHash(resourcePath)}-[contenthash].[ext]`;
           }

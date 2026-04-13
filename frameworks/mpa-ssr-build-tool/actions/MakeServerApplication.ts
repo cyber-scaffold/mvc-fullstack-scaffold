@@ -62,7 +62,7 @@ export class MakeServerApplication {
         if (error) {
           reject(error);
         } else {
-          // console.log(stats.toString({ colors: true }));
+          console.log(stats.toString({ colors: true }));
           resolve(true);
         };
       });

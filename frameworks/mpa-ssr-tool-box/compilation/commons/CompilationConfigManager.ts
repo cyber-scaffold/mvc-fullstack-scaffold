@@ -23,7 +23,9 @@ export interface CompilationConfigType {
   assetsDirectoryPath: string
   fileResourceDirectoryName: string
   fileResourceDirectoryPath: string
+  hydrationResourceDirectoryName: string
   hydrationResourceDirectoryPath: string
+  dehydrationResourceDirectoryName: string
   dehydrationResourceDirectoryPath: string
   dehydrateDictionary: MaterielInfoByAliasDictionaryType
   hydrateDictionary: MaterielInfoByAliasDictionaryType
@@ -128,7 +130,9 @@ export class CompilationConfigManager {
       assetsDirectoryPath: this.getAssetsDirectoryPath(),
       fileResourceDirectoryName: this.fileResourceDirectoryName,
       fileResourceDirectoryPath: this.getFileResourceDirectoryPath(),
+      hydrationResourceDirectoryName: this.hydrationResourceDirectoryName,
       hydrationResourceDirectoryPath: this.getHydrationResourceDirectoryPath(),
+      dehydrationResourceDirectoryName: this.dehydrationResourceDirectoryName,
       dehydrationResourceDirectoryPath: this.getDehydrationResourceDirectoryPath(),
       dehydrateDictionary: this.dehydrateDictionary,
       hydrateDictionary: this.hydrateDictionary,

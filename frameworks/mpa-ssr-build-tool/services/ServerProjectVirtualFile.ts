@@ -44,7 +44,7 @@ export class ServerProjectVirtualFile {
     const originContent = await this.getVirtualEntryFileAndReplaceContent();
     const replacedContent = originContent.replace("$$REAL_ENTRY_FILE_FULL_PATH$$", entryFile);
     /** 在虚拟文件系统中生成一个空白的架构临时文件 **/
-    memfs.vol.fromJSON({ "./server.entry.js": replacedContent }, this.virtualDirectoryPath);
+    memfs.vol.fromJSON({ "./server.entry.ts": replacedContent }, this.virtualDirectoryPath);
   };
 
   /** 挂载到webpack的文件系统上 **/
@@ -57,11 +57,11 @@ export class ServerProjectVirtualFile {
     return this.virtualDirectoryPath;
   };
 
-  public getVirtualFilePathList(): string[] {
+  public getWebpackEntryPoints(): string[] {
     return [
       "esbuild-register",
       "source-map-support/register",
-      path.join(this.getVirtualDirectoryPath(), "./server.entry.js")
+      path.join(this.getVirtualDirectoryPath(), "./server.entry.ts")
     ];
   };
 

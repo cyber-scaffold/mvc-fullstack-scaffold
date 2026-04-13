@@ -10,6 +10,7 @@ import { CompilationMaterielResourceDatabaseManager } from "@/frameworks/mpa-ssr
 import { filterWebpackStats } from "@/frameworks/mpa-ssr-tool-box/public/filterWebpackStats";
 
 import type { Compiler } from "webpack";
+import type { MaterielCompilationInfoType } from "@/frameworks/mpa-ssr-tool-box/compilation/commons/CompilationConfigManager";
 
 /**
  * 脱水资源的资源管理器
@@ -32,11 +33,11 @@ export class MakeDehydrationResource {
   public async checkSourceCodeAndTransformer() {
     const { dehydrateDictionary } = this.$CompilationConfigManager.getRuntimeConfig();
     /** 根据 dehydrateDictionary 来计算需要编译的注水物料 **/
-    const materielPairs: [string, string][] = await Promise.all(Object.values(dehydrateDictionary).map(async (everyMaterielInfo) => {
+    const materielPairs: [alias: string, detail: MaterielCompilationInfoType][] = await Promise.all(Object.values(dehydrateDictionary).map(async (everyMaterielInfo) => {
       if (!await pathExists(everyMaterielInfo.source)) {
         throw new Error(`source code file ${everyMaterielInfo.alias} ==> ${everyMaterielInfo.source} not exist`);
       };
-      return [everyMaterielInfo.alias, everyMaterielInfo.source];
+      return [everyMaterielInfo.alias, everyMaterielInfo];
     }));
     await this.$ConvertDehydrationEntryFile.initialize(materielPairs);
   };

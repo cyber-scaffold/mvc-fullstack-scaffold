@@ -3,7 +3,7 @@ import WebpackBar from "webpackbar";
 import { merge } from "webpack-merge";
 import { injectable, inject } from "inversify";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
-// import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
+import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
 import { webpack, DllReferencePlugin, DefinePlugin } from "webpack";
 
 import { IOCContainer } from "@/frameworks/mpa-ssr-tool-box/compilation/cores/IOCContainer";
@@ -41,7 +41,7 @@ export class HydrationConfigManager {
    * 最基础的webpack编译配置
    * **/
   public async getBasicConfig(): Promise<Configuration> {
-    const { projectDirectoryPath, fileResourceDirectoryName, hydrationResourceDirectoryPath } = await this.$CompilationConfigManager.getRuntimeConfig();
+    const { projectDirectoryPath, hydrationResourceDirectoryPath } = await this.$CompilationConfigManager.getRuntimeConfig();
     return {
       entry: this.$ConvertHydrationEntryFile.getWebpackEntryPoints(),
       output: {
@@ -84,7 +84,7 @@ export class HydrationConfigManager {
         }),
         new MiniCssExtractPlugin({
           linkType: "text/css",
-          filename: (pathData: PathData) => `../${fileResourceDirectoryName}/index-${pathData.chunk.name}-[contenthash].css`
+          filename: (pathData: PathData) => `index-${pathData.chunk.name}-hydration-[contenthash].css`
         })
       ]
     };

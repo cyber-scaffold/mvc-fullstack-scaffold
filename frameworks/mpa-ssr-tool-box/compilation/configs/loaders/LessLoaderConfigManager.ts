@@ -12,15 +12,15 @@ export class LessLoaderConfigManager {
   ) { };
 
   public async getHydrationSiderLoaderConfig() {
-    const { fileResourceDirectoryName } = this.$CompilationConfigManager.getRuntimeConfig();
+    const { hydrationResourceDirectoryName } = this.$CompilationConfigManager.getRuntimeConfig();
     return [{
       test: /\.less$/,
       use: [
         {
           loader: MiniCssExtractPlugin.loader,
           options: {
-            defaultExport: true,
-            publicPath: `/${fileResourceDirectoryName}/`
+            emit: true,
+            defaultExport: true
           }
         },
         {
@@ -66,15 +66,15 @@ export class LessLoaderConfigManager {
   };
 
   public async getDehydrationSiderLoaderConfig() {
-    const { fileResourceDirectoryName } = this.$CompilationConfigManager.getRuntimeConfig();
+    const { dehydrationResourceDirectoryName } = this.$CompilationConfigManager.getRuntimeConfig();
     return [{
       test: /\.less$/,
       use: [
         {
           loader: MiniCssExtractPlugin.loader,
           options: {
-            defaultExport: true,
-            publicPath: `/${fileResourceDirectoryName}/`
+            emit: true,
+            defaultExport: true
           }
         },
         {
@@ -82,7 +82,7 @@ export class LessLoaderConfigManager {
           options: {
             modules: {
               namedExport: true,
-              exportOnlyLocals: true,
+              exportOnlyLocals: false,
               mode: (resourcePath) => {
                 if (/\.(module)/.test(resourcePath)) {
                   return "local";

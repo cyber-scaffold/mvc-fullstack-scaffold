@@ -14,13 +14,13 @@ module.exports = {
     {
       alias: "DetailPage",
       hydrate: true,
-      dehydrated: true,
+      dehydrate: true,
       source: path.resolve(process.cwd(), "./main/views/pages/DetailPage/index.tsx")
     },
     {
       alias: "SearchPage",
       hydrate: true,
-      dehydrated: true,
+      dehydrate: true,
       source: path.resolve(process.cwd(), "./main/views/pages/SearchPage/index.tsx")
     },
     {
