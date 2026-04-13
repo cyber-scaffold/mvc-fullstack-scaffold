@@ -1,6 +1,6 @@
 import path from "path";
 import { injectable } from "inversify";
-import { getRuntimeConfiguration } from "@/library/runtime";
+import { getRuntimeConfiguration } from "@/frameworks/mpa-ssr-tool-box/runtime";
 
 import { IOCContainer } from "@/main/server/cores/IOCContainer";
 

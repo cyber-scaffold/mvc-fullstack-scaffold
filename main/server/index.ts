@@ -1,4 +1,4 @@
-import { setAndInitializeRuntimeConfig, readProjectDirectoryAbsolutePath } from "@/library/runtime";
+import { setAndInitializeRuntimeConfig, readProjectDirectoryAbsolutePath } from "@/frameworks/mpa-ssr-tool-box/runtime";
 
 import { IOCContainer } from "@/main/server/cores/IOCContainer";
 import { ApplicationConfigManager } from "@/main/server/commons/Application/ApplicationConfigManager";

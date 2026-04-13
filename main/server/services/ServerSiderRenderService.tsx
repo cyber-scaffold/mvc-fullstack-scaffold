@@ -5,7 +5,7 @@ import { get } from "dot-prop";
 import { injectable } from "inversify";
 import { renderToString } from "react-dom/server";
 
-import { getRuntimeConfiguration, getDehydratedResource, getHydrationResource, renderDehydratedResourceWithSandbox } from "@/library/runtime";
+import { getRuntimeConfiguration, getDehydratedResource, getHydrationResource, renderDehydratedResourceWithSandbox } from "@/frameworks/mpa-ssr-tool-box/runtime";
 import { IOCContainer } from "@/main/server/cores/IOCContainer";
 import { version } from "@/package.json";
 

@@ -2,7 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { injectable, inject } from "inversify";
-import { getRuntimeConfiguration } from "@/library/runtime";
+import { getRuntimeConfiguration } from "@/frameworks/mpa-ssr-tool-box/runtime";
 
 import { IOCContainer } from "@/main/server/cores/IOCContainer";
 import { ApplicationConfigManager } from "@/main/server/commons/Application/ApplicationConfigManager";
