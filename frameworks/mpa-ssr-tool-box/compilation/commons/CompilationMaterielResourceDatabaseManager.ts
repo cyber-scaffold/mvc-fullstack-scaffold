@@ -10,6 +10,8 @@ import { CompilationConfigManager } from "@/frameworks/mpa-ssr-tool-box/compilat
 @injectable()
 export class CompilationMaterielResourceDatabaseManager {
 
+  private summaryDatabase: Low<{}>;
+
   private hydrationCompileDatabase: Low<{}>;
 
   private dehydrationCompileDatabase: Low<{}>;
@@ -21,11 +23,16 @@ export class CompilationMaterielResourceDatabaseManager {
   public async initialize() {
     try {
       const { assetsDirectoryPath } = await this.$CompilationConfigManager.getRuntimeConfig();
+      this.summaryDatabase = new Low(new JSONFile(path.resolve(assetsDirectoryPath, "./summary.json")), {});
       this.hydrationCompileDatabase = new Low(new JSONFile(path.resolve(assetsDirectoryPath, "./hydration-compile.json")), {});
       this.dehydrationCompileDatabase = new Low(new JSONFile(path.resolve(assetsDirectoryPath, "./dehydration-compile.json")), {});
     } catch (error) {
       throw error;
     };
+  };
+
+  public getSummaryDatabase(): Low<{}> {
+    return this.summaryDatabase;
   };
 
   public getHydrationCompileDatabase(): Low<{}> {

@@ -9,9 +9,8 @@ import { injectable } from "inversify";
 
 import { IOCContainer } from "@/frameworks/mpa-ssr-tool-box/compilation/cores/IOCContainer";
 
-import type { Compiler } from "webpack";
+import type { Compiler, EntryObject } from "webpack";
 import type { IUnionFs, IFS } from "unionfs";
-import type { EntryObject } from "webpack";
 
 /**
  * 改造注水资源的入口文件,可以在这个模块中添加架构特性

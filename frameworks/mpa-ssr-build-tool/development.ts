@@ -14,9 +14,9 @@ setImmediate(async () => {
     /** 编译DLL文件 **/
     // await IOCContainer.get(MakePublicDLLFile).execute();
     /** 开发模式SSR物料编译 **/
-    await IOCContainer.get(MakeMaterielResource).startDevelopmentMode();
+    await IOCContainer.get(MakeMaterielResource).buildMaterielResourceByDevelopmentAndWatch();
     /** 开发模式Express主服务应用编译 **/
-    await IOCContainer.get(MakeServerApplication).startDevelopmentMode();
+    await IOCContainer.get(MakeServerApplication).bootstrapByDevelopmentMode();
   } catch (error) {
     console.log("error", error);
     process.exit(0);

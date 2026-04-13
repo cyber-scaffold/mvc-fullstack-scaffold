@@ -8,6 +8,9 @@ export type MaterielInfoByAliasDictionaryType = {
   [alias: string]: MaterielCompilationInfoType
 };
 
+/**
+ * 当前Transformer函数的返回类型
+ * **/
 export type MaterielsConfigTransformerRetuenType = {
   hydrate: MaterielInfoByAliasDictionaryType
   dehydrate: MaterielInfoByAliasDictionaryType
@@ -18,9 +21,9 @@ export type MaterielsConfigTransformerRetuenType = {
  * **/
 export function materielsConfigTransformer(materielsConfig: MaterielCompilationInfoType[]): MaterielsConfigTransformerRetuenType {
 
-  const hydrateModuleList: [string, MaterielCompilationInfoType][] = [];
+  const hydrateModuleList: [alias: string, detail: MaterielCompilationInfoType][] = [];
 
-  const dehydrateModuleList: [string, MaterielCompilationInfoType][] = [];
+  const dehydrateModuleList: [alias: string, detail: MaterielCompilationInfoType][] = [];
 
   materielsConfig.forEach((everyMaterielInfo: MaterielCompilationInfoType) => {
     if (isUndefined(everyMaterielInfo.hydrate)) {

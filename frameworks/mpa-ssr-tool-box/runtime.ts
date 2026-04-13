@@ -6,6 +6,7 @@ export { setAndInitializeRuntimeConfig } from "@/frameworks/mpa-ssr-tool-box/run
 export { getRuntimeConfiguration } from "@/frameworks/mpa-ssr-tool-box/runtime/getRuntimeConfiguration";
 export { getDehydratedResource } from "@/frameworks/mpa-ssr-tool-box/runtime/getDehydratedResource";
 export { getHydrationResource } from "@/frameworks/mpa-ssr-tool-box/runtime/getHydrationResource";
+export { getResourceSummary } from "@/frameworks/mpa-ssr-tool-box/runtime/getResourceSummary";
 
 export { saveProjectDirectoryAbsolutePath } from "@/frameworks/mpa-ssr-tool-box/runtime/globalSingletonStorage";
 export { readProjectDirectoryAbsolutePath } from "@/frameworks/mpa-ssr-tool-box/runtime/globalSingletonStorage";
@@ -14,4 +15,4 @@ export { saveProjectEntryFileAbsolutePath } from "@/frameworks/mpa-ssr-tool-box/
 export { readProjectEntryFileAbsolutePath } from "@/frameworks/mpa-ssr-tool-box/runtime/globalSingletonStorage";
 
 export type { CompileAssetsDictionaryType } from "@/frameworks/mpa-ssr-tool-box/public/filterWebpackStats";
-export type { IRuntimeConfig } from "@/frameworks/mpa-ssr-tool-box/runtime/commons/RuntimeConfigManager";
+export type { RuntimeConfig } from "@/frameworks/mpa-ssr-tool-box/runtime/commons/RuntimeConfigManager";

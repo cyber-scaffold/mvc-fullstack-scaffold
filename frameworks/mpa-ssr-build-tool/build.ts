@@ -14,7 +14,7 @@ setImmediate(async () => {
     /** 编译DLL **/
     // await IOCContainer.get(DLLBuildController).execute();
     /** 编译SSR物料 **/
-    await IOCContainer.get(MakeMaterielResource).buildMaterielResource();
+    await IOCContainer.get(MakeMaterielResource).buildMaterielResourceByProductionNotWatch();
     /** 编译Express主服务应用 **/
     await IOCContainer.get(MakeServerApplication).startBuild();
   } catch (error) {

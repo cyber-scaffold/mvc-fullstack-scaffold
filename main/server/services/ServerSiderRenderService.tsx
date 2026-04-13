@@ -5,7 +5,7 @@ import { get } from "dot-prop";
 import { injectable } from "inversify";
 import { renderToString } from "react-dom/server";
 
-import { getRuntimeConfiguration, getDehydratedResource, getHydrationResource, renderDehydratedResourceWithSandbox } from "@/frameworks/mpa-ssr-tool-box/runtime";
+import { getRuntimeConfiguration, getResourceSummary, getDehydratedResource, getHydrationResource, renderDehydratedResourceWithSandbox } from "@/frameworks/mpa-ssr-tool-box/runtime";
 import { IOCContainer } from "@/main/server/cores/IOCContainer";
 import { version } from "@/package.json";
 
@@ -107,6 +107,7 @@ export class ServerSiderRenderService {
 
   public async computedHTMLContent(params: ServerSiderRenderParamsType): Promise<string> {
     const alias = params.alias;
+    // await getResourceSummary({ alias });
     await this.generateApplicationInjectContent(params);
     await this.generateDehydrateContent({ alias });
     await this.generateHydrationTags({ alias });

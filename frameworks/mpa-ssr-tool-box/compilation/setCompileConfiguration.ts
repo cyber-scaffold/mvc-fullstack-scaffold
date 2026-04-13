@@ -5,6 +5,8 @@ import { CompilationMaterielResourceDatabaseManager } from "@/frameworks/mpa-ssr
 
 import { CompilerActionService } from "@/frameworks/mpa-ssr-tool-box/compilation/actions/CompilerActionService";
 
+import { materielsSummaryTransformer } from "@/frameworks/mpa-ssr-tool-box/compilation/utils/materielsSummaryTransformer";
+
 import type { CustmerInputCompilationConfigType } from "@/frameworks/mpa-ssr-tool-box/compilation/commons/CompilationConfigManager";
 
 export async function setCompileConfiguration(inputCustmerConfig?: CustmerInputCompilationConfigType): Promise<void> {
@@ -17,4 +19,10 @@ export async function setCompileConfiguration(inputCustmerConfig?: CustmerInputC
   /** 初始化物料数据库 **/
   const $CompilationMaterielResourceDatabaseManager = IOCContainer.get(CompilationMaterielResourceDatabaseManager);
   await $CompilationMaterielResourceDatabaseManager.initialize();
+  /** 获取物料概览管理数据库 **/
+  const summaryDatabase = $CompilationMaterielResourceDatabaseManager.getSummaryDatabase();
+  const { materielArrayList } = $CompilationConfigManager.getRuntimeConfig();
+  /** 在概览数据库中保存物料的类型信息 **/
+  summaryDatabase.data = materielsSummaryTransformer(materielArrayList);
+  await summaryDatabase.write();
 };

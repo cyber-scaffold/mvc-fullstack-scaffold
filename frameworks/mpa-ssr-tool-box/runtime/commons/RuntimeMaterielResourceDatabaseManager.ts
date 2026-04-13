@@ -9,6 +9,8 @@ import { RuntimeConfigManager } from "@/frameworks/mpa-ssr-tool-box/runtime/comm
 @injectable()
 export class RuntimeMaterielResourceDatabaseManager {
 
+  private summaryDatabase: Low<{}>;
+
   private hydrationCompileDatabase: Low<{}>;
 
   private dehydrationCompileDatabase: Low<{}>;
@@ -20,11 +22,16 @@ export class RuntimeMaterielResourceDatabaseManager {
   public async initialize() {
     try {
       const { assetsDirectoryPath } = await this.$RuntimeConfigManager.getRuntimeConfig();
+      this.summaryDatabase = new Low(new JSONFile(path.resolve(assetsDirectoryPath, "./summary.json")), {});
       this.hydrationCompileDatabase = new Low(new JSONFile(path.resolve(assetsDirectoryPath, "./hydration-compile.json")), {});
       this.dehydrationCompileDatabase = new Low(new JSONFile(path.resolve(assetsDirectoryPath, "./dehydration-compile.json")), {});
     } catch (error) {
       throw error;
     };
+  };
+
+  public getSummaryDatabase(): Low<{}> {
+    return this.summaryDatabase;
   };
 
   public getHydrationCompileDatabase(): Low<{}> {

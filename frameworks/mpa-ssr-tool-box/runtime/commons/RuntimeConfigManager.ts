@@ -3,7 +3,7 @@ import { injectable } from "inversify";
 
 import { IOCContainer } from "@/frameworks/mpa-ssr-tool-box/runtime/cores/IOCContainer";
 
-export interface IRuntimeConfig {
+export type RuntimeConfig = {
   projectDirectoryPath: string
   assetsDirectoryPath: string
   fileResourceDirectoryPath: string
@@ -11,7 +11,7 @@ export interface IRuntimeConfig {
   dehydrationResourceDirectoryPath: string
 };
 
-export interface ICustmerRuntimeConfig {
+export type CustmerRuntimeConfigType = {
   projectDirectoryPath?: string
   assetsDirectoryName?: string
   fileResourceDirectoryName?: string
@@ -63,7 +63,7 @@ export class RuntimeConfigManager {
   };
 
   /** 初始化配置并计算出剩余的属性 **/
-  public async initialize(inputCustmerConfig: ICustmerRuntimeConfig) {
+  public async initialize(inputCustmerConfig: CustmerRuntimeConfigType) {
     if (!inputCustmerConfig) {
       return false;
     };
@@ -85,7 +85,7 @@ export class RuntimeConfigManager {
   };
 
   /** 获取最终组合之后的运行时配置 **/
-  public getRuntimeConfig(): IRuntimeConfig {
+  public getRuntimeConfig(): RuntimeConfig {
     if (!Boolean(this.projectDirectoryPath)) {
       throw new Error("RuntimeConfigManager Not Initialize Please Call setAndInitializeRuntimeConfig({projectDirectoryPath:<you project absolute path>})")
     };

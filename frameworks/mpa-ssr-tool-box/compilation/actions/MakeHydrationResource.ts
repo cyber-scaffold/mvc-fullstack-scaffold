@@ -51,7 +51,7 @@ export class MakeHydrationResource {
     /** 生成编译对象 **/
     const webpackCompiler: Compiler = await this.$HydrationConfigManager.getWebpackDevelopmentCompiler();
     /** 开启一个编译对象 **/
-    webpackCompiler.watch({ ignored: "**/node_modules/**" }, async (error, stats) => {
+    webpackCompiler.watch({ ignored: "**/node_modules/**", aggregateTimeout: 2000, poll: 1000 }, async (error, stats) => {
       if (error) {
         console.log(error);
       } else {
@@ -71,7 +71,7 @@ export class MakeHydrationResource {
     const hydrationCompileDatabase = this.$CompilationMaterielResourceDatabaseManager.getHydrationCompileDatabase();
     await hydrationCompileDatabase.write();
     /** 生成编译对象 **/
-    const webpackCompiler: any = await this.$HydrationConfigManager.getWebpackProductionCompiler();
+    const webpackCompiler: Compiler = await this.$HydrationConfigManager.getWebpackProductionCompiler();
     /** 执行编译并记录结果 **/
     webpackCompiler.run(async (error, stats) => {
       if (error) {

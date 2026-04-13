@@ -50,7 +50,7 @@ export class MakeDehydrationResource {
     await dehydrationCompileDatabase.write();
     /** 获取开发环境下的编译对象 **/
     const webpackCompiler: Compiler = await this.$DehydrationConfigManager.getWebpackDevelopmentCompiler();
-    webpackCompiler.watch({ ignored: "**/node_modules/**" }, async (error, stats) => {
+    webpackCompiler.watch({ ignored: "**/node_modules/**", aggregateTimeout: 2000, poll: 1000 }, async (error, stats) => {
       if (error) {
         console.log(error);
       } else {
@@ -71,7 +71,7 @@ export class MakeDehydrationResource {
     const dehydrationCompileDatabase = this.$CompilationMaterielResourceDatabaseManager.getDehydrationCompileDatabase();
     await dehydrationCompileDatabase.write();
     /** 获取开发环境下的编译对象 **/
-    const webpackCompiler: any = await this.$DehydrationConfigManager.getWebpackProductionCompiler();
+    const webpackCompiler: Compiler = await this.$DehydrationConfigManager.getWebpackProductionCompiler();
     webpackCompiler.run(async (error, stats) => {
       if (error) {
         console.log(error);

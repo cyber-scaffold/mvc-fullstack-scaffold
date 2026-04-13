@@ -28,6 +28,7 @@ export class ServerSiderConfigManager {
    * **/
   public async getBasicConfig(): Promise<Configuration> {
     const {
+      assetsDirectoryPath,
       projectDirectoryPath,
       staticResourceDirectorySourcePath,
       staticResourceDirectoryDestinationPath,
@@ -36,12 +37,12 @@ export class ServerSiderConfigManager {
       swaggerResourceDirectoryDestinationPath,
     } = this.$FrameworkConfigManager.getRuntimeConfig();
     return {
-      entry: [
-        "esbuild-register",
-        "source-map-support/register",
-        ...this.$ServerProjectVirtualFile.getVirtualFilePathList()
-      ],
+      entry: this.$ServerProjectVirtualFile.getVirtualFilePathList(),
       target: "node",
+      output: {
+        path: assetsDirectoryPath,
+        filename: "server.js",
+      },
       resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx"],
         alias: {
@@ -85,17 +86,11 @@ export class ServerSiderConfigManager {
    * **/
   public async getWebpackDevelopmentCompiler(): Promise<Compiler> {
     const basicConfig: Configuration = await this.getBasicConfig();
-    const { assetsDirectoryPath } = this.$FrameworkConfigManager.getRuntimeConfig();
     const webpackCompiler = webpack(merge<Configuration>(basicConfig, {
-      devtool: "source-map",
       mode: "development",
-      output: {
-        path: assetsDirectoryPath,
-        filename: "server.js",
-      },
+      devtool: "source-map"
     }));
-    await this.$ServerProjectVirtualFile.initialize(webpackCompiler);
-    await this.$ServerProjectVirtualFile.generateEntryFileContent();
+    await this.$ServerProjectVirtualFile.mountWithWebpackCompiler(webpackCompiler);
     return webpackCompiler;
   };
 
@@ -104,45 +99,14 @@ export class ServerSiderConfigManager {
    * **/
   public async getWebpackProductionCompiler(): Promise<Compiler> {
     const basicConfig: Configuration = await this.getBasicConfig();
-    const { assetsDirectoryPath } = this.$FrameworkConfigManager.getRuntimeConfig();
     const webpackCompiler = webpack(merge<Configuration>(basicConfig, {
       mode: "none",
-      devtool: "source-map",
-      output: {
-        path: assetsDirectoryPath,
-        filename: "server.js",
-      },
+      devtool: "source-map"
     }));
-    await this.$ServerProjectVirtualFile.initialize(webpackCompiler);
-    await this.$ServerProjectVirtualFile.generateEntryFileContent();
+    await this.$ServerProjectVirtualFile.mountWithWebpackCompiler(webpackCompiler);
     return webpackCompiler;
   };
 
 };
 
 IOCContainer.bind(ServerSiderConfigManager).toSelf().inSingletonScope();
-
-
-
-// externals: [{
-//   "less": "commonjs less",
-//   "express": "commonjs express",
-//   "less-node": "commonjs less-node",
-//   "webpack": "commonjs webpack",
-//   "webpackbar": "commonjs webpackbar",
-//   "webpack-merge": "commonjs webpack-merge",
-//   "copy-webpack-plugin": "commonjs copy-webpack-plugin",
-//   "terser-webpack-plugin": "commonjs terser-webpack-plugin",
-//   "webpack-node-externals": "commonjs webpack-node-externals",
-//   "webpack-assets-manifest": "commonjs webpack-assets-manifest",
-//   "mini-css-extract-plugin": "commonjs mini-css-extract-plugin",
-//   "node-polyfill-webpack-plugin": "commonjs node-polyfill-webpack-plugin",
-//   "react": "commonjs react",
-//   "react-dom": "commonjs react-dom",
-//   "inversify": "commonjs inversify",
-//   "typeorm": "commonjs typeorm",
-//   "mongodb": "commonjs mongodb",
-//   "amqplib": "commonjs amqplib",
-//   "redis": "commonjs redis",
-//   "knex": "commonjs knex"
-// }],

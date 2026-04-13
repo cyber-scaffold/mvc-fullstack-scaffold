@@ -5,6 +5,7 @@ import { injectable, inject } from "inversify";
 import { IOCContainer } from "@/frameworks/mpa-ssr-build-tool/cores/IOCContainer";
 import { FrameworkConfigManager } from "@/frameworks/mpa-ssr-build-tool/commons/FrameworkConfigManager";
 import { ServerSiderConfigManager } from "@/frameworks/mpa-ssr-build-tool/configs/webpack/ServerSiderConfigManager";
+import { ServerProjectVirtualFile } from "@/frameworks/mpa-ssr-build-tool/services/ServerProjectVirtualFile";
 import { GenerateSwaggerDocsService } from "@/frameworks/mpa-ssr-build-tool/services/GenerateSwaggerDocsService";
 
 import type { Compiler } from "webpack";
@@ -21,38 +22,22 @@ export class MakeServerApplication {
   constructor (
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager,
     @inject(ServerSiderConfigManager) private readonly $ServerSiderConfigManager: ServerSiderConfigManager,
+    @inject(ServerProjectVirtualFile) private readonly $ServerProjectVirtualFile: ServerProjectVirtualFile,
     @inject(GenerateSwaggerDocsService) private readonly $GenerateSwaggerDocsService: GenerateSwaggerDocsService
   ) { };
 
   /**
    * 启动应用服务的开发模式
    * **/
-  public async startDevelopmentMode() {
+  public async bootstrapByDevelopmentMode() {
     const { assetsDirectoryPath } = this.$FrameworkConfigManager.getRuntimeConfig();
+    await this.$ServerProjectVirtualFile.initialize();
     const webpackDevelopmentCompiler: Compiler = await this.$ServerSiderConfigManager.getWebpackDevelopmentCompiler();
     webpackDevelopmentCompiler.watch({ ignored: "**/node_modules/**" }, async (error, stats) => {
-      // const info = stats.toJson({
-      //   modules: true,
-      //   reasons: true
-      // });
-      // const changedModules = info.modules.filter(m => m.built);
-      // console.log('重新构建的模块:', changedModules.map(m => m.name));
       if (error) {
         console.log(error);
       } else {
-        // console.log(stats.toString({ colors: true }));
-        // if (this.childProcess) {
-        //   await new Promise((resolve) => {
-        //     const handleClose = () => {
-        //       resolve(true);
-        //       this.childProcess.removeAllListeners("close");
-        //     };
-        //     this.childProcess.on("close", handleClose);
-        //     this.childProcess.kill("SIGKILL");
-        //   });
-        //   this.childProcess = undefined;
-        //   await new Promise((resolve) => setTimeout(resolve, 100));
-        // };
+        console.log(stats.toString({ colors: true }));
         if (this.childProcess) {
           this.childProcess.kill("SIGKILL");
         };
@@ -71,6 +56,7 @@ export class MakeServerApplication {
    * **/
   public async startBuild() {
     const webpackProductionCompiler: Compiler = await this.$ServerSiderConfigManager.getWebpackProductionCompiler();
+    await this.$ServerProjectVirtualFile.initialize();
     await new Promise((resolve, reject) => {
       webpackProductionCompiler.run((error, stats) => {
         if (error) {
@@ -87,3 +73,18 @@ export class MakeServerApplication {
 };
 
 IOCContainer.bind(MakeServerApplication).toSelf().inSingletonScope();
+
+
+
+// if (this.childProcess) {
+//   await new Promise((resolve) => {
+//     const handleClose = () => {
+//       resolve(true);
+//       this.childProcess.removeAllListeners("close");
+//     };
+//     this.childProcess.on("close", handleClose);
+//     this.childProcess.kill("SIGKILL");
+//   });
+//   this.childProcess = undefined;
+//   await new Promise((resolve) => setTimeout(resolve, 100));
+// };
