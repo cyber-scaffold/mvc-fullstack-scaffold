@@ -8,18 +8,12 @@ import { fromPairs } from "lodash";
 import { injectable } from "inversify";
 
 import { IOCContainer } from "@/frameworks/mpa-ssr-tool-box/compilation/cores/IOCContainer";
+import { computedPublicPathWithRuntime } from "@/frameworks/mpa-ssr-tool-box/compilation/utils/computedPublicPathWithRuntime";
 
 import type { MaterielCompilationInfoType } from "@/frameworks/mpa-ssr-tool-box/compilation/commons/CompilationConfigManager";
 import type { Compiler, EntryObject } from "webpack";
 import type { IUnionFs, IFS } from "unionfs";
 
-
-// export function computedPublicPathWithRuntime(materielDetailInfo: MaterielCompilationInfoType) {
-//   let publicPathWithRuntime = "/hydration/";
-//   if (materielDetailInfo.hydrate) {
-
-//   };
-// };
 
 /**
  * 改造注水资源的入口文件,可以在这个模块中添加架构特性
@@ -38,10 +32,6 @@ export class ConvertHydrationEntryFile {
 
   private webpackEntryPoints: EntryObject = {};
 
-  private async getInitialStyleTemplateContent(): Promise<string> {
-    return await promisify(fs.readFile)(path.resolve(__dirname, "../templates/initial.css.template"), "utf-8");
-  };
-
   private async getHydrationEntryTemplateContent(): Promise<string> {
     return await promisify(fs.readFile)(path.resolve(__dirname, "../templates/hydration.entry.template"), "utf-8");
   };
@@ -52,29 +42,20 @@ export class ConvertHydrationEntryFile {
    * 并生成webpack可以识别的entry-points对象
    * **/
   public async initialize(materielPairs: [alias: string, detail: MaterielCompilationInfoType][]) {
-    // const initialStyleTemplateContent = await this.getInitialStyleTemplateContent();
     const hydrationTemplateFileContent = await this.getHydrationEntryTemplateContent();
     /** 基于alias生成新的入口文件内容 **/
     const virtualFileVolumePairs = await Promise.all(materielPairs.map(async ([alias, materielDetailInfo]) => {
       const virtualEntryModuleName = `./${alias}.entry.tsx`;
       const virtualEntryModuleContent = hydrationTemplateFileContent
         .replace("$$sourceCodeFilePath$$", materielDetailInfo.source)
-        .replace("$$webpackPublicPathWithRuntime$$", "/hydration/");
+        .replace("$$webpackPublicPathWithRuntime$$", computedPublicPathWithRuntime(materielDetailInfo));
       return [virtualEntryModuleName, virtualEntryModuleContent];
     }));
     /** 在内存中写入这些新入口文件的内容 **/
-    memfs.vol.fromJSON({
-      // "./initial.less": initialStyleTemplateContent,
-      ...fromPairs(virtualFileVolumePairs)
-    }, this.virtualDirectoryPath);
+    memfs.vol.fromJSON(fromPairs(virtualFileVolumePairs), this.virtualDirectoryPath);
     /** 生成详细的webpackEntryPoints **/
     this.webpackEntryPoints = fromPairs(materielPairs.map(([alias]) => {
-      return [alias,
-        [
-          // path.join(this.getVirtualDirectoryPath(), "./initial.less"),
-          path.join(this.getVirtualDirectoryPath(), `./${alias}.entry.tsx`)
-        ]
-      ];
+      return [alias, [path.join(this.getVirtualDirectoryPath(), `./${alias}.entry.tsx`)]];
     }));
   };
 

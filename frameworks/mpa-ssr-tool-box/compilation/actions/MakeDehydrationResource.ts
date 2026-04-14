@@ -55,7 +55,7 @@ export class MakeDehydrationResource {
       if (error) {
         console.log(error);
       } else {
-        console.log(stats.toString({ colors: true }));
+        // console.log(stats.toString({ colors: true }));
         const latestAssetsFileList = filterWebpackStats(stats.toJson({ all: false, assets: true, source: false, outputPath: true }));
         /** 在json数据库中保存资源信息 **/
         dehydrationCompileDatabase.data["assets"] = latestAssetsFileList;
@@ -77,7 +77,7 @@ export class MakeDehydrationResource {
       if (error) {
         console.log(error);
       } else {
-        console.log(stats.toString({ colors: true }));
+        // console.log(stats.toString({ colors: true }));
         const latestAssetsFileList = filterWebpackStats(stats.toJson({ all: false, assets: true, source: false, outputPath: true }));
         /** 在json数据库中保存资源信息 **/
         dehydrationCompileDatabase.data["assets"] = latestAssetsFileList;

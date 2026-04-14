@@ -2,6 +2,12 @@ import { CompilationMaterielResourceDatabaseManager } from "@/frameworks/mpa-ssr
 
 import type { Compiler } from "webpack";
 
+export enum CompilerProgressStatus {
+  COMPILE = "compile",
+  EMIT = "emit",
+  DONE = "done"
+};
+
 export type CompilerProgressPluginType = {
   type: "hydration" | "dehydration",
   materielResourceDatabaseManager: CompilationMaterielResourceDatabaseManager
@@ -22,12 +28,12 @@ export class CompilerProgressPlugin {
     compiler.hooks.compile.tap("CompilerProgressPlugin", async (params) => {
       if (this.params.type === "hydration") {
         const hydrationCompileDatabase = this.params.materielResourceDatabaseManager.getHydrationCompileDatabase();
-        hydrationCompileDatabase.data["status"] = "compile";
+        hydrationCompileDatabase.data["status"] = CompilerProgressStatus.COMPILE;
         await hydrationCompileDatabase.write();
       };
       if (this.params.type === "dehydration") {
         const dehydrationCompileDatabase = this.params.materielResourceDatabaseManager.getDehydrationCompileDatabase();
-        dehydrationCompileDatabase.data["status"] = "compile";
+        dehydrationCompileDatabase.data["status"] = CompilerProgressStatus.COMPILE;
         await dehydrationCompileDatabase.write();
       };
       // console.log(this.params.alias, "compile");
@@ -37,12 +43,12 @@ export class CompilerProgressPlugin {
     compiler.hooks.emit.tapAsync("CompilerProgressPlugin", async (compilation, callback) => {
       if (this.params.type === "hydration") {
         const hydrationCompileDatabase = this.params.materielResourceDatabaseManager.getHydrationCompileDatabase();
-        hydrationCompileDatabase.data["status"] = "emit";
+        hydrationCompileDatabase.data["status"] = CompilerProgressStatus.EMIT;
         await hydrationCompileDatabase.write();
       };
       if (this.params.type === "dehydration") {
         const dehydrationCompileDatabase = this.params.materielResourceDatabaseManager.getDehydrationCompileDatabase();
-        dehydrationCompileDatabase.data["status"] = "emit";
+        dehydrationCompileDatabase.data["status"] = CompilerProgressStatus.EMIT;
         await dehydrationCompileDatabase.write();
       };
       callback();
@@ -53,13 +59,13 @@ export class CompilerProgressPlugin {
     compiler.hooks.done.tap("CompilerProgressPlugin", async (stats) => {
       if (this.params.type === "hydration") {
         const hydrationCompileDatabase = this.params.materielResourceDatabaseManager.getHydrationCompileDatabase();
-        hydrationCompileDatabase.data["status"] = "done";
+        hydrationCompileDatabase.data["status"] = CompilerProgressStatus.DONE;
         // await this.clearHistoryResource(hydrationCompileDatabase.data[this.params.alias]);
         await hydrationCompileDatabase.write();
       };
       if (this.params.type === "dehydration") {
         const dehydrationCompileDatabase = this.params.materielResourceDatabaseManager.getDehydrationCompileDatabase();
-        dehydrationCompileDatabase.data["status"] = "done";
+        dehydrationCompileDatabase.data["status"] = CompilerProgressStatus.DONE;
         // await this.clearHistoryResource(dehydrationCompileDatabase.data[this.params.alias]);
         await dehydrationCompileDatabase.write();
       };

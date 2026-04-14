@@ -3,15 +3,11 @@ import { DehydrationResourceManagement } from "@/frameworks/mpa-ssr-tool-box/run
 
 import type { DehydrationCompileAssetsListQueryResult } from "@/frameworks/mpa-ssr-tool-box/runtime/services/DehydrationResourceManagement";
 
-export type getDehydratedResourceParamsType = {
-  /** 脱水物料的别名 **/
-  alias: string
-};
 
 /**
  * 获取脱水物料资源的入口函数
  * **/
-export async function getDehydratedResource({ alias }: getDehydratedResourceParamsType): Promise<DehydrationCompileAssetsListQueryResult> {
+export async function getDehydratedResource(alias: string): Promise<DehydrationCompileAssetsListQueryResult> {
   const $DehydrationResourceManagement = IOCContainer.get(DehydrationResourceManagement);
   const compileAssetsInfo = await $DehydrationResourceManagement.getResourceListByAlias(alias);
   if (!compileAssetsInfo) {

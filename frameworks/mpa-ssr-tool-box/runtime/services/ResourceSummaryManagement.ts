@@ -3,9 +3,9 @@ import { injectable, inject } from "inversify";
 import { IOCContainer } from "@/frameworks/mpa-ssr-tool-box/runtime/cores/IOCContainer";
 import { RuntimeMaterielResourceDatabaseManager } from "@/frameworks/mpa-ssr-tool-box/runtime/commons/RuntimeMaterielResourceDatabaseManager";
 
-import type { MaterielsSummaryDictionary } from "@/frameworks/mpa-ssr-tool-box/compilation/utils/materielsSummaryTransformer";
+import type { MaterielRenderType } from "@/frameworks/mpa-ssr-tool-box/compilation/commons/CompilationConfigManager";
 
-export type MaterielsSummaryQueryResult = MaterielsSummaryDictionary | false;
+export type MaterielsSummaryQueryResult = MaterielRenderType | false;
 
 /**
  * 物料概览的资源管理器

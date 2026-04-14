@@ -52,8 +52,8 @@ export class ServerSiderRenderService {
   private applicationInjectContent: ApplicationInjectContentType;
 
   /** 生成脱水视图 **/
-  private async generateDehydrateContent({ alias }): Promise<void | false> {
-    const dehydrateAssets = await getDehydratedResource({ alias });
+  private async generateDehydrateContent(alias: string): Promise<void | false> {
+    const dehydrateAssets = await getDehydratedResource(alias);
     /** 没有脱水渲染物料时的操作 **/
     if (!dehydrateAssets) {
       this.dehydrateContent = (<div id="root" style={{ height: "100%" }} />);
@@ -70,18 +70,45 @@ export class ServerSiderRenderService {
     /** 如果存在脱水渲染脚本的话就需要进行脱水视图的渲染 **/
     const dehydrateHTMLContent = await renderDehydratedResourceWithSandbox(dehydrateAssets.javascript[0], this.applicationInjectContent);
     this.dehydrateContent = (<div id="root" style={{ height: "100%" }} dangerouslySetInnerHTML={{ __html: dehydrateHTMLContent }} />);
+    return void (0);
+  };
+
+  /** 生成样式表标签,要根据物料概览来判断是 优先使用注水样式表 还是 优先使用脱水样式表 **/
+  private async generateStyleSheetTags(alias: string): Promise<void | false> {
+    const resourceSummary = await getResourceSummary(alias);
+    if (!resourceSummary) {
+      return false;
+    };
+    const { assetsDirectoryPath, hydrationResourceDirectoryPath, dehydrationResourceDirectoryPath } = await getRuntimeConfiguration();
+    if (resourceSummary.hydrate) {
+      const hydrateAssets = await getHydrationResource(alias);
+      if (!hydrateAssets) {
+        return false;
+      };
+      this.hydrateStyleSheetTags = get(hydrateAssets, "stylesheet", []).map((stylesheetResourceRelativePath: string) => (
+        <link key={stylesheetResourceRelativePath} rel="stylesheet" href={path.join(hydrationResourceDirectoryPath, stylesheetResourceRelativePath).replace(assetsDirectoryPath, "")} />
+      ));
+      return void (0);
+    };
+    if (resourceSummary.dehydrate) {
+      const dehydratedAssets = await getDehydratedResource(alias);
+      if (!dehydratedAssets) {
+        return false;
+      };
+      this.hydrateStyleSheetTags = get(dehydratedAssets, "stylesheet", []).map((stylesheetResourceRelativePath: string) => (
+        <link key={stylesheetResourceRelativePath} rel="stylesheet" href={path.join(dehydrationResourceDirectoryPath, stylesheetResourceRelativePath).replace(assetsDirectoryPath, "")} />
+      ));
+      return void (0);
+    };
   };
 
   /** 生成前端的注水标签 **/
-  private async generateHydrationTags({ alias }): Promise<void | false> {
+  private async generateHydrationScriptTags(alias: string): Promise<void | false> {
     const { assetsDirectoryPath, hydrationResourceDirectoryPath } = await getRuntimeConfiguration();
-    const hydrateAssets = await getHydrationResource({ alias });
+    const hydrateAssets = await getHydrationResource(alias);
     if (!hydrateAssets) {
       return false;
     };
-    this.hydrateStyleSheetTags = get(hydrateAssets, "stylesheet", []).map((stylesheetResourceRelativePath: string) => (
-      <link key={stylesheetResourceRelativePath} rel="stylesheet" href={path.join(hydrationResourceDirectoryPath, stylesheetResourceRelativePath).replace(assetsDirectoryPath, "")} />
-    ));
     this.hydrateScriptTags = get(hydrateAssets, "javascript", []).map((javascriptResourceRelativePath: string) => (
       <script key={javascriptResourceRelativePath} src={path.join(hydrationResourceDirectoryPath, javascriptResourceRelativePath).replace(assetsDirectoryPath, "")} />
     ));
@@ -107,10 +134,10 @@ export class ServerSiderRenderService {
 
   public async computedHTMLContent(params: ServerSiderRenderParamsType): Promise<string> {
     const alias = params.alias;
-    // await getResourceSummary({ alias });
     await this.generateApplicationInjectContent(params);
-    await this.generateDehydrateContent({ alias });
-    await this.generateHydrationTags({ alias });
+    await this.generateHydrationScriptTags(alias);
+    await this.generateDehydrateContent(alias);
+    await this.generateStyleSheetTags(alias);
     const contentString = renderToString(
       <html lang="zh-CN">
         <head>

@@ -37,7 +37,7 @@ export class MakeServerApplication {
       if (error) {
         console.log(error);
       } else {
-        console.log(stats.toString({ colors: true }));
+        // console.log(stats.toString({ colors: true }));
         if (this.childProcess) {
           this.childProcess.kill("SIGKILL");
         };

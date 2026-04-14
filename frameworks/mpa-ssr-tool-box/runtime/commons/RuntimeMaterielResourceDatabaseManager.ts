@@ -6,14 +6,16 @@ import { injectable, inject } from "inversify";
 import { IOCContainer } from "@/frameworks/mpa-ssr-tool-box/runtime/cores/IOCContainer";
 import { RuntimeConfigManager } from "@/frameworks/mpa-ssr-tool-box/runtime/commons/RuntimeConfigManager";
 
+import type { SummaryDatabaseDictionaryType, ResourceDatabaseDictionaryType } from "@/frameworks/mpa-ssr-tool-box/public/DatabaseManager";
+
 @injectable()
 export class RuntimeMaterielResourceDatabaseManager {
 
-  private summaryDatabase: Low<{}>;
+  private summaryDatabase: Low<SummaryDatabaseDictionaryType>;
 
-  private hydrationCompileDatabase: Low<{}>;
+  private hydrationCompileDatabase: Low<ResourceDatabaseDictionaryType>;
 
-  private dehydrationCompileDatabase: Low<{}>;
+  private dehydrationCompileDatabase: Low<ResourceDatabaseDictionaryType>;
 
   constructor (
     @inject(RuntimeConfigManager) private readonly $RuntimeConfigManager: RuntimeConfigManager
@@ -30,15 +32,15 @@ export class RuntimeMaterielResourceDatabaseManager {
     };
   };
 
-  public getSummaryDatabase(): Low<{}> {
+  public getSummaryDatabase(): Low<SummaryDatabaseDictionaryType> {
     return this.summaryDatabase;
   };
 
-  public getHydrationCompileDatabase(): Low<{}> {
+  public getHydrationCompileDatabase(): Low<ResourceDatabaseDictionaryType> {
     return this.hydrationCompileDatabase;
   };
 
-  public getDehydrationCompileDatabase(): Low<{}> {
+  public getDehydrationCompileDatabase(): Low<ResourceDatabaseDictionaryType> {
     return this.dehydrationCompileDatabase;
   };
 
