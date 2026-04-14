@@ -9,16 +9,14 @@ import { IOCContainer } from "@/frameworks/mpa-ssr-build-tool/cores/IOCContainer
 import { FrameworkConfigManager } from "@/frameworks/mpa-ssr-build-tool/commons/FrameworkConfigManager";
 
 
-import { TypeScriptLoaderConfigManger } from "@/frameworks/mpa-ssr-build-tool/configs/loaders/TypeScriptLoaderConfigManger";
-import { ESBuildLoaderConfigManger } from "@/frameworks/mpa-ssr-build-tool/configs/loaders/ESBuildLoaderConfigManger";
+import { ScriptLoaderConfigManger } from "@/frameworks/mpa-ssr-build-tool/configs/loaders/ScriptLoaderConfigManger";
 
 
 @injectable()
 export class DLLConfigManager {
 
   constructor (
-    @inject(TypeScriptLoaderConfigManger) private readonly $TypeScriptLoaderConfigManger: TypeScriptLoaderConfigManger,
-    @inject(ESBuildLoaderConfigManger) private readonly $ESBuildLoaderConfigManger: ESBuildLoaderConfigManger,
+    @inject(ScriptLoaderConfigManger) private readonly $ScriptLoaderConfigManger: ScriptLoaderConfigManger,
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager
   ) { };
 
@@ -44,8 +42,7 @@ export class DLLConfigManager {
       },
       module: {
         rules: (await Promise.all([
-          this.$TypeScriptLoaderConfigManger.getClientSiderLoaderConfig(),
-          this.$ESBuildLoaderConfigManger.getClientSiderLoaderConfig()
+          this.$ScriptLoaderConfigManger.getLoaderConfig()
         ])).flat()
       },
       plugins: [

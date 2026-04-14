@@ -15,4 +15,4 @@ export { saveProjectEntryFileAbsolutePath } from "@/frameworks/mpa-ssr-tool-box/
 export { readProjectEntryFileAbsolutePath } from "@/frameworks/mpa-ssr-tool-box/runtime/globalSingletonStorage";
 
 export type { CompileAssetsDictionaryType } from "@/frameworks/mpa-ssr-tool-box/public/ResourceManager.d";
-export type { RuntimeConfig } from "@/frameworks/mpa-ssr-tool-box/runtime/commons/RuntimeConfigManager";
+export type { RuntimeConfigReturnType } from "@/frameworks/mpa-ssr-tool-box/runtime/commons/RuntimeConfigManager";

@@ -8,7 +8,7 @@ import CopyWebpackPlugin from "copy-webpack-plugin";
 
 import { IOCContainer } from "@/frameworks/mpa-ssr-build-tool/cores/IOCContainer";
 import { FrameworkConfigManager } from "@/frameworks/mpa-ssr-build-tool/commons/FrameworkConfigManager";
-import { TypeScriptLoaderConfigManger } from "@/frameworks/mpa-ssr-build-tool/configs/loaders/TypeScriptLoaderConfigManger";
+import { ScriptLoaderConfigManger } from "@/frameworks/mpa-ssr-build-tool/configs/loaders/ScriptLoaderConfigManger";
 
 import { ServerProjectVirtualFile } from "@/frameworks/mpa-ssr-build-tool/services/ServerProjectVirtualFile";
 
@@ -19,7 +19,7 @@ export class ServerSiderConfigManager {
 
   constructor (
     @inject(FrameworkConfigManager) private readonly $FrameworkConfigManager: FrameworkConfigManager,
-    @inject(TypeScriptLoaderConfigManger) private readonly $TypeScriptLoaderConfigManger: TypeScriptLoaderConfigManger,
+    @inject(ScriptLoaderConfigManger) private readonly $ScriptLoaderConfigManger: ScriptLoaderConfigManger,
     @inject(ServerProjectVirtualFile) private readonly $ServerProjectVirtualFile: ServerProjectVirtualFile
   ) { };
 
@@ -60,7 +60,7 @@ export class ServerSiderConfigManager {
       })],
       module: {
         rules: (await Promise.all([
-          this.$TypeScriptLoaderConfigManger.getServerSiderLoaderConfig()
+          this.$ScriptLoaderConfigManger.getLoaderConfig()
         ])).flat()
       },
       plugins: [

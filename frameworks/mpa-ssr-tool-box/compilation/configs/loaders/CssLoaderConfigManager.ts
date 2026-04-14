@@ -11,94 +11,71 @@ export class CssLoaderConfigManager {
     @inject(CompilationConfigManager) private readonly $CompilationConfigManager: CompilationConfigManager
   ) { };
 
-  public async getHydrationSiderLoaderConfig() {
+  /**
+   * 对于node_modules中的模块而言
+   * 让css-module缺省即可
+   * **/
+  private async getNodeModulesRules() {
     const { extractResourceDirectoryName } = this.$CompilationConfigManager.getRuntimeConfig();
     return [{
-      test: /\.(css)$/,
-      use: [
-        {
-          loader: MiniCssExtractPlugin.loader,
-          options: {
-            emit: true,
-            defaultExport: true,
-            publicPath: `/${extractResourceDirectoryName}/`
-          }
-        },
-        {
-          loader: "css-loader",
-          options: {
-            modules: {
-              namedExport: true,
-              exportOnlyLocals: false,
-              mode: (resourcePath) => {
-                if (/\.(global)/.test(resourcePath)) {
-                  return "global";
-                }
-                if (/(node_modules)/.test(resourcePath)) {
-                  return "global";
-                };
-                return "local";
-              }
-            },
-            sourceMap: true
-          }
-        },
-        {
-          loader: "postcss-loader",
-          options: {
-            postcssOptions: {
-              config: true
-            },
-            sourceMap: true
-          }
-        }
-      ]
+      loader: MiniCssExtractPlugin.loader,
+      options: {
+        emit: true,
+        defaultExport: true,
+        publicPath: `/${extractResourceDirectoryName}/`
+      }
+    }, {
+      loader: "css-loader",
+      options: {
+        sourceMap: true
+      }
     }];
   };
 
-  public async getDehydrationSiderLoaderConfig() {
+  /**
+   * 对于其余的项目文件
+   * css-module需要开启
+   * **/
+  private async getProjectRules() {
     const { extractResourceDirectoryName } = this.$CompilationConfigManager.getRuntimeConfig();
     return [{
-      test: /\.(css)$/,
-      use: [
-        {
-          loader: MiniCssExtractPlugin.loader,
-          options: {
-            emit: true,
-            defaultExport: true,
-            publicPath: `/${extractResourceDirectoryName}/`
-          }
+      loader: MiniCssExtractPlugin.loader,
+      options: {
+        emit: true,
+        defaultExport: true,
+        publicPath: `/${extractResourceDirectoryName}/`
+      }
+    }, {
+      loader: "css-loader",
+      options: {
+        modules: {
+          namedExport: true,
+          exportOnlyLocals: false,
+          mode: "local"
         },
-        {
-          loader: "css-loader",
-          options: {
-            modules: {
-              namedExport: true,
-              exportOnlyLocals: false,
-              mode: (resourcePath) => {
-                if (/\.(global)/.test(resourcePath)) {
-                  return "global";
-                }
-                if (/(node_modules)/.test(resourcePath)) {
-                  return "global";
-                };
-                return "local";
-              }
-            },
-            sourceMap: true
-          }
+        sourceMap: true
+      }
+    }, {
+      loader: "postcss-loader",
+      options: {
+        postcssOptions: {
+          config: true
         },
-        {
-          loader: "postcss-loader",
-          options: {
-            postcssOptions: {
-              config: true
-            },
-            sourceMap: true
-          }
-        }
-      ]
+        sourceMap: true
+      }
     }];
+  };
+
+  public async getLoaderConfig() {
+    return [{
+      test: /\.(css)$/,
+      oneOf: [{
+        include: /(node_modules)/,
+        use: await this.getNodeModulesRules()
+      }, {
+        use: await this.getProjectRules()
+      }]
+    }]
   };
 
 };

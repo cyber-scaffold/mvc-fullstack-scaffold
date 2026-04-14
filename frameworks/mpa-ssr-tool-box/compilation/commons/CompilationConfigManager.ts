@@ -83,7 +83,7 @@ export class CompilationConfigManager {
   };
 
   /**
-   * 数组形式的物料清单信息
+   * 数组形式的物料清单信息(用于计算的重要属性,修改后影响大)
    * **/
   private materielArrayList: MaterielCompilationInfoType[];
 

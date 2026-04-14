@@ -10,8 +10,7 @@ import { IOCContainer } from "@/frameworks/mpa-ssr-tool-box/compilation/cores/IO
 import { CompilationConfigManager } from "@/frameworks/mpa-ssr-tool-box/compilation/commons/CompilationConfigManager";
 
 import { CompilationMaterielResourceDatabaseManager } from "@/frameworks/mpa-ssr-tool-box/compilation/commons/CompilationMaterielResourceDatabaseManager";
-import { TypeScriptLoaderConfigManger } from "@/frameworks/mpa-ssr-tool-box/compilation/configs/loaders/TypeScriptLoaderConfigManger";
-import { ESBuildLoaderConfigManger } from "@/frameworks/mpa-ssr-tool-box/compilation/configs/loaders/ESBuildLoaderConfigManger";
+import { ScriptLoaderConfigManger } from "@/frameworks/mpa-ssr-tool-box/compilation/configs/loaders/ScriptLoaderConfigManger";
 import { FileLoaderConfigManager } from "@/frameworks/mpa-ssr-tool-box/compilation/configs/loaders/FileLoaderConfigManager";
 import { LessLoaderConfigManager } from "@/frameworks/mpa-ssr-tool-box/compilation/configs/loaders/LessLoaderConfigManager";
 import { SassLoaderConfigManager } from "@/frameworks/mpa-ssr-tool-box/compilation/configs/loaders/SassLoaderConfigManager";
@@ -31,8 +30,7 @@ export class DehydrationConfigManager {
   constructor (
     @inject(CompilationMaterielResourceDatabaseManager) private readonly $CompilationMaterielResourceDatabaseManager: CompilationMaterielResourceDatabaseManager,
     @inject(ConvertDehydrationEntryFile) private readonly $ConvertDehydrationEntryFile: ConvertDehydrationEntryFile,
-    @inject(TypeScriptLoaderConfigManger) private readonly $TypeScriptLoaderConfigManger: TypeScriptLoaderConfigManger,
-    @inject(ESBuildLoaderConfigManger) private readonly $ESBuildLoaderConfigManger: ESBuildLoaderConfigManger,
+    @inject(ScriptLoaderConfigManger) private readonly $ScriptLoaderConfigManger: ScriptLoaderConfigManger,
     @inject(FileLoaderConfigManager) private readonly $FileLoaderConfigManager: FileLoaderConfigManager,
     @inject(LessLoaderConfigManager) private readonly $LessLoaderConfigManager: LessLoaderConfigManager,
     @inject(SassLoaderConfigManager) private readonly $SassLoaderConfigManager: SassLoaderConfigManager,
@@ -73,12 +71,11 @@ export class DehydrationConfigManager {
       })],
       module: {
         rules: (await Promise.all([
-          this.$TypeScriptLoaderConfigManger.getDehydrationSiderLoaderConfig(),
-          this.$ESBuildLoaderConfigManger.getDehydrationSiderLoaderConfig(),
-          this.$FileLoaderConfigManager.getDehydrationSiderLoaderConfig(),
-          this.$LessLoaderConfigManager.getDehydrationSiderLoaderConfig(),
-          this.$SassLoaderConfigManager.getDehydrationSiderLoaderConfig(),
-          this.$CssLoaderConfigManager.getDehydrationSiderLoaderConfig()
+          this.$ScriptLoaderConfigManger.getLoaderConfig(),
+          this.$FileLoaderConfigManager.getLoaderConfig(),
+          this.$LessLoaderConfigManager.getLoaderConfig(),
+          this.$SassLoaderConfigManager.getLoaderConfig(),
+          this.$CssLoaderConfigManager.getLoaderConfig()
         ])).flat()
       },
       plugins: [

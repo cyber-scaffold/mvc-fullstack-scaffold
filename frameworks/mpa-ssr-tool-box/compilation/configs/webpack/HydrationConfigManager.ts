@@ -10,12 +10,11 @@ import { IOCContainer } from "@/frameworks/mpa-ssr-tool-box/compilation/cores/IO
 import { CompilationConfigManager } from "@/frameworks/mpa-ssr-tool-box/compilation/commons/CompilationConfigManager";
 
 import { CompilationMaterielResourceDatabaseManager } from "@/frameworks/mpa-ssr-tool-box/compilation/commons/CompilationMaterielResourceDatabaseManager";
-import { CssLoaderConfigManager } from "@/frameworks/mpa-ssr-tool-box/compilation/configs/loaders/CssLoaderConfigManager";
+import { ScriptLoaderConfigManger } from "@/frameworks/mpa-ssr-tool-box/compilation/configs/loaders/ScriptLoaderConfigManger";
 import { FileLoaderConfigManager } from "@/frameworks/mpa-ssr-tool-box/compilation/configs/loaders/FileLoaderConfigManager";
 import { LessLoaderConfigManager } from "@/frameworks/mpa-ssr-tool-box/compilation/configs/loaders/LessLoaderConfigManager";
 import { SassLoaderConfigManager } from "@/frameworks/mpa-ssr-tool-box/compilation/configs/loaders/SassLoaderConfigManager";
-import { ESBuildLoaderConfigManger } from "@/frameworks/mpa-ssr-tool-box/compilation/configs/loaders/ESBuildLoaderConfigManger";
-import { TypeScriptLoaderConfigManger } from "@/frameworks/mpa-ssr-tool-box/compilation/configs/loaders/TypeScriptLoaderConfigManger";
+import { CssLoaderConfigManager } from "@/frameworks/mpa-ssr-tool-box/compilation/configs/loaders/CssLoaderConfigManager";
 
 import { ConvertHydrationEntryFile } from "@/frameworks/mpa-ssr-tool-box/compilation/services/ConvertHydrationEntryFile";
 import { CompilerProgressPlugin } from "@/frameworks/mpa-ssr-tool-box/compilation/plugins/CompilerProgressPlugin";
@@ -28,8 +27,7 @@ export class HydrationConfigManager {
   constructor (
     @inject(CompilationMaterielResourceDatabaseManager) private readonly $CompilationMaterielResourceDatabaseManager: CompilationMaterielResourceDatabaseManager,
     @inject(ConvertHydrationEntryFile) private readonly $ConvertHydrationEntryFile: ConvertHydrationEntryFile,
-    @inject(TypeScriptLoaderConfigManger) private readonly $TypeScriptLoaderConfigManger: TypeScriptLoaderConfigManger,
-    @inject(ESBuildLoaderConfigManger) private readonly $ESBuildLoaderConfigManger: ESBuildLoaderConfigManger,
+    @inject(ScriptLoaderConfigManger) private readonly $ScriptLoaderConfigManger: ScriptLoaderConfigManger,
     @inject(FileLoaderConfigManager) private readonly $FileLoaderConfigManager: FileLoaderConfigManager,
     @inject(LessLoaderConfigManager) private readonly $LessLoaderConfigManager: LessLoaderConfigManager,
     @inject(SassLoaderConfigManager) private readonly $SassLoaderConfigManager: SassLoaderConfigManager,
@@ -60,12 +58,11 @@ export class HydrationConfigManager {
       },
       module: {
         rules: (await Promise.all([
-          this.$TypeScriptLoaderConfigManger.getHydrationSiderLoaderConfig(),
-          this.$ESBuildLoaderConfigManger.getHydrationSiderLoaderConfig(),
-          this.$FileLoaderConfigManager.getHydrationSiderLoaderConfig(),
-          this.$LessLoaderConfigManager.getHydrationSiderLoaderConfig(),
-          this.$SassLoaderConfigManager.getHydrationSiderLoaderConfig(),
-          this.$CssLoaderConfigManager.getHydrationSiderLoaderConfig()
+          this.$ScriptLoaderConfigManger.getLoaderConfig(),
+          this.$FileLoaderConfigManager.getLoaderConfig(),
+          this.$LessLoaderConfigManager.getLoaderConfig(),
+          this.$SassLoaderConfigManager.getLoaderConfig(),
+          this.$CssLoaderConfigManager.getLoaderConfig()
         ])).flat()
       },
       plugins: [

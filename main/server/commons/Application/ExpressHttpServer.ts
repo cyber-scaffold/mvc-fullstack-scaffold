@@ -37,7 +37,7 @@ export class ExpressHttpServer {
   /** 服务启动时执行的代码 **/
   public async bootstrap() {
     const { server } = await this.$ApplicationConfigManager.getRuntimeConfig();
-    const { hydrationResourceDirectoryPath, dehydrationResourceDirectoryPath } = await getRuntimeConfiguration();
+    const { hydrationResourceDirectoryPath } = await getRuntimeConfiguration();
     const { extractResourceDirectory, staticResourceDirectory, swaggerResourceDirectory, publicResourceDirectory } = await this.$ApplicationConfigManager.getRuntimeConfig();
     /** 注册中间件 **/
     this.expressInstance.use(cookieParser());

@@ -56,6 +56,7 @@ export class ConvertDehydrationEntryFile {
     this.webpackEntryPoints = fromPairs(materielPairs.map(([alias]) => {
       return [alias, [
         "source-map-support/register",
+        "esbuild-register",
         path.join(this.getVirtualDirectoryPath(), `./${alias}.entry.tsx`)
       ]];
     }));
