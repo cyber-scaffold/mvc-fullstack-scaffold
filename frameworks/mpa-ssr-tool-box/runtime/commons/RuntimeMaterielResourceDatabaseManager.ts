@@ -6,7 +6,7 @@ import { injectable, inject } from "inversify";
 import { IOCContainer } from "@/frameworks/mpa-ssr-tool-box/runtime/cores/IOCContainer";
 import { RuntimeConfigManager } from "@/frameworks/mpa-ssr-tool-box/runtime/commons/RuntimeConfigManager";
 
-import type { SummaryDatabaseDictionaryType, ResourceDatabaseDictionaryType } from "@/frameworks/mpa-ssr-tool-box/public/DatabaseManager";
+import type { SummaryDatabaseDictionaryType, ResourceDatabaseDictionaryType } from "@/frameworks/mpa-ssr-tool-box/public/ResourceManager.d";
 
 @injectable()
 export class RuntimeMaterielResourceDatabaseManager {

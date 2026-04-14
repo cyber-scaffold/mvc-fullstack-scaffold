@@ -79,14 +79,14 @@ export class ServerSiderRenderService {
     if (!resourceSummary) {
       return false;
     };
-    const { assetsDirectoryPath, hydrationResourceDirectoryPath, dehydrationResourceDirectoryPath } = await getRuntimeConfiguration();
+    const { assetsDirectoryPath, extractResourceDirectoryPath } = await getRuntimeConfiguration();
     if (resourceSummary.hydrate) {
       const hydrateAssets = await getHydrationResource(alias);
       if (!hydrateAssets) {
         return false;
       };
       this.hydrateStyleSheetTags = get(hydrateAssets, "stylesheet", []).map((stylesheetResourceRelativePath: string) => (
-        <link key={stylesheetResourceRelativePath} rel="stylesheet" href={path.join(hydrationResourceDirectoryPath, stylesheetResourceRelativePath).replace(assetsDirectoryPath, "")} />
+        <link key={stylesheetResourceRelativePath} rel="stylesheet" href={path.join(extractResourceDirectoryPath, stylesheetResourceRelativePath).replace(assetsDirectoryPath, "")} />
       ));
       return void (0);
     };
@@ -96,7 +96,7 @@ export class ServerSiderRenderService {
         return false;
       };
       this.hydrateStyleSheetTags = get(dehydratedAssets, "stylesheet", []).map((stylesheetResourceRelativePath: string) => (
-        <link key={stylesheetResourceRelativePath} rel="stylesheet" href={path.join(dehydrationResourceDirectoryPath, stylesheetResourceRelativePath).replace(assetsDirectoryPath, "")} />
+        <link key={stylesheetResourceRelativePath} rel="stylesheet" href={path.join(extractResourceDirectoryPath, stylesheetResourceRelativePath).replace(assetsDirectoryPath, "")} />
       ));
       return void (0);
     };

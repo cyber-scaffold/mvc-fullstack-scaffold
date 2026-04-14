@@ -2,6 +2,16 @@ import type { MaterielRenderType } from "@/frameworks/mpa-ssr-tool-box/compilati
 import type { CompilerProgressStatus } from "@/frameworks/mpa-ssr-tool-box/compilation/utils/CompilerProgressPlugin";
 import type { EveryCompileAssetsInfo } from "@/frameworks/mpa-ssr-tool-box/public/filterWebpackStats";
 
+export type EveryCompileAssetsInfo = {
+  javascript: string[]
+  stylesheet: string[]
+  statics: string[]
+};
+
+export type CompileAssetsDictionaryType = {
+  [alias: string]: EveryCompileAssetsInfo
+};
+
 export type SummaryDatabaseDictionaryType = {
   [alias: string]: MaterielRenderType
 };

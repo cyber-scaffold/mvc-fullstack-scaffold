@@ -18,7 +18,7 @@ import { ESBuildLoaderConfigManger } from "@/frameworks/mpa-ssr-tool-box/compila
 import { TypeScriptLoaderConfigManger } from "@/frameworks/mpa-ssr-tool-box/compilation/configs/loaders/TypeScriptLoaderConfigManger";
 
 import { ConvertHydrationEntryFile } from "@/frameworks/mpa-ssr-tool-box/compilation/services/ConvertHydrationEntryFile";
-import { CompilerProgressPlugin } from "@/frameworks/mpa-ssr-tool-box/compilation/utils/CompilerProgressPlugin";
+import { CompilerProgressPlugin } from "@/frameworks/mpa-ssr-tool-box/compilation/plugins/CompilerProgressPlugin";
 
 import type { PathData, Compiler, Configuration } from "webpack";
 
@@ -41,7 +41,7 @@ export class HydrationConfigManager {
    * 最基础的webpack编译配置
    * **/
   public async getBasicConfig(): Promise<Configuration> {
-    const { projectDirectoryPath, hydrationResourceDirectoryPath } = await this.$CompilationConfigManager.getRuntimeConfig();
+    const { projectDirectoryPath, extractResourceDirectoryName, hydrationResourceDirectoryPath } = await this.$CompilationConfigManager.getRuntimeConfig();
     return {
       entry: this.$ConvertHydrationEntryFile.getWebpackEntryPoints(),
       output: {
@@ -84,7 +84,7 @@ export class HydrationConfigManager {
         }),
         new MiniCssExtractPlugin({
           linkType: "text/css",
-          filename: (pathData: PathData) => `index-${pathData.chunk.name}-hydration-[contenthash].css`
+          filename: (pathData: PathData) => `../${extractResourceDirectoryName}/index-${pathData.chunk.name}-hydration-[contenthash].css`
         })
       ]
     };

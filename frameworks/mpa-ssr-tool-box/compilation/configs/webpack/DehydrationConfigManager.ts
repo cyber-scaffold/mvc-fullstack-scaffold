@@ -18,7 +18,7 @@ import { SassLoaderConfigManager } from "@/frameworks/mpa-ssr-tool-box/compilati
 import { CssLoaderConfigManager } from "@/frameworks/mpa-ssr-tool-box/compilation/configs/loaders/CssLoaderConfigManager";
 
 import { ConvertDehydrationEntryFile } from "@/frameworks/mpa-ssr-tool-box/compilation/services/ConvertDehydrationEntryFile";
-import { CompilerProgressPlugin } from "@/frameworks/mpa-ssr-tool-box/compilation/utils/CompilerProgressPlugin";
+import { CompilerProgressPlugin } from "@/frameworks/mpa-ssr-tool-box/compilation/plugins/CompilerProgressPlugin";
 
 import type { PathData, Compiler } from "webpack";
 
@@ -44,7 +44,7 @@ export class DehydrationConfigManager {
    * 最基础的webpack编译配置
    * **/
   public async getBasicConfig(): Promise<Configuration> {
-    const { projectDirectoryPath, dehydrationResourceDirectoryPath } = this.$CompilationConfigManager.getRuntimeConfig();
+    const { projectDirectoryPath, extractResourceDirectoryName, dehydrationResourceDirectoryPath } = this.$CompilationConfigManager.getRuntimeConfig();
     return {
       entry: this.$ConvertDehydrationEntryFile.getWebpackEntryPoints(),
       target: "node",
@@ -93,7 +93,7 @@ export class DehydrationConfigManager {
         new MiniCssExtractPlugin({
           runtime: false,
           linkType: false,
-          filename: (pathData: PathData) => `index-${pathData.chunk.name}-dehydration-[contenthash].css`
+          filename: (pathData: PathData) => `../${extractResourceDirectoryName}/index-${pathData.chunk.name}-dehydration-[contenthash].css`
         })
       ]
     };

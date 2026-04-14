@@ -3,7 +3,7 @@ import { injectable, inject } from "inversify";
 import { IOCContainer } from "@/frameworks/mpa-ssr-tool-box/runtime/cores/IOCContainer";
 import { RuntimeMaterielResourceDatabaseManager } from "@/frameworks/mpa-ssr-tool-box/runtime/commons/RuntimeMaterielResourceDatabaseManager";
 
-import type { CompileAssetsDictionaryType } from "@/frameworks/mpa-ssr-tool-box/public/filterWebpackStats";
+import type { CompileAssetsDictionaryType } from "@/frameworks/mpa-ssr-tool-box/public/ResourceManager.d";
 
 export type HydrationCompileAssetsListQueryResult = CompileAssetsDictionaryType | false;
 

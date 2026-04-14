@@ -6,7 +6,7 @@ import { IOCContainer } from "@/frameworks/mpa-ssr-tool-box/runtime/cores/IOCCon
 export type RuntimeConfig = {
   projectDirectoryPath: string
   assetsDirectoryPath: string
-  fileResourceDirectoryPath: string
+  extractResourceDirectoryPath: string
   hydrationResourceDirectoryPath: string
   dehydrationResourceDirectoryPath: string
 };
@@ -14,7 +14,7 @@ export type RuntimeConfig = {
 export type CustmerRuntimeConfigType = {
   projectDirectoryPath?: string
   assetsDirectoryName?: string
-  fileResourceDirectoryName?: string
+  extractResourceDirectoryName?: string
   hydrationResourceDirectoryName?: string
   dehydrationResourceDirectoryName?: string
 };
@@ -39,11 +39,11 @@ export class RuntimeConfigManager {
   };
 
   /** 文件资源的输出位置对应的文件夹名称 **/
-  private fileResourceDirectoryName = "resource";
+  private extractResourceDirectoryName = "extract";
 
   /** 文件资源的输出位置(服务端ssr渲染函数)(根据 物料资产的目录 和 对应文件夹名称 计算得到) **/
-  private getFileResourceDirectoryPath() {
-    return path.resolve(this.getAssetsDirectoryPath(), this.fileResourceDirectoryName);
+  private getExtractResourceDirectoryPath() {
+    return path.resolve(this.getAssetsDirectoryPath(), this.extractResourceDirectoryName);
   };
 
   /** 脱水资源的输出位置对应的文件夹名称 **/
@@ -73,8 +73,8 @@ export class RuntimeConfigManager {
     if (inputCustmerConfig.assetsDirectoryName) {
       this.assetsDirectoryName = inputCustmerConfig.assetsDirectoryName;
     };
-    if (inputCustmerConfig.fileResourceDirectoryName) {
-      this.fileResourceDirectoryName = inputCustmerConfig.fileResourceDirectoryName;
+    if (inputCustmerConfig.extractResourceDirectoryName) {
+      this.extractResourceDirectoryName = inputCustmerConfig.extractResourceDirectoryName;
     };
     if (inputCustmerConfig.hydrationResourceDirectoryName) {
       this.hydrationResourceDirectoryName = inputCustmerConfig.hydrationResourceDirectoryName;
@@ -92,7 +92,7 @@ export class RuntimeConfigManager {
     return {
       projectDirectoryPath: this.projectDirectoryPath,
       assetsDirectoryPath: this.getAssetsDirectoryPath(),
-      fileResourceDirectoryPath: this.getFileResourceDirectoryPath(),
+      extractResourceDirectoryPath: this.getExtractResourceDirectoryPath(),
       hydrationResourceDirectoryPath: this.getHydrationResourceDirectoryPath(),
       dehydrationResourceDirectoryPath: this.getDehydrationResourceDirectoryPath()
     };

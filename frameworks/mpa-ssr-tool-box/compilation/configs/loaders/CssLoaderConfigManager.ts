@@ -12,7 +12,7 @@ export class CssLoaderConfigManager {
   ) { };
 
   public async getHydrationSiderLoaderConfig() {
-    const { hydrationResourceDirectoryName } = this.$CompilationConfigManager.getRuntimeConfig();
+    const { extractResourceDirectoryName } = this.$CompilationConfigManager.getRuntimeConfig();
     return [{
       test: /\.(css)$/,
       use: [
@@ -20,7 +20,8 @@ export class CssLoaderConfigManager {
           loader: MiniCssExtractPlugin.loader,
           options: {
             emit: true,
-            defaultExport: true
+            defaultExport: true,
+            publicPath: `/${extractResourceDirectoryName}/`
           }
         },
         {
@@ -56,7 +57,7 @@ export class CssLoaderConfigManager {
   };
 
   public async getDehydrationSiderLoaderConfig() {
-    const { dehydrationResourceDirectoryName } = this.$CompilationConfigManager.getRuntimeConfig();
+    const { extractResourceDirectoryName } = this.$CompilationConfigManager.getRuntimeConfig();
     return [{
       test: /\.(css)$/,
       use: [
@@ -64,7 +65,8 @@ export class CssLoaderConfigManager {
           loader: MiniCssExtractPlugin.loader,
           options: {
             emit: true,
-            defaultExport: true
+            defaultExport: true,
+            publicPath: `/${extractResourceDirectoryName}/`
           }
         },
         {

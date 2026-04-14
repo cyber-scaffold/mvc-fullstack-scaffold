@@ -1,16 +1,9 @@
+import path from "path";
 import { fromPairs } from "lodash";
 
 import type { StatsCompilation } from "webpack";
 
-export type EveryCompileAssetsInfo = {
-  javascript: string[]
-  stylesheet: string[]
-  statics: string[]
-};
-
-export type CompileAssetsDictionaryType = {
-  [alias: string]: EveryCompileAssetsInfo
-};
+import { EveryCompileAssetsInfo, CompileAssetsDictionaryType } from "@/frameworks/mpa-ssr-tool-box/public/ResourceManager.d";
 
 export function filterWebpackStats(statsJson: StatsCompilation): CompileAssetsDictionaryType {
   const assetsByChunkName: Record<string, string[]> = statsJson.assetsByChunkName;
@@ -28,15 +21,15 @@ export function filterWebpackStats(statsJson: StatsCompilation): CompileAssetsDi
       };
       /** 分析出javascript文件 **/
       if (everyAssetsFileName.match(/\.(js)$/ig)) {
-        composeAssetsList["javascript"].push(everyAssetsFileName);
+        composeAssetsList["javascript"].push(path.basename(everyAssetsFileName));
       };
       /** 分析出css文件 **/
       if (everyAssetsFileName.match(/\.(css)$/ig)) {
-        composeAssetsList["stylesheet"].push(everyAssetsFileName);
+        composeAssetsList["stylesheet"].push(path.basename(everyAssetsFileName));
       };
       /** 分析出静态文件 **/
       if (everyAssetsFileName.match(/\.(ico|png|jpg|jpeg|gif|mp3|mp4|avi|svg|ttf|eot|otf|fon|ttc|woff|woff2)$/ig)) {
-        composeAssetsList["statics"].push(everyAssetsFileName);
+        composeAssetsList["statics"].push(path.basename(everyAssetsFileName));
       };
     });
     return [everyAssetsId, composeAssetsList];

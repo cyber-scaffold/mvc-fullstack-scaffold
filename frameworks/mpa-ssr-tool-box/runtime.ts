@@ -14,5 +14,5 @@ export { readProjectDirectoryAbsolutePath } from "@/frameworks/mpa-ssr-tool-box/
 export { saveProjectEntryFileAbsolutePath } from "@/frameworks/mpa-ssr-tool-box/runtime/globalSingletonStorage";
 export { readProjectEntryFileAbsolutePath } from "@/frameworks/mpa-ssr-tool-box/runtime/globalSingletonStorage";
 
-export type { CompileAssetsDictionaryType } from "@/frameworks/mpa-ssr-tool-box/public/filterWebpackStats";
+export type { CompileAssetsDictionaryType } from "@/frameworks/mpa-ssr-tool-box/public/ResourceManager.d";
 export type { RuntimeConfig } from "@/frameworks/mpa-ssr-tool-box/runtime/commons/RuntimeConfigManager";

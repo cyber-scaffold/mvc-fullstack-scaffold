@@ -7,7 +7,7 @@ import { ConvertDehydrationEntryFile } from "@/frameworks/mpa-ssr-tool-box/compi
 import { DehydrationConfigManager } from "@/frameworks/mpa-ssr-tool-box/compilation/configs/webpack/DehydrationConfigManager";
 import { CompilationMaterielResourceDatabaseManager } from "@/frameworks/mpa-ssr-tool-box/compilation/commons/CompilationMaterielResourceDatabaseManager";
 
-import { filterWebpackStats } from "@/frameworks/mpa-ssr-tool-box/public/filterWebpackStats";
+import { filterWebpackStats } from "@/frameworks/mpa-ssr-tool-box/compilation/utils/filterWebpackStats";
 
 import type { Compiler } from "webpack";
 import type { MaterielCompilationInfoType } from "@/frameworks/mpa-ssr-tool-box/compilation/commons/CompilationConfigManager";
@@ -55,7 +55,7 @@ export class MakeDehydrationResource {
       if (error) {
         console.log(error);
       } else {
-        // console.log(stats.toString({ colors: true }));
+        console.log(stats.toString({ colors: true }));
         const latestAssetsFileList = filterWebpackStats(stats.toJson({ all: false, assets: true, source: false, outputPath: true }));
         /** 在json数据库中保存资源信息 **/
         dehydrationCompileDatabase.data["assets"] = latestAssetsFileList;

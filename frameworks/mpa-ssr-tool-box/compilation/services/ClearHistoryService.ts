@@ -8,7 +8,7 @@ import { IOCContainer } from "@/frameworks/mpa-ssr-tool-box/compilation/cores/IO
 import { CompilationConfigManager } from "@/frameworks/mpa-ssr-tool-box/compilation/commons/CompilationConfigManager";
 import { CompilationMaterielResourceDatabaseManager } from "@/frameworks/mpa-ssr-tool-box/compilation/commons/CompilationMaterielResourceDatabaseManager";
 
-import type { CompileAssetsDictionaryType } from "@/frameworks/mpa-ssr-tool-box/public/filterWebpackStats";
+import type { CompileAssetsDictionaryType } from "@/frameworks/mpa-ssr-tool-box/public/ResourceManager.d";
 
 /**
  * 在webpack的watch模式下清理掉旧的编译产物

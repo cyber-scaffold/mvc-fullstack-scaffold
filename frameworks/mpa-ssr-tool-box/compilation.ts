@@ -6,4 +6,4 @@ export { makeDehydratedResource } from "@/frameworks/mpa-ssr-tool-box/compilatio
 export { makeHydrationResource } from "@/frameworks/mpa-ssr-tool-box/compilation/makeHydrationResource";
 
 export type { MaterielCompilationInfoType, CompilationConfigType, CustmerInputCompilationConfigType } from "@/frameworks/mpa-ssr-tool-box/compilation/commons/CompilationConfigManager";
-export type { CompileAssetsDictionaryType } from "@/frameworks/mpa-ssr-tool-box/public/filterWebpackStats";
+export type { CompileAssetsDictionaryType } from "@/frameworks/mpa-ssr-tool-box/public/ResourceManager.d";

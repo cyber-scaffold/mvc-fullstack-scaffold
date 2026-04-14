@@ -21,8 +21,8 @@ export type MaterielCompilationInfoType = MaterielRenderType & MaterielDetailInf
 export interface CompilationConfigType {
   projectDirectoryPath: string
   assetsDirectoryPath: string
-  fileResourceDirectoryName: string
-  fileResourceDirectoryPath: string
+  extractResourceDirectoryName: string
+  extractResourceDirectoryPath: string
   hydrationResourceDirectoryName: string
   hydrationResourceDirectoryPath: string
   dehydrationResourceDirectoryName: string
@@ -35,7 +35,7 @@ export interface CompilationConfigType {
 export interface CustmerInputCompilationConfigType {
   projectDirectoryPath?: string
   assetsDirectoryName?: string
-  fileResourceDirectoryName?: string
+  extractResourceDirectoryName?: string
   hydrationResourceDirectoryName?: string
   dehydrationResourceDirectoryName?: string
   materiels?: MaterielCompilationInfoType[]
@@ -59,11 +59,11 @@ export class CompilationConfigManager {
   };
 
   /** 文件资源的输出位置对应的文件夹名称 **/
-  private fileResourceDirectoryName = "resource";
+  private extractResourceDirectoryName = "extract";
 
   /** 文件资源的输出位置(服务端ssr渲染函数)(根据 物料资产的目录 和 对应文件夹名称 计算得到) **/
-  private getFileResourceDirectoryPath() {
-    return path.resolve(this.getAssetsDirectoryPath(), this.fileResourceDirectoryName);
+  private getExtractResourceDirectoryPath() {
+    return path.resolve(this.getAssetsDirectoryPath(), this.extractResourceDirectoryName);
   };
 
   /** 脱水资源的输出位置对应的文件夹名称 **/
@@ -128,8 +128,8 @@ export class CompilationConfigManager {
     return {
       projectDirectoryPath: this.projectDirectoryPath,
       assetsDirectoryPath: this.getAssetsDirectoryPath(),
-      fileResourceDirectoryName: this.fileResourceDirectoryName,
-      fileResourceDirectoryPath: this.getFileResourceDirectoryPath(),
+      extractResourceDirectoryName: this.extractResourceDirectoryName,
+      extractResourceDirectoryPath: this.getExtractResourceDirectoryPath(),
       hydrationResourceDirectoryName: this.hydrationResourceDirectoryName,
       hydrationResourceDirectoryPath: this.getHydrationResourceDirectoryPath(),
       dehydrationResourceDirectoryName: this.dehydrationResourceDirectoryName,
