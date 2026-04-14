@@ -5,6 +5,8 @@ import React from "react";
 
 import css from "./style.module.less";
 
+console.log("css", css);
+
 export function BasicLayout(props) {
   const { children } = props;
   return (
