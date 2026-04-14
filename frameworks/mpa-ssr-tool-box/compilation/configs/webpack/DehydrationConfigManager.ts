@@ -51,7 +51,7 @@ export class DehydrationConfigManager {
         path: dehydrationResourceDirectoryPath,
         filename: (pathData: PathData) => `index-${pathData.chunk.name}-dehydration-[contenthash].js`,
         library: {
-          type: "commonjs2"
+          type: "commonjs"
         }
       },
       resolve: {

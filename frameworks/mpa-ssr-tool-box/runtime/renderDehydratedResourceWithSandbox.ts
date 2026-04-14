@@ -31,7 +31,7 @@ export async function renderDehydratedResourceWithSandbox(resourceFilePath: stri
   };
   vm.createContext(sandbox);
   vm.runInContext(resourceFileCode, sandbox, { filename: realDehydratedResourceFilePath });
-  const moduleExportInfo = (sandbox.module.exports as any);
+  const moduleExportInfo = (sandbox.exports as any);
   if (moduleExportInfo.default) {
     return moduleExportInfo.default(content);
   };
