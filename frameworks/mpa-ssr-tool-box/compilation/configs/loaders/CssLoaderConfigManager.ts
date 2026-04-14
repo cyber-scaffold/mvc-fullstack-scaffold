@@ -27,6 +27,8 @@ export class CssLoaderConfigManager {
     }, {
       loader: "css-loader",
       options: {
+        url: true,
+        import: true,
         sourceMap: true
       }
     }];
@@ -48,6 +50,8 @@ export class CssLoaderConfigManager {
     }, {
       loader: "css-loader",
       options: {
+        url: true,
+        import: true,
         modules: {
           namedExport: true,
           exportOnlyLocals: false,

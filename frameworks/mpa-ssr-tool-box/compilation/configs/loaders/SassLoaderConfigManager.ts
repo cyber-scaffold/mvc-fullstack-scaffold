@@ -27,6 +27,8 @@ export class SassLoaderConfigManager {
     }, {
       loader: "css-loader",
       options: {
+        url: true,
+        import: true,
         sourceMap: true
       }
     }, {
@@ -59,6 +61,8 @@ export class SassLoaderConfigManager {
     }, {
       loader: "css-loader",
       options: {
+        url: true,
+        import: true,
         modules: {
           namedExport: true,
           exportOnlyLocals: false,

@@ -4,6 +4,8 @@ import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import { IOCContainer } from "@/frameworks/mpa-ssr-tool-box/compilation/cores/IOCContainer";
 import { CompilationConfigManager } from "@/frameworks/mpa-ssr-tool-box/compilation/commons/CompilationConfigManager";
 
+import { filePathContentHash } from "@/frameworks/mpa-ssr-tool-box/compilation/utils/filePathContentHash";
+
 @injectable()
 export class LessLoaderConfigManager {
 
@@ -27,6 +29,9 @@ export class LessLoaderConfigManager {
     }, {
       loader: "css-loader",
       options: {
+        url: true,
+        import: true,
+        esModule: false,
         sourceMap: true
       }
     }, {
@@ -65,11 +70,14 @@ export class LessLoaderConfigManager {
     }, {
       loader: "css-loader",
       options: {
+        url: true,
+        import: true,
         modules: {
-          namedExport: true,
+          // namedExport: true,
           exportOnlyLocals: false,
           mode: "local"
         },
+        esModule: false,
         sourceMap: true
       }
     }, {
