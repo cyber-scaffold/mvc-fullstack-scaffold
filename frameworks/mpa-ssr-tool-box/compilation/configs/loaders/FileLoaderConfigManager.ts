@@ -3,7 +3,10 @@ import { injectable, inject } from "inversify";
 import { IOCContainer } from "@/frameworks/mpa-ssr-tool-box/compilation/cores/IOCContainer";
 import { CompilationConfigManager } from "@/frameworks/mpa-ssr-tool-box/compilation/commons/CompilationConfigManager";
 
+import { filePathContentHash } from "@/frameworks/mpa-ssr-tool-box/compilation/utils/filePathContentHash";
+
 import type { MaterielCompilationInfoType } from "@/frameworks/mpa-ssr-tool-box/compilation/commons/CompilationConfigManager";
+
 
 /**
  * 这个类必须为单例模式
@@ -12,20 +15,16 @@ import type { MaterielCompilationInfoType } from "@/frameworks/mpa-ssr-tool-box/
 @injectable()
 export class FileLoaderConfigManager {
 
-  static computedEmitFile(materielArrayList: MaterielCompilationInfoType[]) {
-    const emitMemberList = [];
-    const noEmitMemberList = [];
-    materielArrayList.forEach((everyMateriel: MaterielCompilationInfoType) => {
-      if (everyMateriel.hydrate) { };
-    });
-  };
-
   constructor (
     @inject(CompilationConfigManager) private readonly $CompilationConfigManager: CompilationConfigManager
   ) { };
 
+  /**
+   * node_modules中的静态文件也可以考虑使用url-loader
+   * 所以这里单独把他拿出来处理
+   * **/
   private async getNodeModulesRules() {
-    const { materielArrayList, extractResourceDirectoryName } = this.$CompilationConfigManager.getRuntimeConfig();
+    const { extractResourceDirectoryName } = this.$CompilationConfigManager.getRuntimeConfig();
     return [{
       loader: "file-loader",
       options: {
@@ -33,14 +32,17 @@ export class FileLoaderConfigManager {
         outputPath: `../${extractResourceDirectoryName}/`,
         publicPath: `/${extractResourceDirectoryName}/`,
         name: (resourcePath: string) => {
-          return `[name]-[contenthash].[ext]`;
+          return `[name]-${filePathContentHash(resourcePath)}-[contenthash].[ext]`;
         }
       }
     }];
   };
 
-  private async getProjectRules() {
-    const { materielArrayList, extractResourceDirectoryName } = this.$CompilationConfigManager.getRuntimeConfig();
+  /**
+   * 需要生成静态资源的规则
+   * **/
+  private async getEmitResourceRules() {
+    const { extractResourceDirectoryName } = this.$CompilationConfigManager.getRuntimeConfig();
     return [{
       loader: "file-loader",
       options: {
@@ -48,23 +50,62 @@ export class FileLoaderConfigManager {
         outputPath: `../${extractResourceDirectoryName}/`,
         publicPath: `/${extractResourceDirectoryName}/`,
         name: (resourcePath: string) => {
-          return `[name]-[contenthash].[ext]`;
+          return `[name]-${filePathContentHash(resourcePath)}-[contenthash].[ext]`;
         }
       }
     }];
   };
 
-  public async getLoaderConfig() {
+  /**
+   * 不需要生成静态资源,只要import的规则
+   * **/
+  private async getNotEmitResourceRules() {
+    const { extractResourceDirectoryName } = this.$CompilationConfigManager.getRuntimeConfig();
+    return [{
+      loader: "file-loader",
+      options: {
+        emitFile: false,
+        outputPath: `../${extractResourceDirectoryName}/`,
+        publicPath: `/${extractResourceDirectoryName}/`,
+        name: (resourcePath: string) => {
+          return `[name]-${filePathContentHash(resourcePath)}-[contenthash].[ext]`;
+        }
+      }
+    }];
+  };
+
+  /**
+   * 对于 脱水编译环节而言 要把 在注水编译环节生成的 静态资源排除掉
+   * **/
+  public async getConfigByDehydration() {
+    const { hydrateDictionary } = this.$CompilationConfigManager.getRuntimeConfig();
+    const hydrateCompilationPhase: string[] = Object.values(hydrateDictionary).map((everyMaterielInfo: MaterielCompilationInfoType) => {
+      return everyMaterielInfo.source;
+    });
     return [{
       test: /\.(ico|png|jpg|jpeg|gif|mp3|mp4|avi|svg|ttf|eot|otf|fon|ttc|woff|woff2)$/,
       oneOf: [{
         include: /(node_modules)/,
         use: await this.getNodeModulesRules()
       }, {
-        // include: [],
-        use: await this.getProjectRules()
+        issuer: hydrateCompilationPhase,
+        use: await this.getNotEmitResourceRules()
+      }, {
+        use: await this.getEmitResourceRules()
       }]
-    }]
+    }];
+  };
+
+  public async getConfigByHydration() {
+    return [{
+      test: /\.(ico|png|jpg|jpeg|gif|mp3|mp4|avi|svg|ttf|eot|otf|fon|ttc|woff|woff2)$/,
+      oneOf: [{
+        include: /(node_modules)/,
+        use: await this.getNodeModulesRules()
+      }, {
+        use: await this.getEmitResourceRules()
+      }]
+    }];
   };
 
 };

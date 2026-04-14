@@ -3,8 +3,8 @@ import React from "react";
 import { BasicLayout } from "@/main/views/layouts/BasicLayout";
 import hq2 from "./assets/hq2.jpg";
 
-// console.log("导入模块之前的NODE_ENV", process.env.NODE_ENV);
-// console.log("window", window);
+console.log("导入模块之前的NODE_ENV", process.env.NODE_ENV);
+console.log("window", window);
 
 export default function IndexPage({ content, meta }) {
   // console.log("运行时的NODE_ENV", process.env.NODE_ENV);

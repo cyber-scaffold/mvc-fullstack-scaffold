@@ -55,8 +55,8 @@ export class ConvertDehydrationEntryFile {
     /** 生成详细的webpackEntryPoints **/
     this.webpackEntryPoints = fromPairs(materielPairs.map(([alias]) => {
       return [alias, [
-        "source-map-support/register",
         "esbuild-register",
+        "source-map-support/register",
         path.join(this.getVirtualDirectoryPath(), `./${alias}.entry.tsx`)
       ]];
     }));

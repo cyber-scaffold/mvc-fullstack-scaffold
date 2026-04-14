@@ -58,8 +58,8 @@ export class HydrationConfigManager {
       },
       module: {
         rules: (await Promise.all([
+          this.$FileLoaderConfigManager.getConfigByHydration(),
           this.$ScriptLoaderConfigManger.getLoaderConfig(),
-          this.$FileLoaderConfigManager.getLoaderConfig(),
           this.$LessLoaderConfigManager.getLoaderConfig(),
           this.$SassLoaderConfigManager.getLoaderConfig(),
           this.$CssLoaderConfigManager.getLoaderConfig()

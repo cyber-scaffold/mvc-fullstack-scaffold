@@ -71,8 +71,8 @@ export class DehydrationConfigManager {
       })],
       module: {
         rules: (await Promise.all([
+          this.$FileLoaderConfigManager.getConfigByDehydration(),
           this.$ScriptLoaderConfigManger.getLoaderConfig(),
-          this.$FileLoaderConfigManager.getLoaderConfig(),
           this.$LessLoaderConfigManager.getLoaderConfig(),
           this.$SassLoaderConfigManager.getLoaderConfig(),
           this.$CssLoaderConfigManager.getLoaderConfig()

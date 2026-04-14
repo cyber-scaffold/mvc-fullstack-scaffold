@@ -7,7 +7,7 @@ import { renderToString } from "react-dom/server";
 
 import { getRuntimeConfiguration, getResourceSummary, getDehydratedResource, getHydrationResource, renderDehydratedResourceWithSandbox } from "@/frameworks/mpa-ssr-tool-box/runtime";
 import { IOCContainer } from "@/main/server/cores/IOCContainer";
-import { version } from "@/package.json";
+import packageJSONContent from "@/package.json";
 
 import type { ReactNode } from "react";
 
@@ -127,7 +127,7 @@ export class ServerSiderRenderService {
       /** 设备信息 **/
       platform: params.platform || "desktop",
       /** 项目版本信息 **/
-      version: params.version || version
+      version: params.version || packageJSONContent.version
     };
     this.applicationInjectContent = { content, meta: metaInfo };
   };
