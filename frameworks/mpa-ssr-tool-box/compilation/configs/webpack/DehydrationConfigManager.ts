@@ -66,9 +66,18 @@ export class DehydrationConfigManager {
       //   __filename: true
       // },
       externalsPresets: { node: true },
-      externals: [nodeExternals({
-        modulesFromFile: path.resolve(projectDirectoryPath, "./package.json")
-      })],
+      // externals: [nodeExternals({
+      //   modulesFromFile: path.resolve(projectDirectoryPath, "./package.json")
+      // })],
+      externals: [
+        "react", "react-dom",
+        "lodash", "dot-prop", "moment", "inversify", "uuid", "md5",
+        "webpack", "mini-css-extract-plugin", "webpackbar",
+        "webpack-merge", "webpack-node-externals", "node-polyfill-webpack-plugin",
+        "memfs", "unionfs", "path-exists",
+        "esbuild-register",
+        "source-map-support"
+      ],
       module: {
         rules: (await Promise.all([
           this.$FileLoaderConfigManager.getConfigByDehydration(),
