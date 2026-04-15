@@ -66,17 +66,19 @@ export class DehydrationConfigManager {
       //   __filename: true
       // },
       externalsPresets: { node: true },
-      // externals: [nodeExternals({
-      //   modulesFromFile: path.resolve(projectDirectoryPath, "./package.json")
-      // })],
+      //externals: [nodeExternals({
+      // allowlist: ["antd", "bootstrap", "bootstrap-react"]
+      // modulesFromFile: path.resolve(projectDirectoryPath, "./package.json")
+      //})],
       externals: [
-        "react", "react-dom",
+        "react", "react-dom", "ssr-window", "lowdb", "cross-spawn",
         "lodash", "dot-prop", "moment", "inversify", "uuid", "md5",
-        "webpack", "mini-css-extract-plugin", "webpackbar",
+        "webpack", "mini-css-extract-plugin", "webpackbar", "less", "sass",
         "webpack-merge", "webpack-node-externals", "node-polyfill-webpack-plugin",
         "memfs", "unionfs", "path-exists",
         "esbuild-register",
-        "source-map-support"
+        "source-map-support",
+        "@ant-design/cssinjs"
       ],
       module: {
         rules: (await Promise.all([

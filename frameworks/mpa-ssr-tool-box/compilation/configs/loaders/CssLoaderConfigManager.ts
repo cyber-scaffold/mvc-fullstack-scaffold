@@ -29,7 +29,9 @@ export class CssLoaderConfigManager {
       options: {
         url: true,
         import: true,
-        sourceMap: true
+        modules: false,
+        sourceMap: true,
+        esModule: false,
       }
     }];
   };
@@ -53,10 +55,11 @@ export class CssLoaderConfigManager {
         url: true,
         import: true,
         modules: {
-          namedExport: true,
+          auto: true,
+          // namedExport: true,
           exportOnlyLocals: false,
-          mode: "local"
         },
+        esModule: false,
         sourceMap: true
       }
     }, {

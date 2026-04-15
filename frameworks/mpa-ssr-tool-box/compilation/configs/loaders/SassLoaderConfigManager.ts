@@ -29,7 +29,9 @@ export class SassLoaderConfigManager {
       options: {
         url: true,
         import: true,
-        sourceMap: true
+        sourceMap: true,
+        modules: false,
+        esModule: false,
       }
     }, {
       loader: "postcss-loader",
@@ -64,10 +66,11 @@ export class SassLoaderConfigManager {
         url: true,
         import: true,
         modules: {
-          namedExport: true,
+          auto: true,
+          // namedExport: true,
           exportOnlyLocals: false,
-          mode: "local"
         },
+        esModule: false,
         sourceMap: true
       }
     }, {

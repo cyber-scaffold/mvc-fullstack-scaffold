@@ -31,6 +31,7 @@ export class LessLoaderConfigManager {
       options: {
         url: true,
         import: true,
+        modules: false,
         esModule: false,
         sourceMap: true
       }
@@ -73,9 +74,8 @@ export class LessLoaderConfigManager {
         url: true,
         import: true,
         modules: {
-          // namedExport: true,
+          auto: true,
           exportOnlyLocals: false,
-          mode: "local"
         },
         esModule: false,
         sourceMap: true
