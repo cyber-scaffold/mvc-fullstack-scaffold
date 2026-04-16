@@ -1,3 +1,4 @@
+import os from "os";
 import path from "path";
 import { injectable } from "inversify";
 import { getRuntimeConfiguration } from "@/frameworks/mpa-ssr-tool-box/runtime";
@@ -72,10 +73,18 @@ export class ApplicationConfigManager {
   };
 
   /**
-   * 用于启动静态资源服务器
+   * 用户自定义的静态资源指向的目录
    * 框架层的基准目录是根据 项目根目录的绝对路径 计算得到的
    * **/
-  private async getStaticResourceDirectory() {
+  private async getCustmerStaticResourceDirectory() {
+    return path.join(os.homedir(), "./statics/");
+  };
+
+  /**
+   * 项目中的静态资源指向的目录
+   * 框架层的基准目录是根据 项目根目录的绝对路径 计算得到的
+   * **/
+  private async getProjectStaticResourceDirectory() {
     const assetsDirectoryPath = await this.getAssetsDirectoryPath();
     return path.join(assetsDirectoryPath, "statics");
   };
@@ -103,7 +112,8 @@ export class ApplicationConfigManager {
       rabbitmq: this.rabbitmq,
       assetsDirectoryName: await this.getAssetsDirectoryPath(),
       extractResourceDirectory: await this.getExtractResourceDirectory(),
-      staticResourceDirectory: await this.getStaticResourceDirectory(),
+      custmerStaticResourceDirectory: await this.getCustmerStaticResourceDirectory(),
+      projectStaticResourceDirectory: await this.getProjectStaticResourceDirectory(),
       swaggerResourceDirectory: await this.getSwaggerResourceDirectory(),
       publicResourceDirectory: await this.getPublicResourceDirectory(),
     };

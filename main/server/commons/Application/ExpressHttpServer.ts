@@ -38,7 +38,7 @@ export class ExpressHttpServer {
   public async bootstrap() {
     const { server } = await this.$ApplicationConfigManager.getRuntimeConfig();
     const { hydrationResourceDirectoryPath } = await getRuntimeConfiguration();
-    const { extractResourceDirectory, staticResourceDirectory, swaggerResourceDirectory, publicResourceDirectory } = await this.$ApplicationConfigManager.getRuntimeConfig();
+    const { extractResourceDirectory, custmerStaticResourceDirectory, projectStaticResourceDirectory, swaggerResourceDirectory, publicResourceDirectory } = await this.$ApplicationConfigManager.getRuntimeConfig();
     /** 注册中间件 **/
     this.expressInstance.use(cookieParser());
     this.expressInstance.use(bodyParser.json());
@@ -47,23 +47,27 @@ export class ExpressHttpServer {
     this.expressInstance.use(requestMiddleware);
     /** 公共文件的资源目录 比如dll动态链接库 **/
     this.expressInstance.use("/public/", express.static(publicResourceDirectory, {
-      // maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)
+      maxAge: process.env.NODE_ENV === "development" ? -1 : (100 * 24 * 60 * 60)
     }));
     /** Swagger文档的资源目录 **/
     this.expressInstance.use("/swagger/", express.static(swaggerResourceDirectory, {
-      // maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)
+      maxAge: process.env.NODE_ENV === "development" ? -1 : (100 * 24 * 60 * 60)
     }));
     /** 组件中的静态文件 **/
     this.expressInstance.use("/extract/", express.static(extractResourceDirectory, {
-      // maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)
+      maxAge: process.env.NODE_ENV === "development" ? -1 : (100 * 24 * 60 * 60)
     }));
     /** 前端渲染需要的注水资源的资源目录 */
     this.expressInstance.use("/hydration/", express.static(hydrationResourceDirectoryPath, {
-      // maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)
+      maxAge: process.env.NODE_ENV === "development" ? -1 : (100 * 24 * 60 * 60)
+    }));
+    /** 先从用户自定义的静态资源文件夹开始搜索 **/
+    this.expressInstance.use(express.static(custmerStaticResourceDirectory, {
+      maxAge: process.env.NODE_ENV === "development" ? -1 : (100 * 24 * 60 * 60)
     }));
     /** 其余静态文件的资源目录,比如网站的icon文件等(为所有资源兜底,但是必须放在控制器之前) **/
-    this.expressInstance.use(express.static(staticResourceDirectory, {
-      // maxAge: env === "development" ? -1 : (100 * 24 * 60 * 60)
+    this.expressInstance.use(express.static(projectStaticResourceDirectory, {
+      maxAge: process.env.NODE_ENV === "development" ? -1 : (100 * 24 * 60 * 60)
     }));
     /** 注册项目中的控制器 **/
     this.expressInstance.use(this.$DetailPageController.getRouter());
