@@ -69,6 +69,25 @@ export class FrameworkConfigManager {
   private frameworkEntryFileDestinationPath = path.resolve(this.assetsDirectoryPath, "./index.js");
 
   /**
+   * 针对脱水物料的优化
+   * 从项目的配置文件中获取到必须需要被打包的模块信息
+   * 只所以要这么做是因为如果全部模块都被排除的话在引用.css这类文件的时候会被翻译成require("<filename>.css")就会导致样式表编译失败
+   * 所以通常情况下 组件库 这类包含静态资源编译的依赖需要被打包
+   * 所以需要在项目文件中手动指定一下,避免出现错误
+   * **/
+  private dehydrateIncludePackageList: string[] = [];
+
+
+  /**
+   * 针对脱水物料的优化
+   * 从项目的配置文件中获取到必须需要被排除的模块信息
+   * 因为@ant-design/cssinjs这类库是包含在antd中的
+   * 如果antd被上面的includePackageList包含了的话就意味着这个@ant-design/cssinjs也会被包含
+   * 但是我们却不希望把@ant-design/cssinjs包含进去所以需要在这里再次排除
+   * **/
+  private dehydrateExcludePackageList: string[] = [];
+
+  /**
    * 服务端渲染物料的详细制作信息
    * **/
   private materiels: MaterielCompilationInfoType[] = [];
@@ -131,6 +150,12 @@ export class FrameworkConfigManager {
     if (custmerConfig.swaggerResourceDirectoryDestinationPath) {
       this.swaggerResourceDirectoryDestinationPath = custmerConfig.swaggerResourceDirectoryDestinationPath;
     };
+    if (custmerConfig.dehydrateIncludePackageList) {
+      this.dehydrateIncludePackageList = custmerConfig.dehydrateIncludePackageList;
+    };
+    if (custmerConfig.dehydrateExcludePackageList) {
+      this.dehydrateExcludePackageList = custmerConfig.dehydrateExcludePackageList;
+    };
     if (custmerConfig.materiels) {
       this.materiels = custmerConfig.materiels;
     };
@@ -150,6 +175,8 @@ export class FrameworkConfigManager {
       swaggerResourceDirectorySourcePath: this.swaggerResourceDirectorySourcePath,
       swaggerResourceDirectoryDestinationPath: this.swaggerResourceDirectoryDestinationPath,
       // frameworkEntryFileDestinationPath: this.frameworkEntryFileDestinationPath,
+      dehydrateIncludePackageList: this.dehydrateIncludePackageList,
+      dehydrateExcludePackageList: this.dehydrateExcludePackageList,
       materiels: this.materiels
     };
   };

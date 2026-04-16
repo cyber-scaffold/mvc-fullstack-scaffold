@@ -25,10 +25,12 @@ export interface CompilationConfigType {
   extractResourceDirectoryPath: string
   hydrationResourceDirectoryName: string
   hydrationResourceDirectoryPath: string
+  hydrateDictionary: MaterielInfoByAliasDictionaryType
+  dehydrateDictionary: MaterielInfoByAliasDictionaryType
   dehydrationResourceDirectoryName: string
   dehydrationResourceDirectoryPath: string
-  dehydrateDictionary: MaterielInfoByAliasDictionaryType
-  hydrateDictionary: MaterielInfoByAliasDictionaryType
+  dehydrateIncludePackageList?: string[]
+  dehydrateExcludePackageList?: string[]
   materielArrayList: MaterielCompilationInfoType[]
 };
 
@@ -38,6 +40,8 @@ export interface CustmerInputCompilationConfigType {
   extractResourceDirectoryName?: string
   hydrationResourceDirectoryName?: string
   dehydrationResourceDirectoryName?: string
+  dehydrateIncludePackageList?: string[]
+  dehydrateExcludePackageList?: string[]
   materiels?: MaterielCompilationInfoType[]
 };
 
@@ -97,6 +101,25 @@ export class CompilationConfigManager {
    * **/
   private dehydrateDictionary: MaterielInfoByAliasDictionaryType;
 
+  /**
+   * 针对脱水物料的优化
+   * 从项目的配置文件中获取到必须需要被打包的模块信息
+   * 只所以要这么做是因为如果全部模块都被排除的话在引用.css这类文件的时候会被翻译成require("<filename>.css")就会导致样式表编译失败
+   * 所以通常情况下 组件库 这类包含静态资源编译的依赖需要被打包
+   * 所以需要在项目文件中手动指定一下,避免出现错误
+   * **/
+  private dehydrateIncludePackageList: string[] = [];
+
+
+  /**
+   * 针对脱水物料的优化
+   * 从项目的配置文件中获取到必须需要被排除的模块信息
+   * 因为@ant-design/cssinjs这类库是包含在antd中的
+   * 如果antd被上面的includePackageList包含了的话就意味着这个@ant-design/cssinjs也会被包含
+   * 但是我们却不希望把@ant-design/cssinjs包含进去所以需要在这里再次排除
+   * **/
+  private dehydrateExcludePackageList: string[] = [];
+
 
   /** 基于用户的配置合并覆盖掉原来的属性然后重新计算一遍 **/
   public async initialize(inputCustmerConfig: CustmerInputCompilationConfigType) {
@@ -114,6 +137,12 @@ export class CompilationConfigManager {
     };
     if (inputCustmerConfig.dehydrationResourceDirectoryName) {
       this.dehydrationResourceDirectoryName = inputCustmerConfig.dehydrationResourceDirectoryName;
+    };
+    if (inputCustmerConfig.dehydrateIncludePackageList) {
+      this.dehydrateIncludePackageList = inputCustmerConfig.dehydrateIncludePackageList;
+    };
+    if (inputCustmerConfig.dehydrateExcludePackageList) {
+      this.dehydrateExcludePackageList = inputCustmerConfig.dehydrateExcludePackageList;
     };
     if (inputCustmerConfig.materiels) {
       const { hydrate, dehydrate } = materielsConfigTransformer(inputCustmerConfig.materiels);
@@ -134,6 +163,8 @@ export class CompilationConfigManager {
       hydrationResourceDirectoryPath: this.getHydrationResourceDirectoryPath(),
       dehydrationResourceDirectoryName: this.dehydrationResourceDirectoryName,
       dehydrationResourceDirectoryPath: this.getDehydrationResourceDirectoryPath(),
+      dehydrateIncludePackageList: this.dehydrateIncludePackageList,
+      dehydrateExcludePackageList: this.dehydrateExcludePackageList,
       dehydrateDictionary: this.dehydrateDictionary,
       hydrateDictionary: this.hydrateDictionary,
       materielArrayList: this.materielArrayList

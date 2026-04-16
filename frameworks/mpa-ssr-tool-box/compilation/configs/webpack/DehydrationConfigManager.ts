@@ -1,8 +1,6 @@
-import path from "path";
 import WebpackBar from "webpackbar";
 import { merge } from "webpack-merge";
 import { injectable, inject } from "inversify";
-import nodeExternals from "webpack-node-externals";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import { webpack, DefinePlugin, Configuration } from "webpack";
 
@@ -17,6 +15,7 @@ import { SassLoaderConfigManager } from "@/frameworks/mpa-ssr-tool-box/compilati
 import { CssLoaderConfigManager } from "@/frameworks/mpa-ssr-tool-box/compilation/configs/loaders/CssLoaderConfigManager";
 
 import { ConvertDehydrationEntryFile } from "@/frameworks/mpa-ssr-tool-box/compilation/services/ConvertDehydrationEntryFile";
+import { ComputedExternalsModules } from "@/frameworks/mpa-ssr-tool-box/compilation/services/ComputedExternalsModules";
 import { CompilerProgressPlugin } from "@/frameworks/mpa-ssr-tool-box/compilation/plugins/CompilerProgressPlugin";
 
 import type { PathData, Compiler } from "webpack";
@@ -35,6 +34,7 @@ export class DehydrationConfigManager {
     @inject(LessLoaderConfigManager) private readonly $LessLoaderConfigManager: LessLoaderConfigManager,
     @inject(SassLoaderConfigManager) private readonly $SassLoaderConfigManager: SassLoaderConfigManager,
     @inject(CssLoaderConfigManager) private readonly $CssLoaderConfigManager: CssLoaderConfigManager,
+    @inject(ComputedExternalsModules) private readonly $ComputedExternalsModules: ComputedExternalsModules,
     @inject(CompilationConfigManager) private readonly $CompilationConfigManager: CompilationConfigManager
   ) { };
 
@@ -70,16 +70,7 @@ export class DehydrationConfigManager {
       // allowlist: ["antd", "bootstrap", "bootstrap-react"]
       // modulesFromFile: path.resolve(projectDirectoryPath, "./package.json")
       //})],
-      externals: [
-        "react", "react-dom", "ssr-window", "lowdb", "cross-spawn",
-        "lodash", "dot-prop", "moment", "inversify", "uuid", "md5",
-        "webpack", "mini-css-extract-plugin", "webpackbar", "less", "sass",
-        "webpack-merge", "webpack-node-externals", "node-polyfill-webpack-plugin",
-        "memfs", "unionfs", "path-exists",
-        "esbuild-register",
-        "source-map-support",
-        "@ant-design/cssinjs"
-      ],
+      externals: await this.$ComputedExternalsModules.getComputedExternalsPackageList(),
       module: {
         rules: (await Promise.all([
           this.$FileLoaderConfigManager.getConfigByDehydration(),
