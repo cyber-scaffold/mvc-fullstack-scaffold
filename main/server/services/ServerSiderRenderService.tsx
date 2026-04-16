@@ -56,20 +56,20 @@ export class ServerSiderRenderService {
     const dehydrateAssets = await getDehydratedResource(alias);
     /** 没有脱水渲染物料时的操作 **/
     if (!dehydrateAssets) {
-      this.dehydrateContent = (<div id="root" style={{ height: "100%" }} />);
+      this.dehydrateContent = (<div id="root" />);
       return false;
     };
     if (!dehydrateAssets.javascript) {
-      this.dehydrateContent = (<div id="root" style={{ height: "100%" }} />);
+      this.dehydrateContent = (<div id="root" />);
       return false;
     };
     if (!dehydrateAssets.javascript[0]) {
-      this.dehydrateContent = (<div id="root" style={{ height: "100%" }} />);
+      this.dehydrateContent = (<div id="root" />);
       return false;
     };
     /** 如果存在脱水渲染脚本的话就需要进行脱水视图的渲染 **/
     const dehydrateHTMLContent = await renderDehydratedResourceWithSandbox(dehydrateAssets.javascript[0], this.applicationInjectContent);
-    this.dehydrateContent = (<div id="root" style={{ height: "100%" }} dangerouslySetInnerHTML={{ __html: dehydrateHTMLContent }} />);
+    this.dehydrateContent = (<div id="root" dangerouslySetInnerHTML={{ __html: dehydrateHTMLContent }} />);
     return void (0);
   };
 
@@ -150,7 +150,7 @@ export class ServerSiderRenderService {
           <link href="favicon.ico" rel="icon" type="image/x-icon" />
           {this.hydrateStyleSheetTags}
         </head>
-        <body style={{ height: "100%" }}>
+        <body>
           {this.dehydrateContent}
           <script
             dangerouslySetInnerHTML={{
