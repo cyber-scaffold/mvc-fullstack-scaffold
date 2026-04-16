@@ -42,7 +42,10 @@ export class MakeServerApplication {
           this.childProcess.kill("SIGKILL");
         };
         await this.$GenerateSwaggerDocsService.execute();
-        this.childProcess = await spawn("node", [path.resolve(assetsDirectoryPath, "./server.js")], {
+        this.childProcess = await spawn("node", [
+          path.resolve(assetsDirectoryPath, "./server.js"),
+          "--inspect", "0"
+        ], {
           stdio: "inherit",
           stderr: "inherit"
         });

@@ -4,6 +4,8 @@ import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import { IOCContainer } from "@/frameworks/mpa-ssr-tool-box/compilation/cores/IOCContainer";
 import { CompilationConfigManager } from "@/frameworks/mpa-ssr-tool-box/compilation/commons/CompilationConfigManager";
 
+import { getLocalIdent } from "@/frameworks/mpa-ssr-tool-box/compilation/utils/getLocalIdent";
+
 @injectable()
 export class CssLoaderConfigManager {
 
@@ -56,8 +58,8 @@ export class CssLoaderConfigManager {
         import: true,
         modules: {
           auto: true,
-          // namedExport: true,
           exportOnlyLocals: false,
+          getLocalIdent
         },
         esModule: false,
         sourceMap: true

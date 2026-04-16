@@ -4,7 +4,7 @@ import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import { IOCContainer } from "@/frameworks/mpa-ssr-tool-box/compilation/cores/IOCContainer";
 import { CompilationConfigManager } from "@/frameworks/mpa-ssr-tool-box/compilation/commons/CompilationConfigManager";
 
-import { filePathContentHash } from "@/frameworks/mpa-ssr-tool-box/compilation/utils/filePathContentHash";
+import { getLocalIdent } from "@/frameworks/mpa-ssr-tool-box/compilation/utils/getLocalIdent";
 
 @injectable()
 export class LessLoaderConfigManager {
@@ -76,6 +76,7 @@ export class LessLoaderConfigManager {
         modules: {
           auto: true,
           exportOnlyLocals: false,
+          getLocalIdent
         },
         esModule: false,
         sourceMap: true
