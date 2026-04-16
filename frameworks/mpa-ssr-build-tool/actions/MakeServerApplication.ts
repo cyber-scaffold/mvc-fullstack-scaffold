@@ -44,7 +44,7 @@ export class MakeServerApplication {
         await this.$GenerateSwaggerDocsService.execute();
         this.childProcess = await spawn("node", [
           path.resolve(assetsDirectoryPath, "./server.js"),
-          "--inspect", "0"
+          // "--inspect", "0"
         ], {
           stdio: "inherit",
           stderr: "inherit"
