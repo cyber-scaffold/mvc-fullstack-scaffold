@@ -42,6 +42,7 @@ export class ServerSiderConfigManager {
       output: {
         path: assetsDirectoryPath,
         filename: "server.js",
+        devtoolModuleFilenameTemplate: "[absolute-resource-path]"
       },
       resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx"],
@@ -101,7 +102,16 @@ export class ServerSiderConfigManager {
     const basicConfig: Configuration = await this.getBasicConfig();
     const webpackCompiler = webpack(merge<Configuration>(basicConfig, {
       mode: "none",
-      devtool: "source-map"
+      /**
+       * hidden-source-map只是在编译产物中不索引source-map
+       * 但是source-map依然会生成,可以开启debug模式后在chrome中上传source-map进行调试
+       * 然后source-map的源代码是可以指向git仓库中的源代码的,这意味着chrome可以从git仓库拉取源代码来打断点调试
+       * **/
+      devtool: "hidden-source-map",
+      //output: {
+      // 这里可以考虑使用git仓库的路径
+      // devtoolModuleFilenameTemplate: "[resource-path]"
+      //}
     }));
     await this.$ServerProjectVirtualFile.mountWithWebpackCompiler(webpackCompiler);
     return webpackCompiler;

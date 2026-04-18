@@ -2,9 +2,8 @@
   "name": "mpa-react-ssr-server-project",
   "version": "1.0.0",
   "description": "基于React的能进行SSR的传统多页网站项目",
-  "main": "index.js",
+  "main": "./dist/server.js",
   "scripts": {
-    "dll": "node -r esbuild-register ./frameworks/mpa-ssr-build-tool/dll.ts",
     "dev": "node -r esbuild-register ./frameworks/mpa-ssr-build-tool/development.ts",
     "build": "node -r esbuild-register ./frameworks/mpa-ssr-build-tool/build.ts"
   },

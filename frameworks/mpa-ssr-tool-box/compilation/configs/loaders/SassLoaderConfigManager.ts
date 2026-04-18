@@ -85,7 +85,9 @@ export class SassLoaderConfigManager {
       }
     }, {
       loader: "sass-loader",
-      options: {}
+      options: {
+        sourceMap: true
+      }
     }]
   };
 

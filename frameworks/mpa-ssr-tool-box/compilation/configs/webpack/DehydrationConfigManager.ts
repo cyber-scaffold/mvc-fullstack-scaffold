@@ -2,7 +2,7 @@ import WebpackBar from "webpackbar";
 import { merge } from "webpack-merge";
 import { injectable, inject } from "inversify";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
-import { webpack, DefinePlugin, Configuration } from "webpack";
+import { webpack, DefinePlugin, SourceMapDevToolPlugin } from "webpack";
 
 import { IOCContainer } from "@/frameworks/mpa-ssr-tool-box/compilation/cores/IOCContainer";
 import { CompilationConfigManager } from "@/frameworks/mpa-ssr-tool-box/compilation/commons/CompilationConfigManager";
@@ -18,7 +18,7 @@ import { ConvertDehydrationEntryFile } from "@/frameworks/mpa-ssr-tool-box/compi
 import { ComputedExternalsModules } from "@/frameworks/mpa-ssr-tool-box/compilation/services/ComputedExternalsModules";
 import { CompilerProgressPlugin } from "@/frameworks/mpa-ssr-tool-box/compilation/plugins/CompilerProgressPlugin";
 
-import type { PathData, Compiler } from "webpack";
+import type { PathData, Compiler, Configuration } from "webpack";
 
 /**
  * 脱水化资源的编译选项管理器
@@ -49,6 +49,7 @@ export class DehydrationConfigManager {
       output: {
         clean: true,
         path: dehydrationResourceDirectoryPath,
+        devtoolModuleFilenameTemplate: "[absolute-resource-path]",
         filename: (pathData: PathData) => `index-${pathData.chunk.name}-dehydration-[contenthash].js`,
         library: {
           type: "commonjs"
@@ -118,7 +119,16 @@ export class DehydrationConfigManager {
     const basicConfig: Configuration = await this.getBasicConfig();
     const webpackCompiler = webpack(merge<Configuration>(basicConfig, {
       mode: "none",
-      devtool: "source-map"
+      devtool: false,
+      plugins: [
+        new SourceMapDevToolPlugin({
+          test: /\.(js|css|less|scss|sass)($|\?)/i,
+          filename: `../prod-source-maps/[base].map`, // 这里的 [file] 是指原文件名（如 main.js 或 main.css）
+          // append: "\n//# sourceMappingURL=http://your-server.com/maps/[url]"
+          // append为false的时候等价于hidden-source-map
+          append: false
+        })
+      ]
     }));
     await this.$ConvertDehydrationEntryFile.mountWithWebpackCompiler(webpackCompiler);
     return webpackCompiler;

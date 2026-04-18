@@ -4,7 +4,7 @@ import { merge } from "webpack-merge";
 import { injectable, inject } from "inversify";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
-import { webpack, DllReferencePlugin, DefinePlugin } from "webpack";
+import { webpack, DllReferencePlugin, SourceMapDevToolPlugin, DefinePlugin } from "webpack";
 
 import { IOCContainer } from "@/frameworks/mpa-ssr-tool-box/compilation/cores/IOCContainer";
 import { CompilationConfigManager } from "@/frameworks/mpa-ssr-tool-box/compilation/commons/CompilationConfigManager";
@@ -45,6 +45,7 @@ export class HydrationConfigManager {
       output: {
         clean: true,
         path: hydrationResourceDirectoryPath,
+        devtoolModuleFilenameTemplate: "[absolute-resource-path]",
         filename: (pathData: PathData) => `index-${pathData.chunk.name}-hydration-[contenthash].js`,
       },
       resolve: {
@@ -107,7 +108,16 @@ export class HydrationConfigManager {
     const basicConfig: Configuration = await this.getBasicConfig();
     const webpackCompiler = webpack(merge<Configuration>(basicConfig, {
       mode: "none",
-      devtool: "source-map"
+      devtool: false,
+      plugins: [
+        new SourceMapDevToolPlugin({
+          test: /\.(js|css|less|scss|sass)($|\?)/i,
+          filename: `../prod-source-maps/[base].map`, // 这里的 [file] 是指原文件名（如 main.js 或 main.css）
+          // append: "\n//# sourceMappingURL=http://your-server.com/maps/[url]"
+          // append为false的时候等价于hidden-source-map
+          append: false
+        })
+      ]
     }));
     await this.$ConvertHydrationEntryFile.mountWithWebpackCompiler(webpackCompiler);
     return webpackCompiler;
